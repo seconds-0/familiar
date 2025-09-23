@@ -15,6 +15,16 @@ Before starting Phase 2, ensure:
 - Basic MCP filesystem server configuration is in place
 - Raycast development environment is set up
 
+## Integration Notes (Claude Code SDK + Raycast)
+
+- **Model selection**: Use an explicit model via `options.model` (e.g., `claude-3-opus-20240229`). Consider exposing model choice as a Raycast preference.
+- **Built-in tools (exact names)**: `Read`, `Write`, `Edit`, `MultiEdit`, `Bash`, `BashOutput`, `KillShell`, `Grep`, `Glob`, `WebFetch`, `WebSearch`, `Task`, `TodoWrite`, `NotebookEdit`.
+- **Trust mapping**: Use `options.allowedTools` for coarse-grained auto-approval per trust level; use `canUseTool(toolName, input)` for contextual prompts/denials.
+- **Diff previews**: SDK provides input types (e.g., `EditInput`, `WriteInput`) but not preview generation. Implement your own diff preview and render it in a Detail view.
+- **Shell lifecycle**: `BashInput` supports `timeout`/`run_in_background`, but job lifecycle and kill require your own process tracking and a UI affordance that maps to `KillShell` when available.
+- **MCP servers**: Prefer `npx -y @modelcontextprotocol/server-filesystem` for portability; set `type: "stdio"` explicitly. Use SSE/HTTP configs where appropriate.
+- **Raycast UI**: For large content (diffs, logs), render markdown in `List.Item.Detail`. Keep `subtitle` short.
+
 ## Implementation Stages
 
 ### Stage 1: Enable File Operations (2 days)
@@ -46,7 +56,7 @@ async function handleFileOperation(
   toolName: string,
   input: EditInput | WriteInput
 ): Promise<PermissionResult> {
-  // Generate preview using SDK types (SDK docs lines 406-410)
+  // Generate app-owned diff preview (SDK provides input types only)
   const preview = await generateDiffPreview(input);
 
   // Show confirmation with Raycast's confirmAlert
@@ -98,9 +108,9 @@ Enable Bash command execution with intelligent safety detection and streaming ou
    - Unknown commands (require confirmation)
 
 2. **Streaming Output Display**
-   - Real-time output in List accessories
-   - Support for long-running commands
-   - Background process management
+   - Real-time output in Detail markdown (List.Item.Detail)
+   - Accessories show compact status only (e.g., spinner, elapsed time)
+   - Background process management with a visible "Stop"/kill control
 
 3. **Command Intelligence**
    - Detect command intent (read vs write vs system)
@@ -144,7 +154,7 @@ function classifyCommand(command: string): CommandSafety {
 - Test background process lifecycle
 
 #### UX Considerations
-- Show spinner for running commands
+ - Show spinner for running commands
 - Display elapsed time for long operations
 - Truncate output at 1000 lines with "Show More" option
 - Color code output: stdout (white), stderr (yellow)
@@ -183,6 +193,9 @@ Build user confidence through graduated permissions that reduce friction over ti
    - Different thresholds for different operations
    - Context-aware trust (e.g., test files = lower risk)
    - Trust inheritance for subdirectories
+4. **Tool Gating Integration**
+   - Map trust levels to `options.allowedTools` for auto-approval
+   - Use `canUseTool` for contextual prompts/denials per operation
 
 #### Implementation Details
 
@@ -325,8 +338,7 @@ Make the assistant contextually aware and proactively helpful.
 1. **Context Detection**
    - Current working directory
    - Selected Finder items (Raycast API line 738)
-   - Recent terminal commands
-   - Open IDE files
+   - Note: Recent terminal commands and open IDE files are not available via Raycast APIs (future/out-of-scope)
 
 2. **Smart Suggestions**
    - Analyze conversation for next actions
@@ -493,8 +505,8 @@ Enable seamless authentication for Claude.ai Max/Pro users.
    - Handle token refresh
 
 2. **Dual Auth Support**
-   - Prefer Claude.ai if available
-   - Fallback to API key
+   - Prefer API key in Raycast (stable, explicit)
+   - Optionally detect Claude.ai auth if SDK supports non-interactive flow
    - Allow manual switching
 
 3. **Session Management**
@@ -583,7 +595,7 @@ Add power user features and polish for store submission.
 #### Implementation Details
 
 ```typescript
-// Hidden settings discovery at ~/.claude/settings.json
+// Persist settings via Raycast LocalStorage (conceptual schema)
 {
   "permissions": {
     "allow": [
