@@ -47,6 +47,8 @@
     "typescript": "^5.3.3"
   },
   "scripts": {
+    "prebuild": "node scripts/copy-claude-cli.js",
+    "predev": "node scripts/copy-claude-cli.js",
     "build": "ray build --skip-types -e dist -o dist",
     "dev": "ray develop",
     "lint": "ray lint",

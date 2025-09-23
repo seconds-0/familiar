@@ -25,6 +25,97 @@ npm run fix-lint
 npm run publish
 ```
 
+## Search Strategy - Always Use Agent
+
+**CRITICAL**: ALWAYS dispatch the `code-search-specialist` agent for ALL searches. Never use direct grep, rg, sg, or find commands. The agent has superior capabilities and reduces context usage.
+
+### Why Agent-First Search
+
+The `code-search-specialist` agent combines multiple powerful tools:
+- **Code Search**: Glob, Grep, Read for comprehensive repository exploration
+- **Web Search**: WebSearch, WebFetch for documentation and online resources
+- **Context Tools**: MCP tools for library documentation and IDE diagnostics
+- **Progress Tracking**: TodoWrite for complex multi-step searches
+- **Intelligence**: Can refine searches based on initial results and cross-reference findings
+
+### Search Prompt Templates
+
+#### 1. Finding Implementation Patterns
+```
+"Search the codebase for [PATTERN/FEATURE] implementation:
+1. Find all function/class definitions related to [PATTERN]
+2. Locate usage examples and imports
+3. Identify related test files
+4. Check configuration files that affect [PATTERN]
+5. If relevant, search online docs for [PATTERN] best practices
+Return: File paths with line numbers, key code snippets, and architectural insights"
+```
+
+#### 2. Understanding Dependencies and Libraries
+```
+"Investigate how [LIBRARY/MODULE] is used in this project:
+1. Check package.json for version and related dependencies
+2. Find all imports and actual usage patterns
+3. Search online for current documentation and migration guides
+4. Identify any deprecated patterns or potential upgrades
+5. Look for similar projects' usage examples online
+Return: Current usage patterns, version compatibility, and modernization opportunities"
+```
+
+#### 3. Debugging and Error Tracing
+```
+"Trace the execution flow for [FEATURE/BUG/ERROR]:
+1. Find the error message or symptom in the code
+2. Trace back through the call stack
+3. Identify all error handlers and edge cases
+4. Search web for similar issues and solutions
+5. Check related configuration and environment setup
+Return: Complete call chain, failure points, and recommended fixes"
+```
+
+#### 4. Cross-Reference and Refactoring Search
+```
+"Find all connections between [COMPONENT_A] and [COMPONENT_B]:
+1. Direct imports and dependencies
+2. Shared types, interfaces, or utilities
+3. Event listeners, callbacks, or message passing
+4. Data flow and state management connections
+5. Any indirect coupling through third components
+Return: Dependency graph, coupling analysis, and refactoring suggestions"
+```
+
+#### 5. API and Integration Search
+```
+"Analyze [API/SERVICE] integration:
+1. Find all API endpoints or service calls
+2. Locate authentication and configuration
+3. Check error handling and retry logic
+4. Search online for API documentation updates
+5. Find integration tests and mocks
+Return: Integration points, current implementation, and improvement opportunities"
+```
+
+### Effective Agent Prompting Tips
+
+1. **Be Specific**: Include exact names, patterns, or error messages
+2. **Set Clear Objectives**: Tell the agent what insights you need
+3. **Request Structure**: Ask for organized output (file paths, line numbers, summaries)
+4. **Combine Sources**: Explicitly ask for both code and web searches when relevant
+5. **Iterative Refinement**: Mention if you want the agent to dig deeper on findings
+
+### Example Usage
+
+Instead of:
+```bash
+rg "sessionId"  # Don't do this
+```
+
+Do this:
+```
+Use Task tool with code-search-specialist:
+"Search for all sessionId usage in the codebase. Find where it's created, stored, accessed, and validated. Include type definitions and any session management logic. Check if there are any security considerations mentioned in comments or documentation."
+```
+
 ## Architecture
 
 ### Core Integration Flow

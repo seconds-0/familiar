@@ -1,4 +1,4 @@
-import { ActionPanel, Action, List, showToast, Toast, getPreferenceValues, Icon, environment } from "@raycast/api";
+import { ActionPanel, Action, List, showToast, Toast, getPreferenceValues, Icon } from "@raycast/api";
 import { useState, useEffect, useRef } from "react";
 
 // Import utilities and types
@@ -15,6 +15,7 @@ import type {
 } from "./utils/types";
 import { saveSessionDebounced, saveSessionImmediate, loadSession, clearSession, getSessionKey } from "./utils/session";
 import { getMcpServers, resolveWorkingPath, debugLog } from "./utils/mcp";
+import { resolveClaudeCliPath } from "./utils/claude";
 
 // Dynamic import for ESM module
 const claudeCode = import("@anthropic-ai/claude-code");
@@ -28,6 +29,8 @@ export default function Assistant() {
     workingDirectory: process.cwd(),
     messages: [],
   });
+  const [claudeCliPath, setClaudeCliPath] = useState<string | undefined>();
+  const [cliError, setCliError] = useState<string | undefined>();
   const streamBuffer = useRef("");
   const abortRef = useRef<AbortController | null>(null);
 
@@ -53,6 +56,18 @@ export default function Assistant() {
       }
     }
     initSession();
+  }, []);
+
+  useEffect(() => {
+    try {
+      const path = resolveClaudeCliPath();
+      setClaudeCliPath(path);
+      setCliError(undefined);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      setCliError(message);
+      debugLog("Failed to locate Claude Code CLI:", message);
+    }
   }, []);
 
   // Cleanup on unmount
@@ -94,8 +109,26 @@ export default function Assistant() {
   }
 
   async function handleSubmit() {
+    console.log("[handleSubmit] Called with searchText:", searchText);
+    console.log("[handleSubmit] isLoading:", isLoading);
+
     const text = searchText.trim();
-    if (!text || isLoading) return;
+    if (!text || isLoading) {
+      console.log("[handleSubmit] Early return - empty text or loading");
+      return;
+    }
+
+    if (!claudeCliPath) {
+      const message = cliError ?? "Claude Code CLI not available. Reinstall dependencies and rebuild.";
+      await showToast({
+        style: Toast.Style.Failure,
+        title: "Claude CLI Missing",
+        message,
+      });
+      return;
+    }
+
+    console.log("[handleSubmit] Processing message:", text);
 
     // Cancel any existing query
     abortRef.current?.abort();
@@ -114,6 +147,7 @@ export default function Assistant() {
     streamBuffer.current = "";
 
     try {
+      console.log("[handleSubmit] Starting query...");
       // Create assistant message placeholder
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -142,6 +176,7 @@ export default function Assistant() {
             ANTHROPIC_API_KEY: anthropicApiKey,
           },
           signal: abortRef.current.signal,
+          pathToClaudeCodeExecutable: claudeCliPath,
         },
       });
 
@@ -247,6 +282,7 @@ export default function Assistant() {
         }
       }
     } catch (error) {
+      console.error("[handleSubmit] Error caught:", error);
       // Handle specific error types
       const errorMessage = error instanceof Error ? error.message : String(error);
       if (errorMessage.includes("AUTH")) {
@@ -271,6 +307,7 @@ export default function Assistant() {
         return prev;
       });
     } finally {
+      console.log("[handleSubmit] Completed");
       setIsLoading(false);
     }
   }
@@ -299,30 +336,32 @@ export default function Assistant() {
     <List
       isLoading={isLoading}
       searchText={searchText}
-      onSearchTextChange={setSearchText}
+      onSearchTextChange={(text) => {
+        console.log("[onSearchTextChange] New text:", text);
+        setSearchText(text);
+      }}
       searchBarPlaceholder="Ask me anything... (Press Enter to send)"
-      onSearchBarSubmit={handleSubmit}
+      onSearchBarSubmit={() => {
+        console.log("[onSearchBarSubmit] Triggered");
+        handleSubmit();
+      }}
       navigationTitle="AI Assistant"
     >
-      {messages.map((message) => (
+      {messages.length === 0 ? (
+        // When no messages, show a placeholder item with action
         <List.Item
-          key={message.id}
-          icon={message.role === "user" ? Icon.Person : message.role === "assistant" ? Icon.Stars : Icon.Cog}
-          title={message.role === "user" ? "You" : message.role === "assistant" ? "AI Assistant" : "System"}
-          subtitle={message.content}
-          accessories={[
-            {
-              date: message.timestamp,
-              tooltip: message.timestamp.toLocaleString(),
-            },
-          ]}
+          title="Welcome to AI Assistant"
+          subtitle="Type a question above and press Enter to send"
+          icon={Icon.Message}
           actions={
             <ActionPanel>
               <ActionPanel.Section>
-                <Action.CopyToClipboard
-                  title="Copy Message"
-                  content={message.content}
-                  shortcut={{ modifiers: ["cmd"], key: "c" }}
+                <Action
+                  title="Send Message"
+                  onAction={() => {
+                    console.log("[List.Item Action] Triggered with searchText:", searchText);
+                    handleSubmit();
+                  }}
                 />
               </ActionPanel.Section>
               <ActionPanel.Section>
@@ -330,21 +369,49 @@ export default function Assistant() {
                   title="Clear Conversation"
                   onAction={handleClear}
                   icon={Icon.Trash}
-                  shortcut={{ modifiers: ["cmd"], key: "k" }}
+                  shortcut={{ modifiers: ["cmd", "shift"], key: "c" }}
                   style={Action.Style.Destructive}
                 />
               </ActionPanel.Section>
             </ActionPanel>
           }
         />
-      ))}
-
-      {messages.length === 0 && (
-        <List.EmptyView
-          icon={Icon.Message}
-          title="Welcome to AI Assistant"
-          description="Type a question and press Enter. Try: 'What files are in this directory?'"
-        />
+      ) : (
+        // Show actual messages
+        messages.map((message) => (
+          <List.Item
+            key={message.id}
+            icon={message.role === "user" ? Icon.Person : message.role === "assistant" ? Icon.Stars : Icon.Cog}
+            title={message.role === "user" ? "You" : message.role === "assistant" ? "AI Assistant" : "System"}
+            subtitle={message.content}
+            accessories={[
+              {
+                date: message.timestamp,
+                tooltip: message.timestamp.toLocaleString(),
+              },
+            ]}
+            actions={
+              <ActionPanel>
+                <ActionPanel.Section>
+                  <Action.CopyToClipboard
+                    title="Copy Message"
+                    content={message.content}
+                    shortcut={{ modifiers: ["cmd"], key: "c" }}
+                  />
+                </ActionPanel.Section>
+                <ActionPanel.Section>
+                  <Action
+                    title="Clear Conversation"
+                    onAction={handleClear}
+                    icon={Icon.Trash}
+                  shortcut={{ modifiers: ["cmd", "shift"], key: "c" }}
+                    style={Action.Style.Destructive}
+                  />
+                </ActionPanel.Section>
+              </ActionPanel>
+            }
+          />
+        ))
       )}
     </List>
   );
