@@ -1,0 +1,34 @@
+---
+alwaysApply: true
+---
+# Raycast AI Assistant – Project Structure
+
+- **Main command entry**: [src/assistant.tsx](mdc:src/assistant.tsx)
+- **Extension manifest**: [package.json](mdc:package.json)
+- **TypeScript config**: [tsconfig.json](mdc:tsconfig.json)
+- **Docs**: [README.md](mdc:README.md), [docs/](mdc:docs)
+- **Build output**: [dist/](mdc:dist)
+
+## Key Concepts
+
+- **Single Command**: The extension exposes one command `assistant` defined in [package.json](mdc:package.json) under `commands`.
+- **Claude Code SDK**: Dynamically imported in [src/assistant.tsx](mdc:src/assistant.tsx) to avoid ESM/CJS issues.
+- **MCP Filesystem Server**: Configured with `ALLOWED_PATHS` set to the current working directory via `process.cwd()`.
+- **Read-Only Steel Thread**: The permission gate allows only read tools ("Read", "Grep", "Glob"). Writes and shell are denied until trust levels land.
+- **Streaming UI**: The assistant streams partial tokens, updating the last assistant message in-place.
+- **Session Persistence**: Conversations are stored via Raycast `LocalStorage`, keyed by `session_${process.cwd()}`.
+
+## Common Tasks
+
+- **Add a new command**:
+  1) Add a command entry in [package.json](mdc:package.json) → `commands`.
+  2) Create a corresponding TSX file in `src/` and export a default React component.
+- **Use preferences**: Access via `getPreferenceValues` from `@raycast/api`. See `Preferences` type in [src/assistant.tsx](mdc:src/assistant.tsx).
+- **Build & dev**: Scripts live in [package.json](mdc:package.json): `dev` → `ray develop`, `build` → `ray build --skip-types -e dist -o dist`.
+
+## Constraints & Conventions
+
+- Keep UI components within Raycast primitives (`List`, `ActionPanel`, etc.).
+- Handle errors with `showToast` and provide actionable messages.
+- Do not introduce write/exec tools until the trust system is expanded.
+- Prefer typed objects over `any`; align with strict TS settings in [tsconfig.json](mdc:tsconfig.json).

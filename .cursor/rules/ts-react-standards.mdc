@@ -1,0 +1,11 @@
+---
+globs: *.ts,*.tsx
+---
+# TypeScript + React Standards
+
+- **Strict TypeScript**: Honor `strict: true`. Avoid `any`. Prefer explicit function signatures. Keep `isolatedModules` safe.
+- **Imports**: Use dynamic import for ESM-only libs when needed (e.g., `@anthropic-ai/claude-code`). Match project config (`module: CommonJS`).
+- **React**: Use function components. Prefer early returns, minimal nesting, and Raycast primitives for UI.
+- **State**: Keep state minimal and typed (e.g., `Message`, `SessionData`). Use `useRef` for streaming buffers.
+- **Error handling**: Use `showToast` with clear titles/messages. Avoid swallowing errors.
+- **Formatting**: Follow Prettier config; never change indentation style within a file.

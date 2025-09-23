@@ -1,0 +1,56 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "ai-assistant",
+  "title": "AI Assistant",
+  "description": "AI that can actually control your computer",
+  "icon": "icon.png",
+  "author": "alexanderhuth",
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "assistant",
+      "title": "AI Assistant",
+      "subtitle": "Talk to your AI assistant",
+      "description": "Opens the AI assistant chat",
+      "mode": "view",
+      "keywords": ["ai", "chat", "claude", "assistant"]
+    }
+  ],
+  "preferences": [
+    {
+      "name": "anthropicApiKey",
+      "title": "Anthropic API Key",
+      "description": "Your Anthropic API key from console.anthropic.com",
+      "type": "password",
+      "required": true
+    },
+    {
+      "name": "shortcut",
+      "title": "Keyboard Shortcut",
+      "description": "Global hotkey to open assistant (e.g., cmd+cmd)",
+      "type": "textfield",
+      "default": "cmd+cmd",
+      "required": false
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.64.0",
+    "@anthropic-ai/claude-code": "^1.0.0",
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^1.0.8",
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.45",
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1",
+    "typescript": "^5.3.3"
+  },
+  "scripts": {
+    "build": "ray build --skip-types -e dist -o dist",
+    "dev": "ray develop",
+    "lint": "ray lint",
+    "fix-lint": "ray lint --fix",
+    "publish": "npx @raycast/api@latest publish"
+  }
+}

@@ -1,0 +1,11 @@
+---
+description: Guidance for Raycast extension authors in this repo
+---
+# Raycast Extension Workflow & Conventions
+
+- **UI Components**: Use `List`, `ActionPanel`, `Action`, `List.Dropdown`, `Icon` from `@raycast/api`.
+- **Preferences**: Access via `getPreferenceValues`. Define in [package.json](mdc:package.json) under `preferences`.
+- **Commands**: Define in [package.json](mdc:package.json) → `commands`; each command has a TSX entrypoint in `src/`.
+- **Local storage**: Use `LocalStorage` to persist per-directory sessions. Key format: `session_${process.cwd()}`.
+- **Build/Dev**: `npm run dev` to develop, `npm run build` to emit to `dist/`, then `ray import dist` to install.
+- **Toasts**: Use `showToast` for success/failure feedback. Provide actionable messages.
