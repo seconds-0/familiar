@@ -135,7 +135,7 @@ export default function Assistant() {
         options: {
           includePartialMessages: true,
           resume: sessionData.sessionId,
-          model: "default",
+          model: "claude-3-opus-20240229",
           mcpServers,
           canUseTool: canUseTool,
           env: {
@@ -167,7 +167,7 @@ export default function Assistant() {
                 const sysMessage: Message = {
                   id: Date.now().toString(),
                   role: "system",
-                  content: `Session started with model: ${sysEvent.model || "default"}`,
+                  content: `Session started with model: ${sysEvent.model || "claude-3-opus-20240229"}`,
                   timestamp: new Date(),
                 };
                 setMessages((prev) => [...prev, sysMessage]);
@@ -199,25 +199,29 @@ export default function Assistant() {
             const assistantEvent = messageEvent as SDKAssistantMessage;
             // Final complete message with immutable update
             streamBuffer.current = assistantEvent.content || "";
+
+            let finalizedMessages: Message[] | null = null;
             setMessages((prev) => {
               const updated = [...prev];
               const lastIndex = updated.length - 1;
               if (lastIndex >= 0 && updated[lastIndex].role === "assistant") {
-                // Create new object instead of mutating
                 updated[lastIndex] = {
                   ...updated[lastIndex],
                   content: assistantEvent.content || "",
                   toolUses: assistantEvent.toolUses,
                 };
               }
+              finalizedMessages = updated;
               return updated;
             });
-            // Save immediately on completion
-            const key = getSessionKey(sessionData.workingDirectory);
-            await saveSessionImmediate(key, {
-              ...sessionData,
-              messages: messages,
-            });
+            // Save immediately on completion using the updated array
+            if (finalizedMessages) {
+              const key = getSessionKey(sessionData.workingDirectory);
+              await saveSessionImmediate(key, {
+                ...sessionData,
+                messages: finalizedMessages,
+              });
+            }
             break;
           }
 

@@ -1,5 +1,5 @@
 import { LocalStorage } from "@raycast/api";
-import type { SessionData } from "./types";
+import type { SessionData, Message } from "./types";
 
 // Debounced session persistence to avoid excessive LocalStorage writes
 let saveTimer: NodeJS.Timeout | null = null;
@@ -36,13 +36,22 @@ export function saveSessionImmediate(key: string, data: SessionData): Promise<vo
 }
 
 /**
- * Load session data from LocalStorage
+ * Load session data from LocalStorage with Date revival
  */
 export async function loadSession(key: string): Promise<SessionData | null> {
   try {
     const stored = await LocalStorage.getItem<string>(key);
     if (stored) {
-      return JSON.parse(stored) as SessionData;
+      const parsed = JSON.parse(stored) as SessionData;
+      const revivedMessages: Message[] = (parsed.messages || []).map((m) => ({
+        ...m,
+        // Revive timestamp if it was serialized
+        timestamp: m.timestamp instanceof Date ? m.timestamp : new Date(m.timestamp as unknown as string),
+      }));
+      return {
+        ...parsed,
+        messages: revivedMessages,
+      };
     }
   } catch (error) {
     console.error("Failed to load session:", error);

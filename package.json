@@ -35,7 +35,7 @@
   ],
   "dependencies": {
     "@raycast/api": "^1.64.0",
-    "@anthropic-ai/claude-code": "^1.0.0",
+    "@anthropic-ai/claude-code": "1.0.120",
     "react": "^18.2.0"
   },
   "devDependencies": {
