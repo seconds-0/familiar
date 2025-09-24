@@ -4,6 +4,7 @@ import SwiftUI
 struct SettingsView: View {
     private let keychainKey = "anthropic_api_key"
 
+    @EnvironmentObject private var appState: AppState
     @State private var apiKey: String = ""
     @AppStorage("steelThreadWorkspacePath") private var workspacePath: String = ""
     @State private var statusMessage: String?
@@ -49,12 +50,13 @@ struct SettingsView: View {
         }
         .padding(24)
         .frame(width: 480, height: 320)
-        .task(loadSettings)
+        .task { await loadSettings() }
     }
 
+    @MainActor
     private func loadSettings() async {
-        if let stored = try? Keychain.load(key: keychainKey), let stored {
-            apiKey = stored
+        if let storedKey = (try? Keychain.load(key: keychainKey)) ?? nil {
+            apiKey = storedKey
         }
         do {
             let settings = try await SidecarClient.shared.fetchSettings()
@@ -68,6 +70,7 @@ struct SettingsView: View {
                 statusMessage = "API key missing. Add one to enable Claude Code."
                 statusColor = .orange
             }
+            appState.apply(settings: settings)
         } catch {
             statusMessage = "Failed to load settings: \(error.localizedDescription)"
             statusColor = .red
@@ -89,7 +92,7 @@ struct SettingsView: View {
         let trimmedWorkspace = workspacePath.trimmingCharacters(in: .whitespacesAndNewlines)
 
         isSaving = true
-        Task {
+        Task { @MainActor in
             defer { isSaving = false }
             do {
                 if trimmedKey.isEmpty {
@@ -113,6 +116,7 @@ struct SettingsView: View {
                 if let workspace = settings.workspace {
                     workspacePath = workspace
                 }
+                appState.apply(settings: settings)
             } catch {
                 statusMessage = "Failed to save: \(error.localizedDescription)"
                 statusColor = .red
@@ -122,7 +126,7 @@ struct SettingsView: View {
 
     private func testConnection() {
         isTesting = true
-        Task {
+        Task { @MainActor in
             defer { isTesting = false }
             do {
                 try await SidecarClient.shared.healthCheck()

@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 struct ToolSummaryView: View {
     let summary: ToolSummary
@@ -39,7 +40,7 @@ struct ToolSummaryView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .fill(Color(.secondarySystemBackground))
+                .fill(Color(nsColor: .windowBackgroundColor))
         )
     }
 }

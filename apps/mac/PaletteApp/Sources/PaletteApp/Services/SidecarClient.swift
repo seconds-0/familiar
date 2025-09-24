@@ -38,11 +38,14 @@ actor SidecarClient {
         }
     }
 
-    func approve(requestId: String, decision: String) async throws {
-        let payload: [String: Any] = [
+    func approve(requestId: String, decision: String, remember: Bool = false) async throws {
+        var payload: [String: Any] = [
             "request_id": requestId,
             "decision": decision
         ]
+        if remember {
+            payload["remember"] = true
+        }
         _ = try await sendJSON(path: "approve", method: "POST", payload: payload) as [String: Any]
     }
 

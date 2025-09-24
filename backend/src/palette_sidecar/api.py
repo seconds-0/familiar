@@ -15,6 +15,7 @@ from .config import (
     detect_prerequisites,
     ensure_workspace,
     load_settings,
+    register_always_allow,
     save_settings,
     settings_response_payload,
 )
@@ -40,9 +41,13 @@ if _workspace_path:
     session.configure(
         api_key=_current_settings.anthropic_api_key,
         workspace=_workspace_path,
+        always_allow=_current_settings.always_allow,
     )
 else:
-    session.configure(api_key=_current_settings.anthropic_api_key)
+    session.configure(
+        api_key=_current_settings.anthropic_api_key,
+        always_allow=_current_settings.always_allow,
+    )
 
 save_settings(_current_settings)
 
@@ -85,7 +90,20 @@ async def approve(payload: ApprovalPayload) -> dict[str, str]:
     except KeyError as exc:  # pragma: no cover - defensive
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
 
-    await session.notify_permission_resolution(payload.request_id, payload.decision)
+    context = await session.notify_permission_resolution(
+        payload.request_id,
+        payload.decision,
+        remember=payload.remember,
+    )
+
+    if payload.remember and payload.decision == "allow" and context:
+        path_value = context.get("path")
+        tool_name = context.get("tool")
+        if path_value and tool_name:
+            register_always_allow(_current_settings, tool=tool_name, path=Path(path_value))
+            save_settings(_current_settings)
+            session.configure(always_allow=_current_settings.always_allow)
+
     return {"status": "ok"}
 
 
@@ -120,9 +138,13 @@ async def update_settings(payload: SettingsPayload) -> JSONResponse:
         session.configure(
             api_key=_current_settings.anthropic_api_key,
             workspace=_workspace_path,
+            always_allow=_current_settings.always_allow,
         )
     else:
-        session.configure(api_key=_current_settings.anthropic_api_key)
+        session.configure(
+            api_key=_current_settings.anthropic_api_key,
+            always_allow=_current_settings.always_allow,
+        )
 
     await session.start()
     return JSONResponse(settings_response_payload(_current_settings))

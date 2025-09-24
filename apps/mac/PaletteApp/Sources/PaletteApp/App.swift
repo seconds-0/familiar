@@ -19,6 +19,21 @@ struct PaletteAppMain: App {
     var body: some Scene {
         MenuBarExtra("Palette", systemImage: "sparkles") {
             Label(appState.status.label, systemImage: appState.status.systemImage)
+            if let detail = appState.statusDetail {
+                Text(detail)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+            if let workspaceURL = appState.workspaceURL {
+                Button("Open Workspace Folder") {
+                    NSWorkspace.shared.open(workspaceURL)
+                }
+            }
+            if let demoURL = appState.demoFileURL {
+                Button("Open Demo Note") {
+                    NSWorkspace.shared.open(demoURL)
+                }
+            }
             Button("Toggle Palette") {
                 PaletteWindowController.shared.toggle()
             }
@@ -37,6 +52,7 @@ struct PaletteAppMain: App {
 
         Settings {
             SettingsView()
+                .environmentObject(appState)
         }
     }
 }

@@ -35,8 +35,10 @@ struct SidecarEvent {
     var toolInput: [String: Any]? { raw["input"] as? [String: Any] }
     var decision: String? { raw["decision"] as? String }
     var path: String? { raw["path"] as? String }
+    var canonicalPath: String? { raw["canonicalPath"] as? String }
     var snippet: String? { raw["snippet"] as? String }
     var content: String? { raw["content"] as? String }
+    var diff: String? { raw["diff"] as? String }
     var isError: Bool { (raw["isError"] as? Bool) ?? false }
     var toolUseId: String? { raw["toolUseId"] as? String }
 }
