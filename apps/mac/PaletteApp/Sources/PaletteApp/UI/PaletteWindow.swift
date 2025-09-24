@@ -5,33 +5,27 @@ import SwiftUI
 final class PaletteWindowController: NSObject, ObservableObject {
     static let shared = PaletteWindowController()
 
-    private var window: NSPanel?
-    private var hostingController: NSHostingController<PaletteView>?
-
-    private override init() {
-        super.init()
-        setupWindow()
-        KeyboardShortcuts.onKeyUp(for: .summon) { [weak self] in
-            self?.toggle()
-        }
-    }
-
-    private func setupWindow() {
-        let rootView = PaletteView()
-        let hosting = NSHostingController(rootView: rootView)
-        let panel = NSPanel(contentViewController: hosting)
+    private lazy var hostingController = NSHostingController(rootView: PaletteView())
+    private lazy var panel: NSPanel = {
+        let panel = NSPanel(contentViewController: hostingController)
         panel.titleVisibility = .hidden
         panel.isFloatingPanel = true
         panel.hidesOnDeactivate = false
         panel.styleMask = [.nonactivatingPanel, .titled, .fullSizeContentView]
         panel.level = .statusBar
         panel.collectionBehavior = [.fullScreenAuxiliary, .canJoinAllSpaces]
-        self.window = panel
-        self.hostingController = hosting
+        return panel
+    }()
+
+    private override init() {
+        super.init()
+        KeyboardShortcuts.onKeyUp(for: .summon) { [weak self] in
+            self?.toggle()
+        }
     }
 
     func toggle() {
-        guard let window else { return }
+        let window = panel
         if window.isVisible {
             window.orderOut(nil)
         } else {
