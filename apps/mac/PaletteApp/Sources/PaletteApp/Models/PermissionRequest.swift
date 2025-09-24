@@ -4,7 +4,9 @@ struct PermissionRequest: Identifiable {
     let id: String
     let toolName: String
     let path: String?
+    let canonicalPath: String?
     let preview: String?
+    let diff: String?
     let rawInput: [String: Any]
 
     static func from(event: SidecarEvent) -> PermissionRequest? {
@@ -17,9 +19,18 @@ struct PermissionRequest: Identifiable {
         }
 
         let input = event.toolInput ?? [:]
-        let path = input["path"] as? String
+        let path = event.path ?? input["path"] as? String
+        let canonicalPath = event.canonicalPath
         let preview = input["content"] as? String
-        return PermissionRequest(id: requestId, toolName: tool, path: path, preview: preview, rawInput: input)
+        return PermissionRequest(
+            id: requestId,
+            toolName: tool,
+            path: path,
+            canonicalPath: canonicalPath,
+            preview: preview,
+            diff: event.diff,
+            rawInput: input
+        )
     }
 }
 

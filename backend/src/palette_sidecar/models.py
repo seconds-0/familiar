@@ -13,6 +13,7 @@ class QueryPayload(BaseModel):
 class ApprovalPayload(BaseModel):
     request_id: str
     decision: str
+    remember: bool = False
 
 
 class SettingsPayload(BaseModel):

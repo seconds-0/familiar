@@ -42,10 +42,9 @@
 3. **Mac app build** (development)
    ```bash
    cd apps/mac/PaletteApp
-   swift build
-   open .build/debug/PaletteApp.app
+   swift run PaletteApp
    ```
-   For a distributable bundle, run `scripts/steel-thread-package.sh` from the repo root and open `dist/steel-thread/PaletteApp.app`.
+   To stage a distributable bundle, run `./scripts/steel-thread-package.sh` from the repo root and open `dist/steel-thread/PaletteApp.app`.
 4. **Initial configuration**
    - Open Settings from the menu bar extra.
    - Paste your Anthropic API key and choose a workspace directory.
@@ -59,3 +58,37 @@
 3. When the approval sheet appears, verify the target path and preview, then click **Allow Once**.
 4. Observe streaming assistant output followed by the “Change applied” card with the snippet from `steel-thread-demo.txt`.
 5. Open the workspace file to confirm the appended line matches the summary and that the palette window can be dismissed without lingering dialogs.
+
+## Canonical Walkthrough
+
+- Capture a short Loom (<=2 minutes) that demonstrates: launch, health indicator, diff-based approval, "Always Allow", and the quick-open shortcuts from the menu bar.
+- Store the recording in the shared assets bucket and drop the link below once available:
+  - Loom link: _TBD_
+- Add two screenshots to `docs/images/` when ready:
+  1. Approval sheet rendering a multi-line diff preview.
+  2. Menu bar extra with workspace/demo quick-open buttons.
+
+## Troubleshooting
+
+### Missing Node.js Runtime
+- Run `node --version`; install via `brew install node` if the command fails.
+- Verify the bundled CLI is reachable: `node assets/claude-cli/cli.js --help`.
+
+### Anthropic API Key Not Detected
+- Open **Palette -> Open Settings...** and re-enter the key; the status banner should turn green after saving.
+- Confirm the macOS Keychain entry `anthropic_api_key` exists and is not locked.
+
+### Workspace or CLI Path Errors
+- Ensure the selected workspace contains `.steel-thread-workspace`; rerun the setup to recreate it if missing.
+- Inspect the CLI path exported by the sidecar via `echo $CLAUDE_CODE_CLI_PATH` in the packaged environment; it should point to `assets/claude-cli/cli.js`.
+
+### Permission Flow Hints
+- Diff previews now render unified diffs; scroll to review multi-line edits before approving.
+- Use **Always Allow** when you trust a file path - the decision is stored per tool in `~/.palette-app/config.json` and auto-applies on future runs.
+- Denied requests immediately stop the active stream and surface a localized error so the user can retry with adjusted context.
+
+## Sample Prompts
+
+1. `Summarise the TODOs from steel-thread-demo.txt and append a next-step bullet.`
+2. `Replace the introduction in steel-thread-demo.txt with a two-line summary of today's session.`
+3. `List the files in the workspace and propose a cleanup plan; do not edit anything yet.`

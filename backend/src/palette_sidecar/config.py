@@ -4,16 +4,24 @@ from __future__ import annotations
 
 import json
 import os
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from shutil import which
 from typing import Any
+
+
+def _detect_repo_root(start: Path) -> Path:
+    for candidate in start.parents:
+        if (candidate / "assets").exists():
+            return candidate
+    return start.parents[3]
+
 
 CONFIG_DIR = Path.home() / ".palette-app"
 CONFIG_FILE = CONFIG_DIR / "config.json"
 WORKSPACE_MARKER = ".steel-thread-workspace"
 DEMO_FILE_NAME = "steel-thread-demo.txt"
-REPO_ROOT = Path(__file__).resolve().parents[3]
+REPO_ROOT = _detect_repo_root(Path(__file__).resolve())
 BUNDLED_CLI = REPO_ROOT / "assets" / "claude-cli" / "cli.js"
 
 
@@ -23,6 +31,7 @@ class Settings:
 
     anthropic_api_key: str | None = None
     workspace: str | None = None
+    always_allow: dict[str, list[str]] = field(default_factory=dict)
 
 
 def _serialise(settings: Settings) -> dict[str, Any]:
@@ -86,10 +95,26 @@ def detect_prerequisites() -> dict[str, bool]:
 
 
 def settings_response_payload(settings: Settings) -> dict[str, Any]:
+    workspace_path = settings.workspace
+    demo_file = None
+    if workspace_path:
+        demo_candidate = Path(workspace_path) / DEMO_FILE_NAME
+        if demo_candidate.exists():
+            demo_file = str(demo_candidate)
     return {
         "hasApiKey": settings.anthropic_api_key is not None,
-        "workspace": settings.workspace,
+        "workspace": workspace_path,
+        "workspaceDemoFile": demo_file,
+        "alwaysAllow": settings.always_allow,
     }
+
+
+def register_always_allow(settings: Settings, *, tool: str, path: Path) -> None:
+    canonical = str(path)
+    rules = settings.always_allow.setdefault(tool, [])
+    if canonical not in rules:
+        rules.append(canonical)
+
 
 
 ensure_cli_environment()

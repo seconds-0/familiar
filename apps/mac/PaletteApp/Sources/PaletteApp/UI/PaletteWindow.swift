@@ -101,7 +101,11 @@ struct PaletteView: View {
         .frame(width: 720, height: 460)
         .sheet(item: $viewModel.permissionRequest) { request in
             ApprovalSheet(request: request, isProcessing: viewModel.isProcessingPermission) { decision in
-                viewModel.respond(to: request, decision: decision)
+                viewModel.respond(
+                    to: request,
+                    decision: decision.decision,
+                    remember: decision.remember
+                )
             }
         }
         .onAppear {

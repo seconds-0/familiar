@@ -27,7 +27,7 @@ final class PaletteViewModel: ObservableObject {
 
         streamTask = Task {
             do {
-                for try await event in client.stream(prompt: trimmed) {
+                for try await event in await client.stream(prompt: trimmed) {
                     handle(event)
                 }
             } catch is CancellationError {
@@ -45,12 +45,16 @@ final class PaletteViewModel: ObservableObject {
         isStreaming = false
     }
 
-    func respond(to request: PermissionRequest, decision: String) {
+    func respond(to request: PermissionRequest, decision: String, remember: Bool) {
         guard !isProcessingPermission else { return }
         isProcessingPermission = true
         Task { [weak self] in
             do {
-                try await self?.client.approve(requestId: request.id, decision: decision)
+                try await self?.client.approve(
+                    requestId: request.id,
+                    decision: decision,
+                    remember: remember
+                )
             } catch {
                 self?.errorMessage = error.localizedDescription
                 self?.isProcessingPermission = false
@@ -73,7 +77,8 @@ final class PaletteViewModel: ObservableObject {
             isProcessingPermission = false
             permissionRequest = nil
             if event.decision == "deny" {
-                transcript.append("\n\n[Tool invocation denied]")
+                errorMessage = "Permission denied. Claude could not run the requested action."
+                isStreaming = false
             }
         case .result:
             isStreaming = false

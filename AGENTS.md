@@ -9,9 +9,12 @@
 
 ## Build, Test, and Development Commands
 - Backend: `cd backend && uv run uvicorn palette_sidecar.api:app --host 127.0.0.1 --port 8765 --reload` streams Claude responses locally.
+- Backend tests: `cd backend && uv run --with pytest pytest -q` exercises the SSE smoke tests.
 - SwiftUI app: `cd apps/mac/PaletteApp && swift build` to resolve packages, then open the generated `.build/debug/PaletteApp.app` or `open Package.swift` in Xcode for iterative work.
 - Smoke-test the bundled CLI with `node assets/claude-cli/cli.js --help`; use this command to confirm Node dependencies or wasm binaries remain intact after updates.
 - Document additional scripts (e.g., MCP installers, lint configs) in their respective subprojects and surface the commands here for quick discovery.
+
+- Packaging automation runs via `.github/workflows/steel-thread.yml`, which invokes `scripts/steel-thread-package.sh` on macOS runners and publishes the `dist/steel-thread/` payload with checksums.
 
 ## Coding Style & Naming Conventions
 - Follow `.prettierrc`: 2-space indentation, 120-character width, double quotes, and semicolons. Run `npx prettier --check .` before publishing major edits.

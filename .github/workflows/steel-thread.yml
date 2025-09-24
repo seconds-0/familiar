@@ -1,0 +1,27 @@
+name: Steel Thread Bundle
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  package:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run packaging script
+        run: ./scripts/steel-thread-package.sh
+
+      - name: Notarization stub
+        run: |
+          echo "Notarization is not automated yet. Configure App Store Connect secrets to enable xcrun notarytool."
+
+      - name: Upload bundle artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: steel-thread-dist
+          path: dist/steel-thread
+          if-no-files-found: error
