@@ -3,8 +3,8 @@ import SwiftUI
 import KeyboardShortcuts
 
 @main
-struct PaletteAppMain: App {
-    @StateObject private var controller = PaletteWindowController.shared
+struct FamiliarAppMain: App {
+    @StateObject private var controller = FamiliarWindowController.shared
     @StateObject private var appState = AppState()
 
     init() {
@@ -17,7 +17,7 @@ struct PaletteAppMain: App {
     }
 
     var body: some Scene {
-        MenuBarExtra("Palette", systemImage: "sparkles") {
+        MenuBarExtra("Familiar", systemImage: "sparkles") {
             Label(appState.status.label, systemImage: appState.status.systemImage)
             if let detail = appState.statusDetail {
                 Text(detail)
@@ -34,11 +34,11 @@ struct PaletteAppMain: App {
                     NSWorkspace.shared.open(demoURL)
                 }
             }
-            Button("Toggle Palette") {
-                PaletteWindowController.shared.toggle()
+            Button("Toggle Familiar") {
+                FamiliarWindowController.shared.toggle()
             }
             Button("Open Settings…") {
-                NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
+                SettingsWindowController.shared.toggle(appState: appState)
             }
             Button("Refresh Status") {
                 appState.refresh()

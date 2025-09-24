@@ -22,7 +22,7 @@ from .config import (
 from .models import ApprovalPayload, QueryPayload, SettingsPayload
 from .permissions import broker
 
-app = FastAPI(title="Palette Sidecar")
+app = FastAPI(title="Familiar Sidecar")
 
 _current_settings = load_settings()
 _workspace_path: Path | None = None

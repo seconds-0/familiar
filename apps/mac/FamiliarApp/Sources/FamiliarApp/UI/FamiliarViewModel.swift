@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 
 @MainActor
-final class PaletteViewModel: ObservableObject {
+final class FamiliarViewModel: ObservableObject {
     @Published var prompt: String = ""
     @Published var transcript: String = ""
     @Published var toolSummary: ToolSummary?

@@ -29,7 +29,7 @@ Active work involves comparing desktop frameworks, defining IPC boundaries, and 
 ## Build & Test Expectations
 
 - Backend lives under `backend/`; run `uv run uvicorn palette_sidecar.api:app --host 127.0.0.1 --port 8765 --reload` for local development.
-- The Swift client sits under `apps/mac/PaletteApp/`; resolve dependencies with `swift build` or open `Package.swift` in Xcode for UI iteration.
+- The Swift client sits under `apps/mac/FamiliarApp/`; resolve dependencies with `swift build` or open `Package.swift` in Xcode for UI iteration.
 - Validate `assets/claude-cli/cli.js` with `node assets/claude-cli/cli.js --help` after modifying bundled tooling.
 - Propose testing strategies aligned with the chosen stack (e.g., pytest, XCTest) and capture rationale in `docs/prd.md` or a dedicated testing note.
 

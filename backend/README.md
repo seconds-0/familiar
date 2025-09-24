@@ -1,6 +1,6 @@
-# Palette Sidecar
+# Familiar Sidecar
 
-FastAPI-based companion service that embeds the Claude Code Python SDK for the native macOS command palette.
+FastAPI-based companion service that embeds the Claude Code Python SDK for the Familiar macOS assistant.
 
 ## Development
 

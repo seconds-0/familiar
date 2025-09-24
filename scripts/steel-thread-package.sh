@@ -3,15 +3,15 @@ set -euo pipefail
 
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 DIST_DIR="$ROOT_DIR/dist/steel-thread"
-MAC_APP_DIR="$ROOT_DIR/apps/mac/PaletteApp"
+MAC_APP_DIR="$ROOT_DIR/apps/mac/FamiliarApp"
 BACKEND_DIR="$ROOT_DIR/backend"
 
-printf '🔧 Building PaletteApp in release mode…\n'
+printf '🔧 Building FamiliarApp in release mode…\n'
 swift build --configuration release --package-path "$MAC_APP_DIR"
 
-APP_SOURCE="$MAC_APP_DIR/.build/release/PaletteApp.app"
+APP_SOURCE="$MAC_APP_DIR/.build/release/FamiliarApp.app"
 if [[ ! -d "$APP_SOURCE" ]]; then
-  echo "PaletteApp.app not found at $APP_SOURCE" >&2
+  echo "FamiliarApp.app not found at $APP_SOURCE" >&2
   exit 1
 fi
 
@@ -29,7 +29,7 @@ Steel Thread distribution (manual installation)
    npm install -g @anthropic-ai/claude-code
 2. From backend/, run: uv sync
 3. Launch the sidecar: uv run uvicorn palette_sidecar.api:app --host 127.0.0.1 --port 8765 --reload
-4. Open PaletteApp.app from Finder.
+4. Open FamiliarApp.app from Finder.
 5. Configure API key and workspace in Preferences.
 NOTE
 

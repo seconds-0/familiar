@@ -5,12 +5,14 @@ struct SidecarSettings: Decodable {
     let workspace: String?
     let workspaceDemoFile: String?
     let alwaysAllow: [String: [String]]
+    let defaultWorkspace: String?
 
     private enum CodingKeys: String, CodingKey {
         case hasApiKey
         case workspace
         case workspaceDemoFile
         case alwaysAllow
+        case defaultWorkspace
     }
 
     init(from decoder: Decoder) throws {
@@ -19,6 +21,7 @@ struct SidecarSettings: Decodable {
         workspace = try container.decodeIfPresent(String.self, forKey: .workspace)
         workspaceDemoFile = try container.decodeIfPresent(String.self, forKey: .workspaceDemoFile)
         alwaysAllow = try container.decodeIfPresent([String: [String]].self, forKey: .alwaysAllow) ?? [:]
+        defaultWorkspace = try container.decodeIfPresent(String.self, forKey: .defaultWorkspace)
     }
 
     var workspaceURL: URL? {

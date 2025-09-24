@@ -3,13 +3,13 @@
 ## Project Structure & Module Organization
 - Planning artifacts live in `docs/`; evolve `prd.md` for product scope and capture SDK learnings in `claude-code-sdk.md` so the native build inherits accurate context.
 - `backend/` hosts the FastAPI sidecar managed by `uv`; keep Python source in `src/palette_sidecar/` and document new endpoints alongside SDK changes.
-- `apps/mac/PaletteApp/` is the SwiftUI summon window prototype managed via SwiftPM; organise UI, services, and support helpers within the existing subfolders.
+- `apps/mac/FamiliarApp/` is the SwiftUI summon window prototype managed via SwiftPM; organise UI, services, and support helpers within the existing subfolders.
 - `assets/claude-cli/` bundles the Claude CLI (JS, type defs, wasm); treat it as the reference toolchain when validating native integrations or scripted experiments.
 - `AGENTS.md` and `CLAUDE.md` define collaboration contracts for human and automated contributors—update both whenever workflows or guardrails change.
 
 ## Build, Test, and Development Commands
 - Backend: `cd backend && uv run uvicorn palette_sidecar.api:app --host 127.0.0.1 --port 8765 --reload` streams Claude responses locally.
-- SwiftUI app: `cd apps/mac/PaletteApp && swift build` to resolve packages, then open the generated `.build/debug/PaletteApp.app` or `open Package.swift` in Xcode for iterative work.
+- SwiftUI app: `cd apps/mac/FamiliarApp && swift build` to resolve packages, then open the generated `.build/debug/FamiliarApp.app` or `open Package.swift` in Xcode for iterative work.
 - Smoke-test the bundled CLI with `node assets/claude-cli/cli.js --help`; use this command to confirm Node dependencies or wasm binaries remain intact after updates.
 - Document additional scripts (e.g., MCP installers, lint configs) in their respective subprojects and surface the commands here for quick discovery.
 

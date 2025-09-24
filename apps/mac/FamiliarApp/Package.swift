@@ -2,14 +2,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "PaletteApp",
+    name: "FamiliarApp",
     platforms: [
         .macOS(.v13)
     ],
     products: [
         .executable(
-            name: "PaletteApp",
-            targets: ["PaletteApp"]
+            name: "FamiliarApp",
+            targets: ["FamiliarApp"]
         )
     ],
     dependencies: [
@@ -17,11 +17,11 @@ let package = Package(
     ],
     targets: [
         .executableTarget(
-            name: "PaletteApp",
+            name: "FamiliarApp",
             dependencies: [
                 .product(name: "KeyboardShortcuts", package: "KeyboardShortcuts")
             ],
-            path: "Sources/PaletteApp"
+            path: "Sources/FamiliarApp"
         )
     ]
 )

@@ -2,10 +2,10 @@ import AppKit
 import KeyboardShortcuts
 import SwiftUI
 
-final class PaletteWindowController: NSObject, ObservableObject {
-    static let shared = PaletteWindowController()
+final class FamiliarWindowController: NSObject, ObservableObject {
+    static let shared = FamiliarWindowController()
 
-    private lazy var hostingController = NSHostingController(rootView: PaletteView())
+    private lazy var hostingController = NSHostingController(rootView: FamiliarView())
     private lazy var panel: NSPanel = {
         let panel = NSPanel(contentViewController: hostingController)
         panel.titleVisibility = .hidden
@@ -36,8 +36,8 @@ final class PaletteWindowController: NSObject, ObservableObject {
     }
 }
 
-struct PaletteView: View {
-    @StateObject private var viewModel = PaletteViewModel()
+struct FamiliarView: View {
+    @StateObject private var viewModel = FamiliarViewModel()
     @FocusState private var isPromptFocused: Bool
 
     var body: some View {

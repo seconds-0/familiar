@@ -1,7 +1,7 @@
 # Steel Thread V1 Checklist
 
 ## Onboarding & Install
-- [x] Package build script: `scripts/steel-thread-package.sh` stages PaletteApp.app with backend sidecar
+- [x] Package build script: `scripts/steel-thread-package.sh` stages FamiliarApp.app with backend sidecar
 - [x] Health endpoint surfaces missing prerequisites (Node, bundled Claude CLI)
 - [x] Settings view captures and persists the Anthropic API key via Keychain
 - [x] Workspace selection writes `.steel-thread-workspace` marker and demo note file
@@ -14,7 +14,7 @@
 
 ## macOS App (SwiftUI)
 - [x] Menu bar extra shows sidecar status and `⌥Space` summon shortcut
-- [x] Palette window streams assistant tokens and supports cancellation
+- [x] Familiar window streams assistant tokens and supports cancellation
 - [x] Approval sheet summarises file edits with Allow Once / Deny actions
 - [x] Transcript renders responses plus “change applied” card with diff snippet
 - [x] Settings manage API key + workspace with inline status feedback
@@ -41,11 +41,11 @@
    ```
 3. **Mac app build** (development)
    ```bash
-   cd apps/mac/PaletteApp
+   cd apps/mac/FamiliarApp
    swift build
-   open .build/debug/PaletteApp.app
+   open .build/debug/FamiliarApp.app
    ```
-   For a distributable bundle, run `scripts/steel-thread-package.sh` from the repo root and open `dist/steel-thread/PaletteApp.app`.
+   For a distributable bundle, run `scripts/steel-thread-package.sh` from the repo root and open `dist/steel-thread/FamiliarApp.app`.
 4. **Initial configuration**
    - Open Settings from the menu bar extra.
    - Paste your Anthropic API key and choose a workspace directory.
@@ -54,7 +54,7 @@
 ## Smoke Test Checklist
 
 1. Start the sidecar (`uv run uvicorn …`) and confirm `/health` returns `{"status": "ok"}` via the menu bar status.
-2. Launch PaletteApp, press `⌥Space`, and enter a prompt such as:
+2. Launch FamiliarApp, press `⌥Space`, and enter a prompt such as:
    > "Append a bullet noting that the steel thread demo ran on $(date)."
 3. When the approval sheet appears, verify the target path and preview, then click **Allow Once**.
 4. Observe streaming assistant output followed by the “Change applied” card with the snippet from `steel-thread-demo.txt`.

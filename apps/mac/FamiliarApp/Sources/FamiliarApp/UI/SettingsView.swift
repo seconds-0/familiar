@@ -3,6 +3,7 @@ import SwiftUI
 
 struct SettingsView: View {
     private let keychainKey = "anthropic_api_key"
+    private let onClose: (() -> Void)?
 
     @EnvironmentObject private var appState: AppState
     @State private var apiKey: String = ""
@@ -11,14 +12,57 @@ struct SettingsView: View {
     @State private var statusColor: Color = .secondary
     @State private var isSaving = false
     @State private var isTesting = false
+    @State private var isApiKeyVisible = false
+
+    init(onClose: (() -> Void)? = nil) {
+        self.onClose = onClose
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
+            if let onClose {
+                HStack {
+                    Spacer()
+                    Button {
+                        onClose()
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.title3)
+                    }
+                    .buttonStyle(.borderless)
+                    .help("Close settings")
+                }
+            }
+
             VStack(alignment: .leading, spacing: 8) {
                 Text("Claude Code Credentials")
                     .font(.headline)
-                SecureField("Anthropic API Key", text: $apiKey)
+                HStack(spacing: 8) {
+                    Group {
+                        if isApiKeyVisible {
+                            TextField("Anthropic API Key", text: $apiKey)
+                        } else {
+                            SecureField("Anthropic API Key", text: $apiKey)
+                        }
+                    }
                     .textFieldStyle(.roundedBorder)
+                    Button {
+                        isApiKeyVisible.toggle()
+                    } label: {
+                        Image(systemName: isApiKeyVisible ? "eye.slash" : "eye")
+                    }
+                    .buttonStyle(.borderless)
+                    .help(isApiKeyVisible ? "Hide API key" : "Show API key")
+                    Button {
+                        if let clipboard = NSPasteboard.general.string(forType: .string) {
+                            apiKey = clipboard.trimmingCharacters(in: .whitespacesAndNewlines)
+                        }
+                    } label: {
+                        Image(systemName: "doc.on.clipboard")
+                    }
+                    .buttonStyle(.borderless)
+                    .help("Paste from clipboard")
+                }
             }
 
             VStack(alignment: .leading, spacing: 8) {
@@ -59,16 +103,32 @@ struct SettingsView: View {
             apiKey = storedKey
         }
         do {
-            let settings = try await SidecarClient.shared.fetchSettings()
+            var statusOverridden = false
+            var settings = try await SidecarClient.shared.fetchSettings()
             if let workspace = settings.workspace {
                 workspacePath = workspace
-            }
-            if settings.hasApiKey {
-                statusMessage = "API key configured in sidecar."
-                statusColor = .green
             } else {
-                statusMessage = "API key missing. Add one to enable Claude Code."
-                statusColor = .orange
+                let fallback = settings.defaultWorkspace ?? FileManager.default.homeDirectoryForCurrentUser.path
+                workspacePath = fallback
+                do {
+                    settings = try await SidecarClient.shared.updateSettings(
+                        apiKey: nil,
+                        workspace: fallback
+                    )
+                } catch {
+                    statusMessage = "Failed to apply default workspace: \(error.localizedDescription)"
+                    statusColor = .red
+                    statusOverridden = true
+                }
+            }
+            if !statusOverridden {
+                if settings.hasApiKey {
+                    statusMessage = "API key configured in sidecar."
+                    statusColor = .green
+                } else {
+                    statusMessage = "API key missing. Add one to enable Claude Code."
+                    statusColor = .orange
+                }
             }
             appState.apply(settings: settings)
         } catch {

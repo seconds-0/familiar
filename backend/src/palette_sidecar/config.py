@@ -60,12 +60,12 @@ def ensure_workspace(path_str: str) -> Path:
 
     marker = path / WORKSPACE_MARKER
     if not marker.exists():
-        marker.write_text("Palette Steel Thread workspace\n", encoding="utf-8")
+        marker.write_text("Familiar Steel Thread workspace\n", encoding="utf-8")
 
     demo_file = path / DEMO_FILE_NAME
     if not demo_file.exists():
         demo_file.write_text(
-            "# Steel Thread Notes\n\nThis file is modified by the Palette Steel Thread demo.\n",
+            "# Steel Thread Notes\n\nThis file is modified by the Familiar Steel Thread demo.\n",
             encoding="utf-8",
         )
 
@@ -106,6 +106,7 @@ def settings_response_payload(settings: Settings) -> dict[str, Any]:
         "workspace": workspace_path,
         "workspaceDemoFile": demo_file,
         "alwaysAllow": settings.always_allow,
+        "defaultWorkspace": str(REPO_ROOT),
     }
 
 
