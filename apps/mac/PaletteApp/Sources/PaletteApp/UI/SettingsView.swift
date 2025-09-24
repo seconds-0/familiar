@@ -1,23 +1,136 @@
+import AppKit
 import SwiftUI
 
 struct SettingsView: View {
-    @AppStorage("anthropicApiKey") private var apiKey: String = ""
+    private let keychainKey = "anthropic_api_key"
+
+    @State private var apiKey: String = ""
+    @AppStorage("steelThreadWorkspacePath") private var workspacePath: String = ""
+    @State private var statusMessage: String?
+    @State private var statusColor: Color = .secondary
+    @State private var isSaving = false
+    @State private var isTesting = false
 
     var body: some View {
-        Form {
-            SecureField("Anthropic API Key", text: $apiKey)
-            Button("Test Connection", action: testConnection)
+        VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Claude Code Credentials")
+                    .font(.headline)
+                SecureField("Anthropic API Key", text: $apiKey)
+                    .textFieldStyle(.roundedBorder)
+            }
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Workspace")
+                    .font(.headline)
+                HStack(spacing: 8) {
+                    TextField("/path/to/workspace", text: $workspacePath)
+                        .textFieldStyle(.roundedBorder)
+                    Button("Browse…", action: selectWorkspace)
+                }
+            }
+
+            if let statusMessage {
+                Text(statusMessage)
+                    .font(.subheadline)
+                    .foregroundStyle(statusColor)
+            }
+
+            HStack {
+                Button("Test Connection", action: testConnection)
+                    .disabled(isTesting)
+                Spacer()
+                Button("Save", action: save)
+                    .buttonStyle(.borderedProminent)
+                    .disabled(isSaving)
+            }
+
+            Spacer()
         }
         .padding(24)
-        .frame(width: 420)
+        .frame(width: 480, height: 320)
+        .task(loadSettings)
+    }
+
+    private func loadSettings() async {
+        if let stored = try? Keychain.load(key: keychainKey), let stored {
+            apiKey = stored
+        }
+        do {
+            let settings = try await SidecarClient.shared.fetchSettings()
+            if let workspace = settings.workspace {
+                workspacePath = workspace
+            }
+            if settings.hasApiKey {
+                statusMessage = "API key configured in sidecar."
+                statusColor = .green
+            } else {
+                statusMessage = "API key missing. Add one to enable Claude Code."
+                statusColor = .orange
+            }
+        } catch {
+            statusMessage = "Failed to load settings: \(error.localizedDescription)"
+            statusColor = .red
+        }
+    }
+
+    private func selectWorkspace() {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.allowsMultipleSelection = false
+        if panel.runModal() == .OK, let url = panel.url {
+            workspacePath = url.path
+        }
+    }
+
+    private func save() {
+        let trimmedKey = apiKey.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedWorkspace = workspacePath.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        isSaving = true
+        Task {
+            defer { isSaving = false }
+            do {
+                if trimmedKey.isEmpty {
+                    try Keychain.delete(key: keychainKey)
+                } else {
+                    try Keychain.save(key: keychainKey, value: trimmedKey)
+                }
+
+                let settings = try await SidecarClient.shared.updateSettings(
+                    apiKey: trimmedKey,
+                    workspace: trimmedWorkspace
+                )
+
+                if settings.hasApiKey {
+                    statusMessage = "Settings saved. Claude Code is ready."
+                    statusColor = .green
+                } else {
+                    statusMessage = "API key still missing."
+                    statusColor = .orange
+                }
+                if let workspace = settings.workspace {
+                    workspacePath = workspace
+                }
+            } catch {
+                statusMessage = "Failed to save: \(error.localizedDescription)"
+                statusColor = .red
+            }
+        }
     }
 
     private func testConnection() {
+        isTesting = true
         Task {
+            defer { isTesting = false }
             do {
                 try await SidecarClient.shared.healthCheck()
+                statusMessage = "Sidecar reachable."
+                statusColor = .green
             } catch {
-                NSLog("Health check failed: \(error.localizedDescription)")
+                statusMessage = "Sidecar unavailable: \(error.localizedDescription)"
+                statusColor = .red
             }
         }
     }

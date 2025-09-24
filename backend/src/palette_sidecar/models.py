@@ -13,3 +13,8 @@ class QueryPayload(BaseModel):
 class ApprovalPayload(BaseModel):
     request_id: str
     decision: str
+
+
+class SettingsPayload(BaseModel):
+    anthropic_api_key: str | None = None
+    workspace: str | None = None

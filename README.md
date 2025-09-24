@@ -64,6 +64,26 @@ familiar/
 └── CLAUDE.md                  # Agent operating instructions
 ```
 
+## Steel Thread Quickstart
+
+1. Install prerequisites: Python 3.11, Node.js 18+, and the Claude Code CLI (`npm install -g @anthropic-ai/claude-code`).
+2. Install backend dependencies and launch the sidecar:
+   ```bash
+   cd backend
+   uv sync
+   uv run uvicorn palette_sidecar.api:app --host 127.0.0.1 --port 8765 --reload
+   ```
+3. Build and launch the macOS app:
+   ```bash
+   cd apps/mac/PaletteApp
+   swift build
+   open .build/debug/PaletteApp.app
+   ```
+4. Open the menu bar preferences, paste your Anthropic API key, and select a workspace directory. The sidecar seeds `steel-thread-demo.txt` inside that folder.
+5. Summon the palette with `⌥Space`, request an edit (e.g., “Append a bullet to the steel thread note”), approve the Write tool, and watch the transcript update with the applied change summary.
+
+See `docs/steel-thread.md` for packaging and smoke test details.
+
 ## Contributing
 
 Current focus areas:

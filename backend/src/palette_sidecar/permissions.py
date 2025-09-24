@@ -20,21 +20,31 @@ class PermissionBroker:
         self._pending: dict[str, PendingDecision] = {}
         self._lock = asyncio.Lock()
 
-    async def request(self, request_id: str, payload: dict[str, Any]) -> asyncio.Future[str]:
+    async def register(self, request_id: str, payload: dict[str, Any]) -> asyncio.Future[str]:
+        """Register a permission request and return a future resolved on decision."""
+
         async with self._lock:
             if request_id in self._pending:
                 raise ValueError(f"Duplicate permission request id {request_id}")
-            loop = asyncio.get_event_loop()
+            loop = asyncio.get_running_loop()
             future: asyncio.Future[str] = loop.create_future()
             self._pending[request_id] = PendingDecision(future=future, payload=payload)
             return future
 
-    async def resolve(self, request_id: str, decision: str) -> None:
+    async def resolve(self, request_id: str, decision: str) -> dict[str, Any]:
+        """Resolve a pending permission request and return its payload."""
+
         async with self._lock:
             pending = self._pending.pop(request_id, None)
         if pending is None:
             raise KeyError(f"No pending permission for {request_id}")
         pending.future.set_result(decision)
+        return pending.payload
+
+    async def get_payload(self, request_id: str) -> dict[str, Any] | None:
+        async with self._lock:
+            pending = self._pending.get(request_id)
+            return pending.payload if pending else None
 
 
 broker = PermissionBroker()

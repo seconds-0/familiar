@@ -4,20 +4,30 @@ actor SidecarClient {
     static let shared = SidecarClient()
 
     private let baseURL = URL(string: "http://127.0.0.1:8765")!
+    private let jsonDecoder = JSONDecoder()
 
-    func stream(prompt: String) -> AsyncStream<String> {
+    func stream(prompt: String, sessionId: String = "default") -> AsyncThrowingStream<SidecarEvent, Error> {
         var request = URLRequest(url: baseURL.appendingPathComponent("query"))
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let payload = ["prompt": prompt]
+        request.setValue("text/event-stream", forHTTPHeaderField: "Accept")
+        let payload: [String: Any] = [
+            "prompt": prompt,
+            "session_id": sessionId
+        ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: payload)
 
-        return AsyncStream { continuation in
+        return AsyncThrowingStream { continuation in
             var eventTask: EventSourceTask?
             eventTask = EventSourceTask(request: request) { chunk in
-                continuation.yield(chunk)
-            } completion: {
-                continuation.finish()
+                guard let event = SidecarEvent(rawString: chunk) else { return }
+                continuation.yield(event)
+            } completion: { error in
+                if let error {
+                    continuation.finish(throwing: error)
+                } else {
+                    continuation.finish()
+                }
             }
             eventTask?.resume()
 
@@ -28,13 +38,89 @@ actor SidecarClient {
         }
     }
 
+    func approve(requestId: String, decision: String) async throws {
+        let payload: [String: Any] = [
+            "request_id": requestId,
+            "decision": decision
+        ]
+        _ = try await sendJSON(path: "approve", method: "POST", payload: payload) as [String: Any]
+    }
+
+    func updateSettings(apiKey: String?, workspace: String?) async throws -> SidecarSettings {
+        var payload: [String: Any] = [:]
+        if let apiKey {
+            payload["anthropic_api_key"] = apiKey
+        }
+        if let workspace {
+            payload["workspace"] = workspace
+        }
+        return try await sendDecodable(path: "settings", method: "POST", payload: payload)
+    }
+
+    func fetchSettings() async throws -> SidecarSettings {
+        return try await sendDecodable(path: "settings", method: "GET", payload: nil)
+    }
+
     func healthCheck() async throws {
-        var request = URLRequest(url: baseURL.appendingPathComponent("health"))
-        request.httpMethod = "GET"
+        _ = try await sendJSON(path: "health", method: "GET", payload: nil) as [String: Any]
+    }
+
+    // MARK: - Helpers
+
+    private func sendJSON(path: String, method: String, payload: [String: Any]?) async throws -> [String: Any] {
+        var request = URLRequest(url: baseURL.appendingPathComponent(path))
+        request.httpMethod = method
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        if let payload {
+            request.httpBody = try JSONSerialization.data(withJSONObject: payload, options: [])
+        }
+
         let (data, response) = try await URLSession.shared.data(for: request)
-        guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
+        guard let http = response as? HTTPURLResponse else {
             throw URLError(.badServerResponse)
         }
-        _ = data
+        guard (200..<300).contains(http.statusCode) else {
+            let message = String(data: data, encoding: .utf8) ?? "HTTP \(http.statusCode)"
+            throw SidecarClientError.http(status: http.statusCode, message: message)
+        }
+
+        if data.isEmpty {
+            return [:]
+        }
+
+        let json = try JSONSerialization.jsonObject(with: data, options: [])
+        return json as? [String: Any] ?? [:]
+    }
+
+    private func sendDecodable<T: Decodable>(path: String, method: String, payload: [String: Any]?) async throws -> T {
+        var request = URLRequest(url: baseURL.appendingPathComponent(path))
+        request.httpMethod = method
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        if let payload {
+            request.httpBody = try JSONSerialization.data(withJSONObject: payload, options: [])
+        }
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let http = response as? HTTPURLResponse else {
+            throw URLError(.badServerResponse)
+        }
+        guard (200..<300).contains(http.statusCode) else {
+            let message = String(data: data, encoding: .utf8) ?? "HTTP \(http.statusCode)"
+            throw SidecarClientError.http(status: http.statusCode, message: message)
+        }
+        return try jsonDecoder.decode(T.self, from: data)
+    }
+}
+
+enum SidecarClientError: Error, LocalizedError {
+    case http(status: Int, message: String)
+
+    var errorDescription: String? {
+        switch self {
+        case let .http(status, message):
+            return "Sidecar error (\(status)): \(message)"
+        }
     }
 }

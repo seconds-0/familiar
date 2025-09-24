@@ -37,4 +37,15 @@ struct Keychain {
             throw KeychainError.unexpectedStatus(status)
         }
     }
+
+    static func delete(key: String) throws {
+        let query: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccount: key,
+        ]
+        let status = SecItemDelete(query as CFDictionary)
+        guard status == errSecSuccess || status == errSecItemNotFound else {
+            throw KeychainError.unexpectedStatus(status)
+        }
+    }
 }
