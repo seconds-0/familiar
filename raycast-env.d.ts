@@ -11,7 +11,9 @@ type ExtensionPreferences = {
   /** Anthropic API Key - Your Anthropic API key from console.anthropic.com */
   "anthropicApiKey": string,
   /** Keyboard Shortcut - Global hotkey to open assistant (e.g., cmd+cmd) */
-  "shortcut": string
+  "shortcut": string,
+  /** Use Mock Claude Responses - Bypass the Claude SDK and return a simulated response (useful for UI debugging) */
+  "useMockClaude": boolean
 }
 
 /** Preferences accessible in all the extension's commands */

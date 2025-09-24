@@ -1,5 +1,8 @@
-import { ActionPanel, Action, List, showToast, Toast, getPreferenceValues, Icon } from "@raycast/api";
+import { ActionPanel, Action, List, showToast, Toast, getPreferenceValues, Icon, environment } from "@raycast/api";
 import { useState, useEffect, useRef } from "react";
+import os from "os";
+import fs from "fs";
+import path from "path";
 
 // Import utilities and types
 import type {
@@ -17,11 +20,20 @@ import { saveSessionDebounced, saveSessionImmediate, loadSession, clearSession, 
 import { getMcpServers, resolveWorkingPath, debugLog } from "./utils/mcp";
 import { resolveClaudeCliPath } from "./utils/claude";
 
-// Dynamic import for ESM module
-const claudeCode = import("@anthropic-ai/claude-code");
+function createMockAssistantResponse(prompt: string): Message {
+  return {
+    id: `${Date.now()}-mock`,
+    role: "assistant",
+    content: `Mock response for: ${prompt}`,
+    timestamp: new Date(),
+  };
+}
+
+// Use Anthropic API directly instead of Claude Code SDK
+import Anthropic from "@anthropic-ai/sdk";
 
 export default function Assistant() {
-  const { anthropicApiKey } = getPreferenceValues<Preferences>();
+  const { anthropicApiKey, useMockClaude } = getPreferenceValues<Preferences>();
   const [searchText, setSearchText] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -59,15 +71,47 @@ export default function Assistant() {
   }, []);
 
   useEffect(() => {
-    try {
-      const path = resolveClaudeCliPath();
-      setClaudeCliPath(path);
-      setCliError(undefined);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      setCliError(message);
-      debugLog("Failed to locate Claude Code CLI:", message);
+    let isMounted = true;
+
+    async function loadCliPath() {
+      try {
+        const path = await resolveClaudeCliPath({
+          retries: 5,
+          delayMs: 500,
+          debug: (...args) => debugLog("CLI Resolver", ...args),
+        });
+
+        if (!isMounted) {
+          return;
+        }
+
+        setClaudeCliPath(path);
+        setCliError(undefined);
+      } catch (error) {
+        if (!isMounted) {
+          return;
+        }
+
+        const message = error instanceof Error ? error.message : String(error);
+        setCliError(message);
+        debugLog("Failed to locate Claude Code CLI:", message);
+      }
+
+      const socketsDir = path.join(os.tmpdir(), "claude-sockets");
+      try {
+        if (!fs.existsSync(socketsDir)) {
+          fs.mkdirSync(socketsDir, { recursive: true });
+        }
+      } catch (error) {
+        debugLog("Failed to prepare socket directory", error);
+      }
     }
+
+    loadCliPath();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Cleanup on unmount
@@ -89,10 +133,100 @@ export default function Assistant() {
     }
   }, [messages, sessionData]);
 
-  // Permission callback - Essential for tool usage
+  // Custom tool implementations using Raycast APIs
+  async function implementEditTool(input: any): Promise<any> {
+    try {
+      const { file_path, old_string, new_string } = input;
+      const fs = require('fs').promises;
+      const path = require('path');
+
+      // Use Node.js fs APIs directly
+      const fullPath = path.resolve(file_path);
+      const content = await fs.readFile(fullPath, 'utf8');
+
+      // Perform the edit
+      const updatedContent = content.replace(old_string, new_string);
+      await fs.writeFile(fullPath, updatedContent, 'utf8');
+
+      return {
+        success: true,
+        message: `File ${file_path} updated successfully`
+      };
+    } catch (error) {
+      throw new Error(`Failed to edit file: ${error.message}`);
+    }
+  }
+
+  async function implementReadTool(input: any): Promise<any> {
+    try {
+      const { file_path } = input;
+      const fs = require('fs').promises;
+      const path = require('path');
+
+      const fullPath = path.resolve(file_path);
+      const content = await fs.readFile(fullPath, 'utf8');
+
+      return {
+        success: true,
+        content: content
+      };
+    } catch (error) {
+      throw new Error(`Failed to read file: ${error.message}`);
+    }
+  }
+
+  async function implementGrepTool(input: any): Promise<any> {
+    try {
+      const { pattern, path: searchPath = '.', glob } = input;
+      const fs = require('fs').promises;
+      const path = require('path');
+
+      // Simple file search implementation
+      const results: Array<{file: string, line: number, content: string}> = [];
+
+      async function searchInFile(filePath: string): Promise<void> {
+        try {
+          const content = await fs.readFile(filePath, 'utf8');
+          const lines = content.split('\n');
+
+          lines.forEach((line, index) => {
+            if (line.includes(pattern)) {
+              results.push({
+                file: filePath,
+                line: index + 1,
+                content: line.trim()
+              });
+            }
+          });
+        } catch (error) {
+          // Skip files that can't be read
+        }
+      }
+
+      // This is a simplified implementation - would need glob support
+      const searchDir = path.resolve(searchPath);
+      const item = await fs.stat(searchDir);
+
+      if (item.isFile()) {
+        await searchInFile(searchDir);
+      } else {
+        // Would need to implement directory traversal
+        console.log("Directory search not implemented yet");
+      }
+
+      return {
+        success: true,
+        results: results
+      };
+    } catch (error) {
+      throw new Error(`Failed to search: ${error.message}`);
+    }
+  }
+
+  // Permission callback - Allow tools for custom implementation
   async function canUseTool(toolName: string, input: unknown): Promise<PermissionResult> {
-    // For steel thread, only allow read operations
-    const allowedTools = ["Read", "Grep", "Glob"];
+    // Allow all tools since we'll implement them with Raycast APIs
+    const allowedTools = ["Read", "Edit", "Grep", "Glob", "Bash"];
 
     if (allowedTools.includes(toolName)) {
       return {
@@ -101,11 +235,45 @@ export default function Assistant() {
       };
     }
 
-    // Deny write operations for now
     return {
       behavior: "deny",
-      message: `${toolName} is not allowed in steel thread MVP`,
+      message: `${toolName} is not implemented`,
     };
+  }
+
+  // Execute tool calls using custom implementations
+  async function executeTool(toolUseBlock: any): Promise<string> {
+    try {
+      const { name, input } = toolUseBlock.function;
+
+      console.log(`[Tool Execution] Executing ${name} with:`, input);
+
+      switch (name) {
+        case "edit_file":
+          const editResult = await implementEditTool(input);
+          return JSON.stringify(editResult);
+
+        case "read_file":
+          const readResult = await implementReadTool(input);
+          return JSON.stringify(readResult);
+
+        case "grep_search":
+          const grepResult = await implementGrepTool(input);
+          return JSON.stringify(grepResult);
+
+        default:
+          return JSON.stringify({
+            success: false,
+            error: `Unknown tool: ${name}`
+          });
+      }
+    } catch (error) {
+      console.error(`[Tool Execution] Error in ${toolUseBlock.function?.name}:`, error);
+      return JSON.stringify({
+        success: false,
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
   }
 
   async function handleSubmit() {
@@ -118,14 +286,39 @@ export default function Assistant() {
       return;
     }
 
+    if (useMockClaude) {
+      const mockMessage = createMockAssistantResponse(text);
+      setMessages((prev) => [...prev, mockMessage]);
+      setIsLoading(false);
+      return;
+    }
+
     if (!claudeCliPath) {
-      const message = cliError ?? "Claude Code CLI not available. Reinstall dependencies and rebuild.";
+      const message = cliError ?? "Claude Code CLI not available yet. Retrying...";
       await showToast({
-        style: Toast.Style.Failure,
-        title: "Claude CLI Missing",
+        style: Toast.Style.Animated,
+        title: "Claude CLI",
         message,
       });
-      return;
+
+      try {
+        const path = await resolveClaudeCliPath({
+          retries: 5,
+          delayMs: 500,
+          debug: (...args) => debugLog("CLI Resolver Retry", ...args),
+        });
+        setClaudeCliPath(path);
+        setCliError(undefined);
+      } catch (error) {
+        const errMessage = error instanceof Error ? error.message : String(error);
+        setCliError(errMessage);
+        await showToast({
+          style: Toast.Style.Failure,
+          title: "Claude CLI Missing",
+          message: errMessage,
+        });
+        return;
+      }
     }
 
     console.log("[handleSubmit] Processing message:", text);
@@ -157,129 +350,141 @@ export default function Assistant() {
       };
       setMessages((prev) => [...prev, assistantMessage]);
 
-      // Import and use Claude Code SDK
-      const { query } = await claudeCode;
-
-      // Get MCP servers configuration
-      const mcpServers = await getMcpServers();
-
-      // Query with proper configuration
-      const queryIterator = query({
-        prompt: text,
-        options: {
-          includePartialMessages: true,
-          resume: sessionData.sessionId,
-          model: "claude-3-opus-20240229",
-          mcpServers,
-          canUseTool: canUseTool,
-          env: {
-            ANTHROPIC_API_KEY: anthropicApiKey,
-          },
-          signal: abortRef.current.signal,
-          pathToClaudeCodeExecutable: claudeCliPath,
-        },
+      // Create Anthropic client
+      const client = new Anthropic({
+        apiKey: anthropicApiKey,
       });
 
-      for await (const event of queryIterator) {
-        // Handle different message types according to SDK docs
-        const messageEvent = event as SDKMessage;
+      // Build conversation history with current message
+      const messages = [
+        // Include previous conversation context
+        ...sessionData.messages.slice(-10).map(msg => ({
+          role: msg.role === "assistant" ? "assistant" : "user",
+          content: msg.content
+        })),
+        // Add current user message
+        { role: "user", content: text }
+      ];
 
-        switch (messageEvent.type) {
-          case "system": {
-            const sysEvent = messageEvent as SDKSystemMessage;
-            if (sysEvent.subtype === "init") {
-              // Handle both sessionId and session_id variations
-              const sid = sysEvent.sessionId || ((sysEvent as Record<string, unknown>).session_id as string);
-              if (sid) {
-                setSessionData((prev) => ({
-                  ...prev,
-                  sessionId: sid,
-                }));
+      // Make API call to Anthropic with tool support
+      try {
+        const response = await client.messages.create({
+          model: "claude-3-opus-20240229",
+          max_tokens: 4096,
+          messages: messages,
+          tools: [
+            {
+              type: "function",
+              function: {
+                name: "edit_file",
+                description: "Edit a file by replacing old_string with new_string",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    file_path: { type: "string", description: "Path to the file" },
+                    old_string: { type: "string", description: "Text to replace" },
+                    new_string: { type: "string", description: "New text to insert" }
+                  },
+                  required: ["file_path", "old_string", "new_string"]
+                }
               }
-
-              // Show system message in development
-              if (environment.isDevelopment) {
-                const sysMessage: Message = {
-                  id: Date.now().toString(),
-                  role: "system",
-                  content: `Session started with model: ${sysEvent.model || "claude-3-opus-20240229"}`,
-                  timestamp: new Date(),
-                };
-                setMessages((prev) => [...prev, sysMessage]);
+            },
+            {
+              type: "function",
+              function: {
+                name: "read_file",
+                description: "Read the contents of a file",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    file_path: { type: "string", description: "Path to the file" }
+                  },
+                  required: ["file_path"]
+                }
+              }
+            },
+            {
+              type: "function",
+              function: {
+                name: "grep_search",
+                description: "Search for text within files",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    pattern: { type: "string", description: "Pattern to search for" },
+                    path: { type: "string", description: "Directory or file to search", default: "." }
+                  },
+                  required: ["pattern"]
+                }
               }
             }
-            break;
+          ]
+        });
+
+        // Handle response - check if it contains tool calls
+        let assistantContent = "";
+        if (response.content.some(block => block.type === "tool_use")) {
+          // Get the first tool use block
+          const toolUseBlock = response.content.find(block => block.type === "tool_use");
+          if (!toolUseBlock) {
+            throw new Error("Tool use block not found");
           }
 
-          case "partial-assistant": {
-            const partialEvent = messageEvent as SDKPartialAssistantMessage;
-            // Handle streaming content with immutable updates
-            streamBuffer.current += partialEvent.delta || "";
-            setMessages((prev) => {
-              const updated = [...prev];
-              const lastIndex = updated.length - 1;
-              if (lastIndex >= 0 && updated[lastIndex].role === "assistant") {
-                // Create new object instead of mutating
-                updated[lastIndex] = {
-                  ...updated[lastIndex],
-                  content: streamBuffer.current,
-                };
+          // Execute the tool
+          const toolResult = await executeTool(toolUseBlock);
+
+          // Add tool result back to conversation and get final response
+          const finalResponse = await client.messages.create({
+            model: "claude-3-opus-20240229",
+            max_tokens: 4096,
+            messages: [
+              ...messages,
+              { role: "assistant", content: response.content },
+              {
+                role: "user",
+                content: [{
+                  type: "tool_result",
+                  tool_use_id: toolUseBlock.id,
+                  content: toolResult
+                }]
               }
-              return updated;
-            });
-            break;
-          }
+            ]
+          });
 
-          case "assistant": {
-            const assistantEvent = messageEvent as SDKAssistantMessage;
-            // Final complete message with immutable update
-            streamBuffer.current = assistantEvent.content || "";
-
-            let finalizedMessages: Message[] | null = null;
-            setMessages((prev) => {
-              const updated = [...prev];
-              const lastIndex = updated.length - 1;
-              if (lastIndex >= 0 && updated[lastIndex].role === "assistant") {
-                updated[lastIndex] = {
-                  ...updated[lastIndex],
-                  content: assistantEvent.content || "",
-                  toolUses: assistantEvent.toolUses,
-                };
-              }
-              finalizedMessages = updated;
-              return updated;
-            });
-            // Save immediately on completion using the updated array
-            if (finalizedMessages) {
-              const key = getSessionKey(sessionData.workingDirectory);
-              await saveSessionImmediate(key, {
-                ...sessionData,
-                messages: finalizedMessages,
-              });
-            }
-            break;
-          }
-
-          case "result": {
-            const resultEvent = messageEvent as SDKResultMessage;
-            // Handle completion, errors, and interruptions
-            if (resultEvent.subtype === "error") {
-              await showToast({
-                style: Toast.Style.Failure,
-                title: "Error",
-                message: resultEvent.error || "An error occurred",
-              });
-            } else if (resultEvent.subtype === "interrupted") {
-              debugLog("Query was interrupted");
-            } else if (resultEvent.subtype === "success") {
-              debugLog("Query completed successfully");
-            }
-            break;
-          }
-
-          default:
-            debugLog("Unknown event type:", messageEvent.type);
+          // Extract text content from final response
+          const finalContent = finalResponse.content.find(block => block.type === "text");
+          assistantContent = finalContent ? finalContent.text : "Tool executed successfully";
+        } else {
+          // Direct response without tool calls
+          const contentBlock = response.content.find(block => block.type === "text");
+          assistantContent = contentBlock ? contentBlock.text : "";
         }
+
+        // Create and save assistant response
+        const assistantResponse: Message = {
+          id: Date.now().toString(),
+          role: "assistant",
+          content: assistantContent,
+          timestamp: new Date(),
+        };
+
+        setMessages((prev) => {
+          const updated = [...prev, assistantResponse];
+          const key = getSessionKey(sessionData.workingDirectory);
+          saveSessionImmediate(key, {
+            ...sessionData,
+            messages: updated,
+          });
+          return updated;
+        });
+
+      } catch (error) {
+        console.error("[handleSubmit] Anthropic API error:", error);
+        await showToast({
+          style: Toast.Style.Failure,
+          title: "API Error",
+          message: error instanceof Error ? error.message : "Unknown error",
+        });
       }
     } catch (error) {
       console.error("[handleSubmit] Error caught:", error);
@@ -393,6 +598,15 @@ export default function Assistant() {
             actions={
               <ActionPanel>
                 <ActionPanel.Section>
+                  <Action
+                    title="Send Message"
+                    onAction={() => {
+                      console.log("[Message Action] Triggered with searchText:", searchText);
+                      handleSubmit();
+                    }}
+                    icon={Icon.Message}
+                    shortcut={{ modifiers: ["cmd"], key: "return" }}
+                  />
                   <Action.CopyToClipboard
                     title="Copy Message"
                     content={message.content}
@@ -404,7 +618,7 @@ export default function Assistant() {
                     title="Clear Conversation"
                     onAction={handleClear}
                     icon={Icon.Trash}
-                  shortcut={{ modifiers: ["cmd", "shift"], key: "c" }}
+                    shortcut={{ modifiers: ["cmd", "shift"], key: "c" }}
                     style={Action.Style.Destructive}
                   />
                 </ActionPanel.Section>

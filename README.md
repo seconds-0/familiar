@@ -1,26 +1,30 @@
-# AI Assistant for Raycast
+# Claude Control for Raycast
 
-An AI assistant that can actually control your computer. Hit `Cmd+Cmd` and type what you want done.
+Quick‑open AI assistant in Raycast that actually acts. The Raycast command provides the UI; a small local Helper performs file edits, search, and shell actions.
 
 ## Features
 
 - **Natural Language Interface**: Just type what you want, no commands to learn
-- **Real Computer Control**: Can read files, run commands, make edits (coming soon)
+- **Real Actions**: Read/edit files, search, and run commands (via Helper)
 - **Streaming Responses**: See the AI's thoughts as it works
 - **Persistent Sessions**: Your conversation continues where you left off
+- **Limited Mode**: Basic read/edit/grep in‑process if Helper is not installed
 
 ## Installation
 
 1. Clone this repository
 2. Install dependencies: `npm install`
 3. Run in development mode: `npm run dev`
-4. Or build and install: `npm run build && ray import dist`
+4. First run opens an install wizard to set up the Helper
 
-## Setup
+## Setup & Auth
 
-1. Get an API key from [console.anthropic.com](https://console.anthropic.com)
-2. Add it in Raycast Preferences → AI Assistant → Anthropic API Key
-3. Hit `Cmd+Cmd` (or set your own shortcut) to open the assistant
+Choose one:
+
+- Sign in with Claude (recommended): the Helper handles SDK login; tokens stay local to the Helper
+- Use API key: set in Raycast Preferences → Anthropic API Key
+
+Hit `Cmd+Cmd` to open the assistant.
 
 ## Usage Examples
 
@@ -47,29 +51,16 @@ npm run lint
 npm run fix-lint
 ```
 
-## Steel Thread Status
+## Helper & Limited Mode
 
-This is the minimal MVP (steel thread) implementation. Currently supports:
-- ✅ Reading files and directories via MCP filesystem server
-- ✅ Natural language understanding with Claude Code SDK
-- ✅ Streaming responses with proper message type handling
-- ✅ Per-directory session persistence
-- ✅ Permission system with canUseTool callback
-- ✅ Visual icons for better UX
-- ✅ Proper error handling
-
-Coming next:
-- 🚧 File editing capabilities (Edit, Write tools)
-- 🚧 Command execution (Bash tool)
-- 🚧 Progressive trust levels
-- 🚧 Claude.ai login support
-- 🚧 Additional MCP servers (git, search)
+- With Helper: full capabilities (read/edit/diff, grep/glob, bash with streaming)
+- Without Helper: limited mode (in‑process read/edit/grep only)
 
 ## Architecture
 
 Built with:
-- Raycast API for the UI
-- Claude Code SDK for AI capabilities
+- Raycast API for the UI and permissions
+- Local Helper (localhost/Unix socket) for Claude Code SDK, files, and shell
 - TypeScript for type safety
 - React for component management
 

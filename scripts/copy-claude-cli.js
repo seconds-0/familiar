@@ -2,8 +2,18 @@ const fs = require("fs");
 const path = require("path");
 
 const CLAUDE_PACKAGE = "@anthropic-ai/claude-code";
-const SOURCE_DIR = path.join(process.cwd(), "node_modules", CLAUDE_PACKAGE);
-const DEST_DIR = path.join(process.cwd(), "assets", "claude-cli");
+const DEFAULT_SOURCE_DIR = path.join(process.cwd(), "node_modules", CLAUDE_PACKAGE);
+const DEFAULT_DEST_DIR = path.join(process.cwd(), "assets", "claude-cli");
+
+function readPackageVersion(dir) {
+  try {
+    const pkgPath = path.join(dir, "package.json");
+    const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
+    return pkg.version ?? null;
+  } catch {
+    return null;
+  }
+}
 
 function copyRecursive(src, dest) {
   const stat = fs.statSync(src);
@@ -19,17 +29,37 @@ function copyRecursive(src, dest) {
   fs.copyFileSync(src, dest);
 }
 
-function main() {
-  if (!fs.existsSync(SOURCE_DIR)) {
+function copyClaudeCli({
+  sourceDir = DEFAULT_SOURCE_DIR,
+  destDir = DEFAULT_DEST_DIR,
+  log = console.log,
+} = {}) {
+  if (!fs.existsSync(sourceDir)) {
     throw new Error("Claude Code package not installed. Run npm install before building.");
   }
 
-  if (fs.existsSync(DEST_DIR)) {
-    fs.rmSync(DEST_DIR, { recursive: true, force: true });
+  const sourceVersion = readPackageVersion(sourceDir);
+  const destVersion = readPackageVersion(destDir);
+
+  if (sourceVersion && destVersion && sourceVersion === destVersion) {
+    log(`Claude CLI assets already up to date (v${sourceVersion}). Skipping copy.`);
+    return { skipped: true, version: sourceVersion };
   }
 
-  copyRecursive(SOURCE_DIR, DEST_DIR);
-  console.log(`Copied Claude CLI to ${DEST_DIR}`);
+  if (fs.existsSync(destDir)) {
+    fs.rmSync(destDir, { recursive: true, force: true });
+  }
+
+  copyRecursive(sourceDir, destDir);
+  log(`Copied Claude CLI (v${sourceVersion ?? "unknown"}) to ${destDir}`);
+  return { skipped: false, version: sourceVersion ?? undefined };
 }
 
-main();
+if (require.main === module) {
+  copyClaudeCli();
+}
+
+module.exports = {
+  copyClaudeCli,
+  readPackageVersion,
+};

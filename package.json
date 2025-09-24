@@ -2,7 +2,7 @@
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "ai-assistant",
   "title": "AI Assistant",
-  "description": "AI that can actually control your computer",
+  "description": "Chat with Claude AI directly",
   "icon": "icon.png",
   "author": "alexanderhuth",
   "license": "MIT",
@@ -31,11 +31,19 @@
       "type": "textfield",
       "default": "cmd+cmd",
       "required": false
+    },
+    {
+      "name": "useMockClaude",
+      "title": "Use Mock Claude Responses",
+      "description": "Bypass the Claude SDK and return a simulated response (useful for UI debugging)",
+      "type": "checkbox",
+      "default": false,
+      "required": false
     }
   ],
   "dependencies": {
     "@raycast/api": "^1.64.0",
-    "@anthropic-ai/claude-code": "1.0.120",
+    "@anthropic-ai/sdk": "^0.21.0",
     "react": "^18.2.0"
   },
   "devDependencies": {
@@ -44,15 +52,18 @@
     "@types/react": "^18.2.45",
     "eslint": "^8.56.0",
     "prettier": "^3.1.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "ts-node": "^10.9.2"
   },
   "scripts": {
-    "prebuild": "node scripts/copy-claude-cli.js",
-    "predev": "node scripts/copy-claude-cli.js",
     "build": "ray build --skip-types -e dist -o dist",
     "dev": "ray develop",
     "lint": "ray lint",
     "fix-lint": "ray lint --fix",
-    "publish": "npx @raycast/api@latest publish"
+    "publish": "npx @raycast/api@latest publish",
+    "test": "npm run test:unit && npm run test:integration && npm run test:e2e",
+    "test:unit": "node tests/unit/run.js",
+    "test:integration": "node tests/integration/run.js",
+    "test:e2e": "node tests/e2e/run.js"
   }
 }

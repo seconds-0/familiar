@@ -105,16 +105,13 @@ Return: Integration points, current implementation, and improvement opportunitie
 
 ### Example Usage
 
-Instead of:
-```bash
-rg "sessionId"  # Don't do this
-```
+### Testing & Debugging Utilities
 
-Do this:
-```
-Use Task tool with code-search-specialist:
-"Search for all sessionId usage in the codebase. Find where it's created, stored, accessed, and validated. Include type definitions and any session management logic. Check if there are any security considerations mentioned in comments or documentation."
-```
+- `npm run smoke:sdk`: launch the Claude SDK directly using the packaged CLI (`assets/claude-cli/cli.js`) to verify actor usability outside Raycast. The script prints event flow (`system`, `assistant`, etc.) and is an early guard against CLI packaging regressions.
+- `npm run test`: executes unit, integration, and e2e harnesses. Integration tests copy a fake CLI and confirm `resolveClaudeCliPath()` finds it; e2e ensures the real SDK spawns successfully.
+- Raycast preference `useMockClaude`: toggling this returns deterministic mock responses without invoking the SDK. Ideal for UI-only testing when networking or CLI setup is suspect.
+
+Socket preparation: on extension boot, we anchor the CLAUDE CLI socket directory under `os.tmpdir()/claude-sockets` to avoid ephemeral path issues on macOS.
 
 ## Architecture
 

@@ -1,10 +1,8 @@
-# PRD: AI Power Assistant for Raycast
+# PRD: Claude Control (Raycast + Local Helper)
 
-## The Vision
+## Vision
 
-**One hotkey. Infinite power. Zero friction.**
-
-Command+Command opens an AI assistant that can actually control your computer. Not just talk about your files - open them, edit them, run them, deploy them. This is the AI assistant everyone thought ChatGPT would be.
+One hotkey, native Raycast UI, real actions. A local companion Helper performs privileged operations (Claude Code SDK, shell, file edits); the Raycast command orchestrates UX, safety, and distribution.
 
 ## Hero Experience
 
@@ -24,97 +22,86 @@ Cmd+Cmd → "Find that CSV on my desktop about Q3 sales"
 
 No commands to learn. No configuration needed. Just natural language and things happen.
 
-## Core Problem
+## Problem
 
-Every AI chat can talk about code and files. None can actually touch them. Developers copy-paste between ChatGPT and their editor. PMs screenshot errors to get help. Designers describe files they wish they could just show the AI.
+Raycast’s runtime is sandboxed and short‑lived; it doesn’t reliably support spawning external processes. Claude Code’s CLI/SDK expects subprocesses for actions and MCP servers. We need a split architecture.
 
-This changes that. Your AI assistant lives in your computer, not in a browser tab.
+## Goals
+- Quick‑open Raycast UI with streaming and persistent sessions
+- Reliable action‑taking (read/edit/multi‑edit, grep/glob, bash) via a local Helper
+- One‑click install wizard from Raycast (download → verify → open installer → handshake)
+- Auth: “Sign in with Claude” (via Helper) or API key (within Raycast)
+- Clear, granular Allowed Paths and confirmations; safe by default
 
-## Key User Stories
+## Non‑Goals
+- Running long‑lived subprocesses inside Raycast
+- Exposing the Helper beyond localhost / domain socket
 
-**As anyone**, I hit Command+Command and type what I want done - find files, read CSVs, fix code, organize folders - and it just happens.
+## User Flows
+### First Run
+1) Open command → wizard detects no Helper
+2) Install Helper → Raycast downloads notarized installer to `environment.supportPath`, verifies SHA‑256, `open()` installer
+3) Raycast polls `/health`, then performs handshake (local auth token)
+4) Choose auth: “Sign in with Claude” (Helper opens browser) or “Use API key” (in Raycast)
+5) Select Allowed Paths → POST to Helper `/config/allowed-paths`
+6) Ready
 
-**As a developer**, I can say "fix the build errors" and watch as the assistant reads errors, edits files, and verifies the fix.
+### Daily Use
+Cmd+Cmd → type instruction → Raycast streams model output and tool plans → shows diffs/confirmations → Helper applies changes and streams logs → success/failure summary with follow‑up actions.
 
-**As a PM**, I can say "summarize yesterday's commits" and get release notes without touching git.
+### Failure Modes
+- Helper down → “Start Helper”, “Reinstall”, or “Limited mode (read/edit/grep in‑process)”
+- Version mismatch → prompt to update Helper
 
-**As a designer**, I can say "resize all these SVGs to 24x24" and it's done in seconds.
+## Architecture
 
-## The Magic: Zero Setup Required
+Raycast Command (UI, install, auth UI, limited mode)
+↔ Local Helper (HTTP/SSE on 127.0.0.1 or Unix socket; auth token)
 
-### Installation (30 seconds)
-1. Install from Raycast Store
-2. Hit Command+Command
-3. Type your first request
-4. One-click auth if needed (Claude.ai or API key)
-5. That's it. Forever.
+Helper endpoints (MVP):
+- `GET /health`
+- `POST /auth/start` → { url }
+- `GET /auth/status`
+- `POST /query` (SSE stream of SDK events)
+- `POST /files/read`, `POST /files/edit`, `POST /files/diff`
+- `POST /bash/exec` (streamed stdout/stderr)
+- `POST /config/allowed-paths`, `GET /config`
+- `POST /shutdown`
 
-No permission screens. No MCP configuration. No model selection. It just works.
+Security:
+- Signed/notarized Helper, pinned SHA‑256 in extension
+- Local auth token; per‑request verification
+- Server‑side Allowed Paths enforcement; dangerous ops require explicit confirm
 
-## UX Principles
+## Capabilities
+- Read/Write/Edit/MultiEdit with diffs and preview
+- Grep/Glob/Search
+- Bash (streamed, cancellable)
+- Claude Code SDK sessions and tools via Helper
+- Limited mode without Helper: in‑process read/edit/grep only
 
-### 1. Invisible Intelligence
-The assistant figures out what tools it needs. Users never see:
-- File permissions dialogs (until needed)
-- MCP server configuration
-- Model selection
-- Technical commands
+## Install UX
+- Inline wizard in Raycast (List/Detail screens)
+- Download to `environment.supportPath`, SHA‑256 verify
+- Launch installer via `open()`; poll Helper `/health`
+- Handshake, auth, Allowed Paths setup
 
-### 2. Progressive Trust
-- **First file read**: Always allowed
-- **First file edit**: Shows preview, one-click approve
-- **After 3 successful edits**: Auto-trust this project
-- **Dangerous operations**: Always confirm with explanation
-
-Trust indicator (subtle dot):
-- 🟢 Reading/analyzing
-- 🟡 Will modify (preview available)
-- 🔴 System change (requires confirm)
-
-### 3. Context Awareness
-The assistant knows:
-- Current directory
-- Selected files in Finder
-- Last terminal command
-- Open project type (npm, Python, etc.)
-- Previous conversations in this folder
-
-## Core Features
-
-### The Chat Window
-- **Launch**: Command+Command (customizable)
-- **Dismiss**: Escape (conversation persists)
-- **Return**: Command+Command brings back exact state
-- Beautiful Raycast-native UI with streaming responses
-
-### Natural Language is Everything
-```
-"fix the build" → Runs build, sees errors, fixes them
-"what's on port 3000" → Checks and can kill it
-"make this csv pretty" → Converts to formatted table
-"deploy this" → Knows your deployment process
-"why is this slow" → Profiles and explains
-"clean up downloads" → Organizes by type and date
-```
-
-### Inline Everything
-- File contents render with syntax highlighting
-- Images display inline when found/created
-- Terminal output streams live
-- Diffs preview before applying
-- Charts/graphs render in chat
-
-### Smart Actions
-Based on conversation, suggested actions appear as pills:
-- After error: [Fix This] [Debug] [Explain]
-- After finding files: [Open] [Edit] [Delete]
-- After writing code: [Run] [Test] [Save]
+## Auth
+- Sign in with Claude: Helper runs SDK login; tokens/cookies remain in Helper
+- API key: stored in Raycast Preferences; used for direct API fallback if Helper unavailable
 
 ---
 
-# Technical Architecture
+## Milestones
+1) Wizard + download/verify/open + health/handshake + limited mode
+2) Helper MVP: `/query`, `/files.read/edit/diff`, `/bash.exec`; Allowed Paths
+3) Auth flows (Claude login + API key); confirmations & diffs
+4) Polishing: updates, error UX, logs, docs, store listing
 
-## Core Integration
+## Risks & Mitigations
+- Installer friction → notarized build, clear copy, retry flows
+- AV/firewall blocks → localhost/socket transport; minimal ports
+- Version skew → health reports versions; guided update
 
 Built on Claude Code TypeScript SDK with Raycast's native APIs. ([Claude Docs][1])
 
@@ -448,39 +435,16 @@ Power users can add servers via hidden config:
 - **Trust Building**: 50% reach "trusted" status in first project
 - **Zero Config**: 90% never open preferences
 
-## Store Listing
+## Success Metrics
+- TTI < 1s to open command; wizard < 2 minutes typical
+- > 95% task completion for read/edit/grep/bash on sample repos
+- > 90% successful Helper installs post‑notarization
 
-**Title**: AI Assistant - Control Your Computer with Natural Language
-
-**Description**:
-The AI that actually does things. Find files, fix code, run scripts, organize folders - just type what you want done. No commands to learn, no setup required. Hit Cmd+Cmd and start.
-
-**Screenshots**:
-1. Natural conversation fixing code
-2. Finding and analyzing files
-3. Running scripts and seeing results inline
+## Store Positioning
+“Claude Control: a quick‑open Raycast assistant that actually acts. Install once, command everything.”
 
 ---
 
-# References
-
-All technical documentation preserved:
-
-* Claude Code TypeScript SDK reference: `query`, `Options`, `PermissionMode`, `mcpServers`, message types, streaming, and `setPermissionMode`. ([Claude Docs][1])
-* SDK guide for permissions: `canUseTool` and rules design. ([Claude Docs][5])
-* SDK guide for MCP: stdio and SSE configurations and examples. ([Claude Docs][2])
-* MCP spec and official docs. ([GitHub][11])
-* Raycast Storage, Preferences, and Store review docs. ([Raycast API][4])
-* Community reports on permission rules and in-process MCP stability. ([GitHub][10])
-
-[1]: https://docs.claude.com/en/docs/claude-code/sdk/sdk-typescript "TypeScript SDK reference - Claude Docs"
-[2]: https://docs.anthropic.com/en/docs/claude-code/sdk/sdk-mcp?utm_source=chatgpt.com "MCP in the SDK - Claude Docs"
-[3]: https://developers.raycast.com/?utm_source=chatgpt.com "Raycast API: Introduction"
-[4]: https://developers.raycast.com/api-reference/storage?utm_source=chatgpt.com "Storage"
-[5]: https://docs.anthropic.com/en/docs/claude-code/sdk/sdk-permissions?utm_source=chatgpt.com "Handling Permissions - Claude Docs - Anthropic"
-[6]: https://developers.raycast.com/api-reference/preferences?utm_source=chatgpt.com "Preferences | Raycast API"
-[7]: https://github.com/anthropics/claude-code/issues/7279?utm_source=chatgpt.com "[BUG] In-process MCP servers bug in Claude Code ..."
-[8]: https://developers.raycast.com/basics/prepare-an-extension-for-store?utm_source=chatgpt.com "Prepare an Extension for Store"
-[9]: https://docs.claude.com/en/docs/claude-code/settings?utm_source=chatgpt.com "Claude Code settings"
-[10]: https://github.com/anthropics/claude-code/issues/6699?utm_source=chatgpt.com "Critical Security Bug: deny permissions in settings.json are ..."
-[11]: https://github.com/modelcontextprotocol/modelcontextprotocol?utm_source=chatgpt.com "Specification and documentation for the Model Context ..."
+## References
+- Raycast API: environment paths, open(), LocalStorage
+- Claude Code SDK: sessions, events, tools (used in Helper)

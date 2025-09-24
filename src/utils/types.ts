@@ -34,6 +34,7 @@ export interface SessionData {
 export interface Preferences {
   anthropicApiKey: string;
   shortcut?: string;
+  useMockClaude?: boolean;
 }
 
 // MCP Server configuration types
