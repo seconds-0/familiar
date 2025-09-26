@@ -65,7 +65,7 @@ class ClaudeSession:
         self._options = ClaudeCodeOptions(
             allowed_tools=["Write"],
             permission_mode="default",
-            model="claude-3-5-sonnet-20241022",
+            model="claude-sonnet-4-20250514",
             system_prompt=STEEL_THREAD_SYSTEM_PROMPT,
         )
         self._client: ClaudeSDKClient | None = None
