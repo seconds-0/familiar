@@ -2,18 +2,25 @@ import AppKit
 import KeyboardShortcuts
 import SwiftUI
 
+private final class FamiliarPanel: NSPanel {
+    override func cancelOperation(_ sender: Any?) {
+        orderOut(sender)
+    }
+}
+
 final class FamiliarWindowController: NSObject, ObservableObject {
     static let shared = FamiliarWindowController()
 
     private lazy var hostingController = NSHostingController(rootView: FamiliarView())
     private lazy var panel: NSPanel = {
-        let panel = NSPanel(contentViewController: hostingController)
+        let panel = FamiliarPanel(contentViewController: hostingController)
         panel.titleVisibility = .hidden
         panel.isFloatingPanel = true
         panel.hidesOnDeactivate = false
         panel.styleMask = [.nonactivatingPanel, .titled, .fullSizeContentView]
         panel.level = .statusBar
         panel.collectionBehavior = [.fullScreenAuxiliary, .canJoinAllSpaces]
+        panel.isReleasedWhenClosed = false
         return panel
     }()
 
@@ -25,13 +32,15 @@ final class FamiliarWindowController: NSObject, ObservableObject {
     }
 
     func toggle() {
-        let window = panel
-        if window.isVisible {
-            window.orderOut(nil)
-        } else {
-            window.center()
-            window.makeKeyAndOrderFront(nil)
-            NSApp.activate(ignoringOtherApps: true)
+        DispatchQueue.main.async {
+            let window = self.panel
+            if window.isVisible {
+                window.orderOut(nil)
+            } else {
+                window.center()
+                window.makeKeyAndOrderFront(nil)
+                NSApp.activate(ignoringOtherApps: true)
+            }
         }
     }
 }
