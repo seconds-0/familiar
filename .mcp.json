@@ -4,7 +4,7 @@
       "type": "sse",
       "url": "https://mcp.exa.ai/mcp",
       "headers": {
-        "Authorization": "Bearer e68d339c-b851-4aac-b406-f3d1f1cdf882"
+        "Authorization": "Bearer ${EXA_API_KEY}"
       }
     }
   }
