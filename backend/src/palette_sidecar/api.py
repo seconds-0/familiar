@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
 
@@ -22,7 +23,18 @@ from .config import (
 from .models import ApprovalPayload, QueryPayload, SettingsPayload
 from .permissions import broker
 
-app = FastAPI(title="Familiar Sidecar")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Handle application lifecycle events."""
+    # Startup
+    await session.start()
+    yield
+    # Shutdown
+    await session.shutdown()
+
+
+app = FastAPI(title="Familiar Sidecar", lifespan=lifespan)
 
 _current_settings = load_settings()
 _workspace_path: Path | None = None
@@ -54,16 +66,6 @@ save_settings(_current_settings)
 
 def _format_sse(event: dict[str, Any]) -> str:
     return f"data: {json.dumps(event, ensure_ascii=False)}\n\n"
-
-
-@app.on_event("startup")
-async def _startup() -> None:
-    await session.start()
-
-
-@app.on_event("shutdown")
-async def _shutdown() -> None:
-    await session.shutdown()
 
 
 @app.post("/query")
