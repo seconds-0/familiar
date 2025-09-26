@@ -43,7 +43,10 @@ struct PromptTextEditor: View {
                 onBeginEditing: onBeginEditing
             )
             .frame(height: clampedHeight)
-            .background(.thickMaterial, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(Color(nsColor: .textBackgroundColor))
+            )
             .overlay(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .stroke(Color.gray.opacity(0.25))
