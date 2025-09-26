@@ -12,6 +12,11 @@
 - SwiftUI app: `cd apps/mac/FamiliarApp && swift build` to resolve packages, then open the generated `.build/debug/FamiliarApp.app` or `open Package.swift` in Xcode for iterative work.
 - Smoke-test the bundled CLI with `node assets/claude-cli/cli.js --help`; use this command to confirm Node dependencies or wasm binaries remain intact after updates.
 - Document additional scripts (e.g., MCP installers, lint configs) in their respective subprojects and surface the commands here for quick discovery.
+- Swift unit tests:
+  - Direct: `swift test --package-path apps/mac/FamiliarApp`
+  - Script: `./test-swift.sh`
+  - Filters: `./test-swift.sh --filter PromptTextEditorTests` or `./test-swift.sh --filter testHeightCalculationPreventsjitter`
+  - Verbose/coverage: pass any `swift test` flags, e.g. `./test-swift.sh --verbose` or `./test-swift.sh --enable-code-coverage`
 
 ## Coding Style & Naming Conventions
 - Follow `.prettierrc`: 2-space indentation, 120-character width, double quotes, and semicolons. Run `npx prettier --check .` before publishing major edits.
