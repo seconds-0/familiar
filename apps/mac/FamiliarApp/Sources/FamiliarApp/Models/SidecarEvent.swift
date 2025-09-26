@@ -41,4 +41,6 @@ struct SidecarEvent {
     var diff: String? { raw["diff"] as? String }
     var isError: Bool { (raw["isError"] as? Bool) ?? false }
     var toolUseId: String? { raw["toolUseId"] as? String }
+    var usage: [String: Any]? { raw["usage"] as? [String: Any] }
+    var cost: [String: Any]? { raw["cost"] as? [String: Any] }
 }

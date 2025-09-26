@@ -2,18 +2,25 @@ import AppKit
 import KeyboardShortcuts
 import SwiftUI
 
+private final class FamiliarPanel: NSPanel {
+    override func cancelOperation(_ sender: Any?) {
+        orderOut(sender)
+    }
+}
+
 final class FamiliarWindowController: NSObject, ObservableObject {
     static let shared = FamiliarWindowController()
 
     private lazy var hostingController = NSHostingController(rootView: FamiliarView())
     private lazy var panel: NSPanel = {
-        let panel = NSPanel(contentViewController: hostingController)
+        let panel = FamiliarPanel(contentViewController: hostingController)
         panel.titleVisibility = .hidden
         panel.isFloatingPanel = true
         panel.hidesOnDeactivate = false
-        panel.styleMask = [.nonactivatingPanel, .titled, .fullSizeContentView]
+        panel.styleMask = [.nonactivatingPanel, .titled, .fullSizeContentView, .closable]
         panel.level = .statusBar
         panel.collectionBehavior = [.fullScreenAuxiliary, .canJoinAllSpaces]
+        panel.isReleasedWhenClosed = false
         return panel
     }()
 
@@ -41,31 +48,7 @@ struct FamiliarView: View {
     @FocusState private var isPromptFocused: Bool
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top, spacing: 8) {
-                TextField("Ask Claude Code…", text: $viewModel.prompt)
-                    .focused($isPromptFocused)
-                    .textFieldStyle(.roundedBorder)
-                    .onSubmit { viewModel.submit() }
-                if viewModel.isStreaming {
-                    Button {
-                        viewModel.cancelStreaming()
-                    } label: {
-                        Image(systemName: "stop.circle.fill")
-                    }
-                    .buttonStyle(.bordered)
-                    .help("Stop current request")
-                } else {
-                    Button {
-                        viewModel.submit()
-                    } label: {
-                        Image(systemName: "paperplane.fill")
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .help("Send prompt")
-                }
-            }
-
+        VStack(spacing: 12) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {
                     if !viewModel.transcript.isEmpty {
@@ -87,8 +70,58 @@ struct FamiliarView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
 
+            if let totals = viewModel.usageTotalsDisplay {
+                UsageSummaryView(totals: totals, last: viewModel.lastUsageDisplay)
+            }
+
             if viewModel.isStreaming {
-                ProgressView().progressViewStyle(.linear)
+                HStack(spacing: 8) {
+                    ProgressView().progressViewStyle(.circular)
+                    Text(viewModel.loadingMessage ?? "Working on it…")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+            }
+
+            Divider()
+
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(alignment: .center, spacing: 8) {
+                    PromptTextEditor(
+                        text: $viewModel.prompt,
+                        preview: viewModel.promptPreview,
+                        onSubmit: viewModel.submit,
+                        onPaste: viewModel.handlePaste,
+                        onBeginEditing: viewModel.beginEditingPrompt
+                    )
+                    .focused($isPromptFocused)
+
+                    if viewModel.isStreaming {
+                        Button {
+                            viewModel.cancelStreaming()
+                        } label: {
+                            Image(systemName: "stop.circle.fill")
+                        }
+                        .buttonStyle(.bordered)
+                        .help("Stop current request")
+                    } else {
+                        Button {
+                            viewModel.submit()
+                        } label: {
+                            Image(systemName: "paperplane.fill")
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .help("Send prompt")
+                    }
+                }
+
+                HStack(spacing: 0) {
+                    Text("New line: Shift+Enter    Send: Enter")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                }
             }
         }
         .padding(20)
@@ -104,6 +137,9 @@ struct FamiliarView: View {
         }
         .onAppear {
             isPromptFocused = true
+        }
+        .onExitCommand {
+            FamiliarWindowController.shared.toggle()
         }
     }
 }
