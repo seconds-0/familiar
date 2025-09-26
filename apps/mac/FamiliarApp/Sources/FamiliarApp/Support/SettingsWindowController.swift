@@ -78,9 +78,7 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
 
     private func rootView(for appState: AppState) -> AnyView {
         AnyView(
-            SettingsView(onClose: { [weak self] in
-                self?.close()
-            })
+            SettingsView()
             .environmentObject(appState)
         )
     }

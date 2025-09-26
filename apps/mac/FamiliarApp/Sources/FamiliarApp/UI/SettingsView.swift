@@ -3,7 +3,6 @@ import SwiftUI
 
 struct SettingsView: View {
     private let keychainKey = "anthropic_api_key"
-    private let onClose: (() -> Void)?
 
     @EnvironmentObject private var appState: AppState
     @State private var apiKey: String = ""
@@ -14,26 +13,8 @@ struct SettingsView: View {
     @State private var isTesting = false
     @State private var isApiKeyVisible = false
 
-    init(onClose: (() -> Void)? = nil) {
-        self.onClose = onClose
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            if let onClose {
-                HStack {
-                    Spacer()
-                    Button {
-                        onClose()
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title3)
-                    }
-                    .buttonStyle(.borderless)
-                    .help("Close settings")
-                }
-            }
-
             VStack(alignment: .leading, spacing: 8) {
                 Text("Claude Code Credentials")
                     .font(.headline)
