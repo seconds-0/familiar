@@ -15,13 +15,16 @@ struct PromptTextEditor: View {
     private let textInsets = NSSize(width: 12, height: 8)
     private let font = NSFont.preferredFont(forTextStyle: .body)
 
-    private var lineHeight: CGFloat { ceil(font.ascender - font.descender + font.leading) }
+    private var lineHeight: CGFloat { Self.lineHeight(for: font) }
     private var minimumHeight: CGFloat { lineHeight + textInsets.height * 2 }
     private var maximumHeight: CGFloat { minimumHeight + lineHeight * (maxVisibleLines - 1) }
 
-    private var dynamicHeight: CGFloat {
-        let baseHeight = max(contentHeight, minimumHeight)
-        return min(baseHeight, maximumHeight)
+    private var visibleHeight: CGFloat {
+        Self.visibleHeight(
+            forContentHeight: contentHeight,
+            minimumHeight: minimumHeight,
+            maximumHeight: maximumHeight
+        )
     }
 
     private var placeholder: String {
@@ -33,6 +36,11 @@ struct PromptTextEditor: View {
 
     var body: some View {
         ZStack(alignment: .topLeading) {
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(Color(nsColor: .textBackgroundColor))
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .stroke(Color(nsColor: .separatorColor).opacity(0.4), lineWidth: 1)
+
             PromptTextViewRepresentable(
                 text: $text,
                 contentHeight: $contentHeight,
@@ -44,8 +52,9 @@ struct PromptTextEditor: View {
                 onPaste: onPaste,
                 onBeginEditing: onBeginEditing
             )
-            .frame(height: dynamicHeight)
-            .animation(.easeInOut(duration: 0.15), value: dynamicHeight)
+            .frame(height: visibleHeight)
+            .animation(.easeInOut(duration: 0.15), value: visibleHeight)
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
 
             if text.isEmpty && !isEditing {
                 Text(placeholder)
@@ -58,6 +67,7 @@ struct PromptTextEditor: View {
                     .animation(.easeInOut(duration: 0.1), value: isEditing)
             }
         }
+        .frame(height: visibleHeight, alignment: .top)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
@@ -276,20 +286,27 @@ final class PromptNSTextView: NSTextView {
         textContainer?.widthTracksTextView = true
         minSize = NSSize(width: 0, height: minimumHeight)
         autoresizingMask = [.width]
-        backgroundColor = .textBackgroundColor
-        drawsBackground = true
-        wantsLayer = true
-        layer?.cornerRadius = 10
-        layer?.masksToBounds = true
-        layer?.backgroundColor = NSColor.textBackgroundColor.cgColor
-        layer?.borderColor = NSColor.separatorColor.withAlphaComponent(0.4).cgColor
-        layer?.borderWidth = 1
+        drawsBackground = false
+        backgroundColor = .clear
+        wantsLayer = false
+    }
+}
+
+extension PromptTextEditor {
+    static func lineHeight(for font: NSFont) -> CGFloat {
+        let sample = NSAttributedString(string: "Hg", attributes: [.font: font])
+        return ceil(sample.size().height)
+    }
+
+    static func visibleHeight(forContentHeight contentHeight: CGFloat, minimumHeight: CGFloat, maximumHeight: CGFloat) -> CGFloat {
+        let baseHeight = max(contentHeight, minimumHeight)
+        return min(baseHeight, maximumHeight)
     }
 }
 
 func calculatePromptContentHeight(textView: NSTextView, minimumHeight: CGFloat) -> CGFloat {
     let font = textView.font ?? NSFont.preferredFont(forTextStyle: .body)
-    let lineHeight = ceil(font.ascender - font.descender + font.leading)
+    let lineHeight = PromptTextEditor.lineHeight(for: font)
     let maxVisibleLines: CGFloat = 4
     let maximumHeight = minimumHeight + lineHeight * (maxVisibleLines - 1)
 
@@ -301,6 +318,14 @@ func calculatePromptContentHeight(textView: NSTextView, minimumHeight: CGFloat) 
     layoutManager.ensureLayout(for: textContainer)
     let usedRect = layoutManager.usedRect(for: textContainer)
     let contentHeight = usedRect.height + textView.textContainerInset.height * 2
-    let clampedHeight = max(contentHeight, minimumHeight)
+    let baseHeight: CGFloat
+    if contentHeight <= 0 {
+        baseHeight = minimumHeight
+    } else if usedRect.height <= lineHeight + 0.5 {
+        baseHeight = minimumHeight
+    } else {
+        baseHeight = contentHeight
+    }
+    let clampedHeight = max(baseHeight, minimumHeight)
     return min(clampedHeight, maximumHeight)
 }

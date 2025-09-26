@@ -7,14 +7,14 @@ final class PromptTextEditorTests: XCTestCase {
         let (scrollView, textView) = PromptNSTextView.makeHostingScrollView()
 
         XCTAssertTrue(scrollView.documentView === textView, "Scroll view should host the created PromptNSTextView instance")
-        XCTAssertTrue(textView is PromptNSTextView, "Factory must return the PromptNSTextView subclass")
+        XCTAssertTrue(type(of: textView) == PromptNSTextView.self, "Factory must return the PromptNSTextView subclass")
         XCTAssertFalse(scrollView.hasHorizontalScroller, "Prompt scroll view should not expose horizontal scrolling")
     }
 
     func testPromptNSTextViewStylingEnablesEditingAndAppearance() {
         let font = NSFont.preferredFont(forTextStyle: .body)
         let textInsets = NSSize(width: 12, height: 8)
-        let lineHeight = ceil(font.ascender - font.descender + font.leading)
+        let lineHeight = PromptTextEditor.lineHeight(for: font)
         let minimumHeight = lineHeight + textInsets.height * 2
 
         let textView = PromptNSTextView(frame: NSRect(x: 0, y: 0, width: 400, height: 100))
@@ -30,7 +30,7 @@ final class PromptTextEditorTests: XCTestCase {
     func testContentHeightClampsAfterFourLines() {
         let font = NSFont.preferredFont(forTextStyle: .body)
         let textInsets = NSSize(width: 12, height: 8)
-        let lineHeight = ceil(font.ascender - font.descender + font.leading)
+        let lineHeight = PromptTextEditor.lineHeight(for: font)
         let minimumHeight = lineHeight + textInsets.height * 2
         let maximumHeight = minimumHeight + lineHeight * 3
 
@@ -48,7 +48,7 @@ final class PromptTextEditorTests: XCTestCase {
     func testContentHeightReturnsMinimumForSingleLine() {
         let font = NSFont.preferredFont(forTextStyle: .body)
         let textInsets = NSSize(width: 12, height: 8)
-        let lineHeight = ceil(font.ascender - font.descender + font.leading)
+        let lineHeight = PromptTextEditor.lineHeight(for: font)
         let minimumHeight = lineHeight + textInsets.height * 2
 
         let textView = PromptNSTextView(frame: NSRect(x: 0, y: 0, width: 400, height: 100))
@@ -90,5 +90,34 @@ final class PromptTextEditorTests: XCTestCase {
 
         XCTAssertTrue(textView.string.hasSuffix("\n"), "Shift+Return should insert a newline")
         XCTAssertFalse(submitInvoked, "Shift+Return should not trigger submit handler")
+    }
+
+    func testVisibleHeightClampsWithinAllowedRange() {
+        let font = NSFont.preferredFont(forTextStyle: .body)
+        let lineHeight = PromptTextEditor.lineHeight(for: font)
+        let textInsets = NSSize(width: 12, height: 8)
+        let minimumHeight = lineHeight + textInsets.height * 2
+        let maximumHeight = minimumHeight + lineHeight * 3
+
+        let tooSmall = PromptTextEditor.visibleHeight(
+            forContentHeight: minimumHeight / 2,
+            minimumHeight: minimumHeight,
+            maximumHeight: maximumHeight
+        )
+        XCTAssertEqual(tooSmall, minimumHeight, accuracy: 0.1)
+
+        let ideal = PromptTextEditor.visibleHeight(
+            forContentHeight: minimumHeight + lineHeight,
+            minimumHeight: minimumHeight,
+            maximumHeight: maximumHeight
+        )
+        XCTAssertEqual(ideal, minimumHeight + lineHeight, accuracy: 0.1)
+
+        let tooLarge = PromptTextEditor.visibleHeight(
+            forContentHeight: maximumHeight + lineHeight,
+            minimumHeight: minimumHeight,
+            maximumHeight: maximumHeight
+        )
+        XCTAssertEqual(tooLarge, maximumHeight, accuracy: 0.1)
     }
 }
