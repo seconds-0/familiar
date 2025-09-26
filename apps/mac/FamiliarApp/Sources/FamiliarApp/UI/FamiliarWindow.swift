@@ -2,18 +2,24 @@ import AppKit
 import KeyboardShortcuts
 import SwiftUI
 
+private final class FamiliarPanel: NSPanel {
+    override func cancelOperation(_ sender: Any?) {
+        orderOut(sender)
+    }
+}
 final class FamiliarWindowController: NSObject, ObservableObject {
     static let shared = FamiliarWindowController()
 
     private lazy var hostingController = NSHostingController(rootView: FamiliarView())
     private lazy var panel: NSPanel = {
-        let panel = NSPanel(contentViewController: hostingController)
+        let panel = FamiliarPanel(contentViewController: hostingController)
         panel.titleVisibility = .hidden
         panel.isFloatingPanel = true
         panel.hidesOnDeactivate = false
-        panel.styleMask = [.nonactivatingPanel, .titled, .fullSizeContentView]
+        panel.styleMask = [.nonactivatingPanel, .titled, .fullSizeContentView, .closable]
         panel.level = .statusBar
         panel.collectionBehavior = [.fullScreenAuxiliary, .canJoinAllSpaces]
+        panel.isReleasedWhenClosed = false
         return panel
     }()
 
@@ -42,8 +48,8 @@ struct FamiliarView: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 12) {
+            ScrollView(.vertical, showsIndicators: true) {
+                LazyVStack(alignment: .leading, spacing: 12) {
                     if !viewModel.transcript.isEmpty {
                         Text(viewModel.transcript)
                             .font(.system(.body, design: .monospaced))
@@ -61,7 +67,9 @@ struct FamiliarView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, 1) // Prevent content from touching scroll edges
             }
+            .frame(maxHeight: 300) // Allow scrolling when content is large
 
             if let totals = viewModel.usageTotalsDisplay {
                 UsageSummaryView(totals: totals, last: viewModel.lastUsageDisplay)
@@ -118,7 +126,16 @@ struct FamiliarView: View {
             }
         }
         .padding(20)
-        .frame(width: 720, height: 460)
+        .frame(
+            minWidth: 600,
+            idealWidth: 720,
+            maxWidth: 900,
+            minHeight: 400,
+            idealHeight: 460,
+            maxHeight: .infinity,
+            alignment: .top
+        )
+        .fixedSize(horizontal: false, vertical: true)
         .sheet(item: $viewModel.permissionRequest) { request in
             ApprovalSheet(request: request, isProcessing: viewModel.isProcessingPermission) { decision in
                 viewModel.respond(

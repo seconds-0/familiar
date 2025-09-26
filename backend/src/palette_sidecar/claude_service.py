@@ -67,6 +67,7 @@ class ClaudeSession:
             permission_mode="default",
             model="claude-sonnet-4-20250514",
             system_prompt=STEEL_THREAD_SYSTEM_PROMPT,
+            mcp_servers=self._load_mcp_config(),
         )
         self._client: ClaudeSDKClient | None = None
         self._receiver_task: asyncio.Task[None] | None = None
@@ -112,6 +113,18 @@ class ClaudeSession:
     @property
     def is_ready(self) -> bool:
         return self._config.api_key is not None and self._config.workspace is not None
+
+    def _load_mcp_config(self) -> dict[str, Any]:
+        """Load MCP server configuration from .mcp.json file."""
+        config_path = Path(__file__).parent.parent.parent.parent / ".mcp.json"
+        try:
+            if config_path.exists():
+                with open(config_path, "r", encoding="utf-8") as f:
+                    config = json.load(f)
+                    return config.get("mcpServers", {})
+        except Exception as exc:
+            logger.warning("Failed to load MCP config from %s: %s", config_path, exc)
+        return {}
 
     # ------------------------------------------------------------------
     async def start(self) -> None:

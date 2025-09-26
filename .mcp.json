@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "exa": {
+      "type": "sse",
+      "url": "https://mcp.exa.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer e68d339c-b851-4aac-b406-f3d1f1cdf882"
+      }
+    }
+  }
+}

@@ -29,14 +29,20 @@ struct ApprovalSheet: View {
                     Text("Proposed content")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    ScrollView {
+                    ScrollView(.vertical, showsIndicators: true) {
                         Text(preview)
                             .font(.system(.callout, design: .monospaced))
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .textSelection(.enabled)
+                            .padding(.vertical, 4)
                     }
-                    .frame(height: 180)
+                    .frame(minHeight: 120, idealHeight: 180, maxHeight: 280)
+                    .background(Color(nsColor: .textBackgroundColor))
                     .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color(nsColor: .separatorColor).opacity(0.3), lineWidth: 1)
+                    )
                 }
             } else {
                 Text("No preview available")
@@ -73,7 +79,12 @@ struct ApprovalSheet: View {
             }
         }
         .padding(24)
-        .frame(width: 420)
+        .frame(
+            minWidth: 380,
+            idealWidth: 420,
+            maxWidth: 520
+        )
+        .fixedSize(horizontal: false, vertical: true)
     }
 }
 
@@ -89,7 +100,7 @@ private struct DiffPreviewView: View {
             Text("Proposed diff")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            ScrollView {
+            ScrollView(.vertical, showsIndicators: true) {
                 VStack(alignment: .leading, spacing: 2) {
                     ForEach(Array(lines.enumerated()), id: \.offset) { pair in
                         let line = pair.element
@@ -101,9 +112,15 @@ private struct DiffPreviewView: View {
                             .textSelection(.enabled)
                     }
                 }
+                .padding(.vertical, 4)
             }
-            .frame(height: 220)
+            .frame(minHeight: 150, idealHeight: 220, maxHeight: 320)
+            .background(Color(nsColor: .textBackgroundColor))
             .clipShape(RoundedRectangle(cornerRadius: 8))
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color(nsColor: .separatorColor).opacity(0.3), lineWidth: 1)
+            )
         }
     }
 
