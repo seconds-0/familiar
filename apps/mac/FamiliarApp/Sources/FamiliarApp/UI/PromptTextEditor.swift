@@ -1,6 +1,5 @@
 import AppKit
 import SwiftUI
-import UniformTypeIdentifiers
 
 struct PromptTextEditor: View {
     @Binding var text: String
@@ -12,19 +11,18 @@ struct PromptTextEditor: View {
     @State private var measuredHeight: CGFloat = 0
 
     private let maxVisibleLines: CGFloat = 4
-    private let textInsets = NSSize(width: 12, height: 6)
+    private let textInsets = NSSize(width: 12, height: 8)
     private let font = NSFont.preferredFont(forTextStyle: .body)
 
-    private var lineHeight: CGFloat {
-        ceil(font.ascender - font.descender + font.leading)
-    }
+    private var lineHeight: CGFloat { ceil(font.ascender - font.descender + font.leading) }
+    private var minimumHeight: CGFloat { lineHeight + textInsets.height * 2 }
+    private var maximumHeight: CGFloat { minimumHeight + lineHeight * (maxVisibleLines - 1) }
 
-    private var minimumHeight: CGFloat {
-        lineHeight + textInsets.height * 2
-    }
-
-    private var maximumHeight: CGFloat {
-        minimumHeight + lineHeight * (maxVisibleLines - 1)
+    private var placeholder: String {
+        if let preview, !preview.isEmpty {
+            return preview
+        }
+        return "Ask your Familiar to do something…"
     }
 
     var body: some View {
@@ -33,7 +31,6 @@ struct PromptTextEditor: View {
         return ZStack(alignment: .topLeading) {
             PromptTextViewRepresentable(
                 text: $text,
-                preview: preview,
                 measuredHeight: $measuredHeight,
                 minimumHeight: minimumHeight,
                 font: font,
@@ -43,24 +40,9 @@ struct PromptTextEditor: View {
                 onBeginEditing: onBeginEditing
             )
             .frame(height: clampedHeight)
-            .background(
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(Color(nsColor: .controlBackgroundColor))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .stroke(Color.gray.opacity(0.25))
-            )
 
-            if let preview, !preview.isEmpty {
-                Text(preview)
-                    .font(.body)
-                    .foregroundStyle(.secondary)
-                    .padding(.top, textInsets.height)
-                    .padding(.leading, textInsets.width)
-                    .allowsHitTesting(false)
-            } else if text.isEmpty {
-                Text("Ask your Familiar to do something…")
+            if text.isEmpty {
+                Text(placeholder)
                     .font(.body)
                     .foregroundStyle(.secondary)
                     .padding(.top, textInsets.height)
@@ -74,7 +56,6 @@ struct PromptTextEditor: View {
 
 private struct PromptTextViewRepresentable: NSViewRepresentable {
     @Binding var text: String
-    let preview: String?
     @Binding var measuredHeight: CGFloat
     let minimumHeight: CGFloat
     let font: NSFont
@@ -95,55 +76,18 @@ private struct PromptTextViewRepresentable: NSViewRepresentable {
     }
 
     func makeNSView(context: Context) -> NSScrollView {
-        let scrollView = NSScrollView()
-        scrollView.drawsBackground = false
+        let scrollView = NSTextView.scrollableTextView()
+        scrollView.borderType = .noBorder
         scrollView.hasVerticalScroller = true
-        scrollView.hasHorizontalScroller = false
-        scrollView.autohidesScrollers = true
+        scrollView.drawsBackground = false
 
-        let textView = PromptNSTextView()
-        textView.isEditable = true
-        textView.isSelectable = true
-        textView.isRichText = false
-        textView.allowsUndo = true
-        textView.importsGraphics = false
-        textView.usesFindBar = true
-        textView.textContainerInset = textInsets
-        textView.textContainer?.lineFragmentPadding = 0
-        textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
-        textView.isVerticallyResizable = true
-        textView.isHorizontallyResizable = false
-        textView.textContainer?.widthTracksTextView = true
-        textView.font = font
-        textView.textColor = .controlTextColor
-        textView.insertionPointColor = .controlTextColor
-        textView.drawsBackground = true
-        textView.backgroundColor = .controlBackgroundColor
-        textView.usesAdaptiveColorMappingForDarkAppearance = true
-        textView.string = text
-
-        textView.returnKeyHandler = { modifiers in
-            if modifiers.contains(.shift) {
-                onBeginEditing()
-                textView.insertNewline(nil)
-            } else {
-                onSubmit()
-            }
+        guard let textView = scrollView.documentView as? PromptNSTextView else {
+            fatalError("Expected PromptNSTextView")
         }
 
-        textView.beginEditingHandler = {
-            onBeginEditing()
-        }
-
-        textView.pasteHandler = { value in
-            onPaste(value)
-        }
-
-        textView.delegate = context.coordinator
+        configure(textView: textView, coordinator: context.coordinator)
         context.coordinator.textView = textView
         context.coordinator.updateHeight()
-
-        scrollView.documentView = textView
         return scrollView
     }
 
@@ -156,12 +100,51 @@ private struct PromptTextViewRepresentable: NSViewRepresentable {
         }
         context.coordinator.isUpdatingFromParent = false
 
+        configure(textView: textView, coordinator: context.coordinator)
         context.coordinator.updateHeight()
 
         if context.environment.isFocused {
             DispatchQueue.main.async {
                 textView.window?.makeFirstResponder(textView)
             }
+        }
+    }
+
+    private func configure(textView: PromptNSTextView, coordinator: Coordinator) {
+        textView.font = font
+        textView.textColor = NSColor.labelColor
+        textView.insertionPointColor = NSColor.labelColor
+        textView.isRichText = false
+        textView.usesFontPanel = false
+        textView.usesFindBar = true
+        textView.importsGraphics = false
+        textView.textContainerInset = textInsets
+        textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
+        textView.isVerticallyResizable = true
+        textView.isHorizontallyResizable = false
+        textView.textContainer?.widthTracksTextView = true
+        textView.backgroundColor = .textBackgroundColor
+        textView.drawsBackground = true
+        textView.wantsLayer = true
+        textView.layer?.cornerRadius = 10
+        textView.layer?.masksToBounds = true
+        textView.layer?.backgroundColor = NSColor.textBackgroundColor.cgColor
+        textView.layer?.borderColor = NSColor.separatorColor.withAlphaComponent(0.4).cgColor
+        textView.layer?.borderWidth = 1
+
+        textView.returnKeyHandler = { modifiers in
+            if modifiers.contains(.shift) {
+                onBeginEditing()
+                textView.insertNewline(nil)
+            } else {
+                onSubmit()
+            }
+        }
+        textView.beginEditingHandler = {
+            onBeginEditing()
+        }
+        textView.pasteHandler = { value in
+            onPaste(value)
         }
     }
 
@@ -200,11 +183,10 @@ private struct PromptTextViewRepresentable: NSViewRepresentable {
 
         func updateHeight() {
             guard let textView else { return }
-            let layoutManager = textView.layoutManager
             guard let textContainer = textView.textContainer else { return }
-            layoutManager?.ensureLayout(for: textContainer)
-            let height = layoutManager?.usedRect(for: textContainer).height ?? minimumHeight
-            let newHeight = max(height + textView.textContainerInset.height * 2, minimumHeight)
+            textView.layoutManager?.ensureLayout(for: textContainer)
+            let usedRect = textView.layoutManager?.usedRect(for: textContainer) ?? .zero
+            let newHeight = max(usedRect.height + textView.textContainerInset.height * 2, minimumHeight)
             heightBinding.wrappedValue = newHeight
         }
     }
