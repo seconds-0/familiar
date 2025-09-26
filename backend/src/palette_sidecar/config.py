@@ -43,6 +43,7 @@ def load_settings() -> Settings:
     if CONFIG_FILE.exists():
         try:
             payload = json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
+            payload.pop("exa", None)
             return Settings(**payload)
         except Exception:
             return Settings()
