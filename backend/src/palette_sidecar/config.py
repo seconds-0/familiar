@@ -25,6 +25,23 @@ REPO_ROOT = _detect_repo_root(Path(__file__).resolve())
 BUNDLED_CLI = REPO_ROOT / "assets" / "claude-cli" / "cli.js"
 
 
+MODEL_CATALOG: dict[str, dict[str, Any]] = {
+    "claude-sonnet-4-20250514": {
+        "label": "Sonnet 4",
+        "input_cost_per_million": 3.0,
+        "output_cost_per_million": 15.0,
+    },
+    "claude-opus-4-1-20250805": {
+        "label": "Opus 4.1",
+        "input_cost_per_million": 15.0,
+        "output_cost_per_million": 75.0,
+    },
+}
+
+DEFAULT_MODEL = "claude-sonnet-4-20250514"
+DEFAULT_WORKSPACE_PATH = Path("/")
+
+
 @dataclass
 class Settings:
     """User-configurable settings persisted between launches."""
@@ -32,6 +49,8 @@ class Settings:
     anthropic_api_key: str | None = None
     workspace: str | None = None
     always_allow: dict[str, list[str]] = field(default_factory=dict)
+    auto_approve_tools: bool = False
+    model: str | None = None
 
 
 def _serialise(settings: Settings) -> dict[str, Any]:
@@ -102,12 +121,24 @@ def settings_response_payload(settings: Settings) -> dict[str, Any]:
         candidate = Path(workspace_path) / DEMO_FILE_NAME
         if candidate.exists():
             demo_file = str(candidate)
+    model_id = settings.model or DEFAULT_MODEL
     return {
         "hasApiKey": settings.anthropic_api_key is not None,
         "workspace": workspace_path,
         "workspaceDemoFile": demo_file,
         "alwaysAllow": settings.always_allow,
-        "defaultWorkspace": str(REPO_ROOT),
+        "autoApproveTools": settings.auto_approve_tools,
+        "defaultWorkspace": str(DEFAULT_WORKSPACE_PATH),
+        "model": model_id,
+        "models": [
+            {
+                "id": key,
+                "label": value["label"],
+                "inputCostPerMillion": value["input_cost_per_million"],
+                "outputCostPerMillion": value["output_cost_per_million"],
+            }
+            for key, value in MODEL_CATALOG.items()
+        ],
     }
 
 
