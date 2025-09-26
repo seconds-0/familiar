@@ -43,10 +43,7 @@ struct PromptTextEditor: View {
                 onBeginEditing: onBeginEditing
             )
             .frame(height: clampedHeight)
-            .background(
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(Color(nsColor: .textBackgroundColor))
-            )
+            .background(.thickMaterial, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .stroke(Color.gray.opacity(0.25))
@@ -116,8 +113,8 @@ private struct PromptTextViewRepresentable: NSViewRepresentable {
         textView.textContainer?.widthTracksTextView = true
         textView.font = font
         textView.textColor = .labelColor
-        textView.drawsBackground = false
-        textView.backgroundColor = .clear
+        textView.drawsBackground = true
+        textView.backgroundColor = .textBackgroundColor
         textView.string = text
 
         textView.returnKeyHandler = { modifiers in
