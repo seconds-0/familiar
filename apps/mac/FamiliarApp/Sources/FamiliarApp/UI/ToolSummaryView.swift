@@ -20,14 +20,20 @@ struct ToolSummaryView: View {
             }
 
             if let snippet = summary.snippet, !snippet.isEmpty {
-                ScrollView {
+                ScrollView(.vertical, showsIndicators: true) {
                     Text(snippet)
                         .font(.system(.callout, design: .monospaced))
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .textSelection(.enabled)
+                        .padding(.vertical, 4)
                 }
-                .frame(maxHeight: 160)
+                .frame(minHeight: 60, idealHeight: 120, maxHeight: 200)
+                .background(Color(nsColor: .textBackgroundColor))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color(nsColor: .separatorColor).opacity(0.3), lineWidth: 1)
+                )
             }
 
             if let content = summary.content, !content.isEmpty {

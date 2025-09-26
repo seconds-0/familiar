@@ -6,6 +6,8 @@ import asyncio
 import difflib
 import json
 import logging
+import os
+import re
 from contextlib import suppress
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -67,6 +69,7 @@ class ClaudeSession:
             permission_mode="default",
             model="claude-sonnet-4-20250514",
             system_prompt=STEEL_THREAD_SYSTEM_PROMPT,
+            mcp_servers=self._load_mcp_config(),
         )
         self._client: ClaudeSDKClient | None = None
         self._receiver_task: asyncio.Task[None] | None = None
@@ -112,6 +115,36 @@ class ClaudeSession:
     @property
     def is_ready(self) -> bool:
         return self._config.api_key is not None and self._config.workspace is not None
+
+    def _load_mcp_config(self) -> dict[str, Any]:
+        """Load MCP server configuration from .mcp.json file with environment variable substitution."""
+        config_path = Path(__file__).parent.parent.parent.parent / ".mcp.json"
+        try:
+            if config_path.exists():
+                with open(config_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+
+                # Substitute environment variables (${VAR_NAME} format)
+                def replace_env_var(match):
+                    var_name = match.group(1)
+                    env_value = os.getenv(var_name)
+                    if env_value is None:
+                        logger.warning("Environment variable %s not found, skipping MCP server configuration", var_name)
+                        return ""
+                    return env_value
+
+                content = re.sub(r'\$\{([^}]+)\}', replace_env_var, content)
+
+                # Only proceed if we have valid content after substitution
+                if content and not content.isspace():
+                    config = json.loads(content)
+                    return config.get("mcpServers", {})
+                else:
+                    logger.info("MCP configuration skipped due to missing environment variables")
+
+        except Exception as exc:
+            logger.warning("Failed to load MCP config from %s: %s", config_path, exc)
+        return {}
 
     # ------------------------------------------------------------------
     async def start(self) -> None:
