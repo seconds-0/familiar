@@ -22,6 +22,11 @@ let package = Package(
                 .product(name: "KeyboardShortcuts", package: "KeyboardShortcuts")
             ],
             path: "Sources/FamiliarApp"
+        ),
+        .testTarget(
+            name: "FamiliarAppTests",
+            dependencies: ["FamiliarApp"],
+            path: "Tests/FamiliarAppTests"
         )
     ]
 )
