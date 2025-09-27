@@ -85,6 +85,8 @@ struct FamiliarView: View {
                 }
             }
 
+            Spacer(minLength: 0)
+
             Divider()
 
             VStack(alignment: .leading, spacing: 4) {
@@ -125,7 +127,7 @@ struct FamiliarView: View {
                 }
             }
         }
-        .padding(20)
+        .padding(EdgeInsets(top: 20, leading: 20, bottom: 12, trailing: 20))
         .frame(
             minWidth: 600,
             idealWidth: 720,
@@ -135,7 +137,6 @@ struct FamiliarView: View {
             maxHeight: .infinity,
             alignment: .top
         )
-        .fixedSize(horizontal: false, vertical: true)
         .sheet(item: $viewModel.permissionRequest) { request in
             ApprovalSheet(request: request, isProcessing: viewModel.isProcessingPermission) { decision in
                 viewModel.respond(

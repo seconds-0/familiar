@@ -11,7 +11,7 @@ struct PromptTextEditor: View {
     @State private var contentHeight: CGFloat = 0
     @State private var isEditing: Bool = false
 
-    private let maxVisibleLines: CGFloat = 4
+    private let maxVisibleLines: CGFloat = 6
     private let textInsets = NSSize(width: 12, height: 8)
     private let font = NSFont.preferredFont(forTextStyle: .body)
 
@@ -35,27 +35,28 @@ struct PromptTextEditor: View {
     }
 
     var body: some View {
-        ZStack(alignment: .topLeading) {
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
+        let backgroundShape = RoundedRectangle(cornerRadius: 10, style: .continuous)
+
+        return PromptTextViewRepresentable(
+            text: $text,
+            contentHeight: $contentHeight,
+            isEditing: $isEditing,
+            minimumHeight: minimumHeight,
+            font: font,
+            textInsets: textInsets,
+            onSubmit: onSubmit,
+            onPaste: onPaste,
+            onBeginEditing: onBeginEditing
+        )
+        .frame(minHeight: visibleHeight, maxHeight: visibleHeight, alignment: .top)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .fixedSize(horizontal: false, vertical: true)
+        .animation(.easeInOut(duration: 0.15), value: visibleHeight)
+        .background(
+            backgroundShape
                 .fill(Color(nsColor: .textBackgroundColor))
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .stroke(Color(nsColor: .separatorColor).opacity(0.4), lineWidth: 1)
-
-            PromptTextViewRepresentable(
-                text: $text,
-                contentHeight: $contentHeight,
-                isEditing: $isEditing,
-                minimumHeight: minimumHeight,
-                font: font,
-                textInsets: textInsets,
-                onSubmit: onSubmit,
-                onPaste: onPaste,
-                onBeginEditing: onBeginEditing
-            )
-            .frame(height: visibleHeight)
-            .animation(.easeInOut(duration: 0.15), value: visibleHeight)
-            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-
+        )
+        .overlay(alignment: .topLeading) {
             if text.isEmpty && !isEditing {
                 Text(placeholder)
                     .font(.body)
@@ -67,8 +68,11 @@ struct PromptTextEditor: View {
                     .animation(.easeInOut(duration: 0.1), value: isEditing)
             }
         }
-        .frame(height: visibleHeight, alignment: .top)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .clipShape(backgroundShape)
+        .overlay(
+            backgroundShape
+                .stroke(Color(nsColor: .separatorColor).opacity(0.4), lineWidth: 1)
+        )
     }
 }
 
@@ -307,7 +311,7 @@ extension PromptTextEditor {
 func calculatePromptContentHeight(textView: NSTextView, minimumHeight: CGFloat) -> CGFloat {
     let font = textView.font ?? NSFont.preferredFont(forTextStyle: .body)
     let lineHeight = PromptTextEditor.lineHeight(for: font)
-    let maxVisibleLines: CGFloat = 4
+    let maxVisibleLines: CGFloat = 6
     let maximumHeight = minimumHeight + lineHeight * (maxVisibleLines - 1)
 
     guard let textContainer = textView.textContainer,
