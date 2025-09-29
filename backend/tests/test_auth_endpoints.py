@@ -5,8 +5,8 @@ from fastapi.testclient import TestClient
 
 from palette_sidecar import api
 from palette_sidecar import config as sidecar_config
-from palette_sidecar import claude_service
-from palette_sidecar.claude_service import ClaudeCLIUnavailableError
+from palette_sidecar import auth_coordinator
+from palette_sidecar.claude_cli import ClaudeCLIUnavailableError
 
 
 class StubStatus:
@@ -98,9 +98,9 @@ async def test_fetch_status_skips_unknown_option(monkeypatch) -> None:
         return 0, "Signed in as tester@example.com", ""
 
     # Patch where the function is used, not where it's defined
-    monkeypatch.setattr(claude_service, "run_cli", fake_run)
+    monkeypatch.setattr(auth_coordinator, "run_cli", fake_run)
 
-    status = await claude_service.fetch_claude_session_status()
+    status = await auth_coordinator.fetch_claude_session_status()
     assert status.active is True
     assert status.account == "tester@example.com"
     assert len(calls) >= 2
@@ -112,10 +112,10 @@ async def test_login_reports_cli_unavailable(monkeypatch) -> None:
         raise ClaudeCLIUnavailableError("Claude CLI missing")
 
     # Patch where the function is used, not where it's defined
-    monkeypatch.setattr(claude_service, "spawn_cli", fake_spawn)
+    monkeypatch.setattr(auth_coordinator, "spawn_cli", fake_spawn)
 
     # begin_login() starts async task but may complete immediately on error
-    status = await claude_service.login_coordinator.begin_login()
+    status = await auth_coordinator.login_coordinator.begin_login()
 
     # When spawn_cli fails immediately, the task completes synchronously
     # So pending may be False and we get the error immediately
@@ -123,6 +123,6 @@ async def test_login_reports_cli_unavailable(monkeypatch) -> None:
     assert status.message == "Claude CLI missing"
 
     # Verify completion returns the same result
-    final = await claude_service.login_coordinator.wait_for_completion()
+    final = await auth_coordinator.login_coordinator.wait_for_completion()
     assert final.active is False
     assert final.message == "Claude CLI missing"
