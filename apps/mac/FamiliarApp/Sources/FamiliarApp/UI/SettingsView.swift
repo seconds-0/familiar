@@ -344,18 +344,44 @@ struct SettingsView: View {
         if !preserveStatus {
             switch selectedAuthMode {
             case .claudeAi:
-                updateStatusForClaudeMode()
+                updateStatusMessage(mode: .claudeAi, authenticated: hasClaudeSession, account: claudeAccount)
             case .apiKey:
-                if settings.hasApiKey {
-                    statusMessage = "API key configured in sidecar."
-                    statusColor = .green
-                } else {
-                    updateStatusForApiMode()
-                }
+                updateStatusMessage(mode: .apiKey, authenticated: settings.hasApiKey, hasApiKey: settings.hasApiKey)
             }
         }
 
         appState.apply(settings: settings)
+    }
+
+    private func updateStatusMessage(
+        mode: AuthMode,
+        authenticated: Bool,
+        account: String? = nil,
+        hasApiKey: Bool = false,
+        overrideMessage: String? = nil
+    ) {
+        if let override = overrideMessage {
+            statusMessage = override
+            statusColor = .secondary
+            return
+        }
+
+        switch (mode, authenticated) {
+        case (.claudeAi, true):
+            statusMessage = account.map { "Signed in as \($0)." } ?? "Claude account connected."
+            statusColor = .green
+        case (.claudeAi, false):
+            statusMessage = "Sign in to Claude.ai to enable Claude Code."
+            statusColor = .orange
+        case (.apiKey, true) where hasApiKey:
+            statusMessage = "API key configured in sidecar."
+            statusColor = .green
+        case (.apiKey, _):
+            statusMessage = apiKey.isEmpty
+                ? "Enter your Anthropic API key to enable Claude Code."
+                : "API key loaded. Save to apply."
+            statusColor = apiKey.isEmpty ? .orange : .secondary
+        }
     }
 
     private func updateStatusForClaudeMode(with response: ClaudeAuthState? = nil) {
@@ -363,28 +389,11 @@ struct SettingsView: View {
             hasClaudeSession = response.isAuthenticated
             claudeAccount = response.account
         }
-
-        if hasClaudeSession {
-            if let account = claudeAccount, !account.isEmpty {
-                statusMessage = "Signed in as \(account)."
-            } else {
-                statusMessage = "Claude account connected."
-            }
-            statusColor = .green
-        } else {
-            statusMessage = "Sign in to Claude.ai to enable Claude Code."
-            statusColor = .orange
-        }
+        updateStatusMessage(mode: .claudeAi, authenticated: hasClaudeSession, account: claudeAccount)
     }
 
     private func updateStatusForApiMode() {
-        if apiKey.isEmpty {
-            statusMessage = "Enter your Anthropic API key to enable Claude Code."
-            statusColor = .orange
-        } else {
-            statusMessage = "API key loaded. Save to apply."
-            statusColor = .secondary
-        }
+        updateStatusMessage(mode: .apiKey, authenticated: !apiKey.isEmpty)
     }
 
     private func handleAuthModeChange() {
