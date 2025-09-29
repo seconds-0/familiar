@@ -18,6 +18,7 @@ def test_query_stream_emits_permission_then_result(monkeypatch) -> None:
             "toolName": "Write",
             "input": {"path": "note.txt"},
             "path": "note.txt",
+            "canonicalPath": "/tmp/workspace/note.txt",
         },
         {
             "type": "tool_result",

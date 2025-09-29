@@ -36,6 +36,15 @@ wheels = [
 ]
 
 [[package]]
+name = "backports-asyncio-runner"
+version = "1.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/8e/ff/70dca7d7cb1cbc0edb2c6cc0c38b65cba36cccc491eca64cabd5fe7f8670/backports_asyncio_runner-1.2.0.tar.gz", hash = "sha256:a5aa7b2b7d8f8bfcaa2b57313f70792df84e32a2a746f585213373f900b42162", size = 69893, upload-time = "2025-07-02T02:27:15.685Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a0/59/76ab57e3fe74484f48a53f8e337171b4a2349e506eabe136d7e01d059086/backports_asyncio_runner-1.2.0-py3-none-any.whl", hash = "sha256:0da0a936a8aeb554eccb426dc55af3ba63bcdc69fa1a600b5bb305413a4477b5", size = 12313, upload-time = "2025-07-02T02:27:14.263Z" },
+]
+
+[[package]]
 name = "certifi"
 version = "2025.8.3"
 source = { registry = "https://pypi.org/simple" }
@@ -45,17 +54,17 @@ wheels = [
 ]
 
 [[package]]
-name = "claude-code-sdk"
-version = "0.0.23"
+name = "claude-agent-sdk"
+version = "0.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
     { name = "mcp" },
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/24/57/3d84b1e48fa8d7b0f14d5511cb21270e6d7b6e8930a19795c5aa6f3705c6/claude_code_sdk-0.0.23.tar.gz", hash = "sha256:17098365e03520637375a8dafab9e93ad2b50463ca1df6d744c5a85a450667e6", size = 41173, upload-time = "2025-09-18T02:45:54.492Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/dd/21/9466f7c38cf02f0a4e5ddeeba7450ef4cddbf21945d2497eac4637f463dc/claude_agent_sdk-0.1.0.tar.gz", hash = "sha256:f60d148f8e9f69991582863a6cdbf337ff908c1bd7d5de2f7845eb830f72d2a5", size = 42827, upload-time = "2025-09-28T23:39:33.333Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b5/8d/8bb9db486fc934884420c9543eefb897b110df99f8605388172c0f3c1c3f/claude_code_sdk-0.0.23-py3-none-any.whl", hash = "sha256:5260d940f8a38d9b6eb93f443711b19f2f9130dedf662c2d73a4d78b8d1dc1f0", size = 30916, upload-time = "2025-09-18T02:45:53.555Z" },
+    { url = "https://files.pythonhosted.org/packages/60/27/0081f232b1119d3973ce5301b31f407bb604ca4434152d39ff62b9e18a0c/claude_agent_sdk-0.1.0-py3-none-any.whl", hash = "sha256:92d9a83689a6a3a54f69aac1224dd2004109bf1fecd0272e2241251747afdb3d", size = 32635, upload-time = "2025-09-28T23:39:32.184Z" },
 ]
 
 [[package]]
@@ -323,7 +332,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "anyio" },
-    { name = "claude-code-sdk" },
+    { name = "claude-agent-sdk" },
     { name = "fastapi" },
     { name = "pydantic" },
     { name = "python-dotenv" },
@@ -337,21 +346,29 @@ dev = [
     { name = "pytest" },
     { name = "ruff" },
 ]
+test = [
+    { name = "httpx" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+]
 
 [package.metadata]
 requires-dist = [
     { name = "anyio", specifier = ">=4.4" },
-    { name = "claude-code-sdk", specifier = ">=0.0.23" },
+    { name = "claude-agent-sdk", specifier = ">=0.1.0" },
     { name = "fastapi", specifier = ">=0.115" },
+    { name = "httpx", marker = "extra == 'test'", specifier = ">=0.24.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.10" },
     { name = "pydantic", specifier = ">=2.7" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3" },
+    { name = "pytest", marker = "extra == 'test'", specifier = ">=7.0" },
+    { name = "pytest-asyncio", marker = "extra == 'test'", specifier = ">=0.21.0" },
     { name = "python-dotenv", specifier = ">=1.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.5.0" },
     { name = "sse-starlette", specifier = ">=1.8" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.30" },
 ]
-provides-extras = ["dev"]
+provides-extras = ["dev", "test"]
 
 [[package]]
 name = "pathspec"
@@ -512,6 +529,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/a3/5c/00a0e072241553e1a7496d638deababa67c5058571567b92a7eaa258397c/pytest-8.4.2.tar.gz", hash = "sha256:86c0d0b93306b961d58d62a4db4879f27fe25513d4b969df351abdddb3c30e01", size = 1519618, upload-time = "2025-09-04T14:34:22.711Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl", hash = "sha256:872f880de3fc3a5bdc88a11b39c9710c3497a547cfa9320bc3c5e62fbf272e79", size = 365750, upload-time = "2025-09-04T14:34:20.226Z" },
+]
+
+[[package]]
+name = "pytest-asyncio"
+version = "1.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "backports-asyncio-runner", marker = "python_full_version < '3.11'" },
+    { name = "pytest" },
+    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/42/86/9e3c5f48f7b7b638b216e4b9e645f54d199d7abbbab7a64a13b4e12ba10f/pytest_asyncio-1.2.0.tar.gz", hash = "sha256:c609a64a2a8768462d0c99811ddb8bd2583c33fd33cf7f21af1c142e824ffb57", size = 50119, upload-time = "2025-09-12T07:33:53.816Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/04/93/2fa34714b7a4ae72f2f8dad66ba17dd9a2c793220719e736dda28b7aec27/pytest_asyncio-1.2.0-py3-none-any.whl", hash = "sha256:8e17ae5e46d8e7efe51ab6494dd2010f4ca8dae51652aa3c8d55acf50bfb2e99", size = 15095, upload-time = "2025-09-12T07:33:52.639Z" },
 ]
 
 [[package]]

@@ -3,16 +3,21 @@
 ## Project Structure & Module Organization
 - Planning artifacts live in `docs/`; evolve `prd.md` for product scope and capture SDK learnings in `claude-code-sdk.md` so the native build inherits accurate context.
 - `backend/` hosts the FastAPI sidecar managed by `uv`; keep Python source in `src/palette_sidecar/` and document new endpoints alongside SDK changes.
-- `apps/mac/PaletteApp/` is the SwiftUI summon window prototype managed via SwiftPM; organise UI, services, and support helpers within the existing subfolders.
+- `apps/mac/FamiliarApp/` is the SwiftUI summon window prototype managed via SwiftPM; organise UI, services, and support helpers within the existing subfolders.
 - `assets/claude-cli/` bundles the Claude CLI (JS, type defs, wasm); treat it as the reference toolchain when validating native integrations or scripted experiments.
 - `AGENTS.md` and `CLAUDE.md` define collaboration contracts for human and automated contributors—update both whenever workflows or guardrails change.
 
 ## Build, Test, and Development Commands
 - Backend: `cd backend && uv run uvicorn palette_sidecar.api:app --host 127.0.0.1 --port 8765 --reload` streams Claude responses locally.
-- Backend tests: `cd backend && uv run --with pytest pytest -q` exercises the SSE smoke tests.
-- SwiftUI app: `cd apps/mac/PaletteApp && swift build` to resolve packages, then open the generated `.build/debug/PaletteApp.app` or `open Package.swift` in Xcode for iterative work.
+- Backend tests: `cd backend && uv run pytest tests/ -v` exercises the authentication and SSE smoke tests.
+- SwiftUI app: `cd apps/mac/FamiliarApp && swift build` to resolve packages, then open the generated `.build/debug/FamiliarApp.app` or `open Package.swift` in Xcode for iterative work.
 - Smoke-test the bundled CLI with `node assets/claude-cli/cli.js --help`; use this command to confirm Node dependencies or wasm binaries remain intact after updates.
 - Document additional scripts (e.g., MCP installers, lint configs) in their respective subprojects and surface the commands here for quick discovery.
+- Swift unit tests:
+  - Direct: `swift test --package-path apps/mac/FamiliarApp`
+  - Script: `./test-swift.sh`
+  - Filters: `./test-swift.sh --filter PromptTextEditorTests` or `./test-swift.sh --filter testHeightCalculationPreventsjitter`
+  - Verbose/coverage: pass any `swift test` flags, e.g. `./test-swift.sh --verbose` or `./test-swift.sh --enable-code-coverage`
 
 - Packaging automation runs via `.github/workflows/steel-thread.yml`, which invokes `scripts/steel-thread-package.sh` on macOS runners and publishes the `dist/steel-thread/` payload with checksums.
 

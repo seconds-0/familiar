@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(git rev-parse --show-toplevel)"
+
+echo "✅ Running Swift unit tests…"
+pushd "$ROOT_DIR/apps/mac/FamiliarApp" >/dev/null
+swift test
+popd >/dev/null

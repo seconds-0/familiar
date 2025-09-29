@@ -1,0 +1,3 @@
+# Steel Thread Notes
+
+This file is modified by the Palette Steel Thread demo.

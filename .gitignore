@@ -26,6 +26,25 @@ yarn-error.log*
 dist/
 build/
 out/
+.build/
+
+# Swift Package Manager
+.swiftpm/
+*.xcodeproj
+*.xcworkspace
+xcuserdata/
+DerivedData/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
 # Logs
 logs/
@@ -36,4 +55,3 @@ logs/
 .cache/
 coverage/
 .venv/
-DerivedData/

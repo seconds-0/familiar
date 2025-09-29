@@ -1,4 +1,4 @@
-# Claude for macOS (Native App)
+# Familiar — Claude for macOS
 
 > 🚧 **Project Status**: Architecture Planning Phase
 > Designing a native macOS application that delivers Claude Code end-to-end
@@ -57,7 +57,7 @@ familiar/
 │   └── src/palette_sidecar/
 ├── apps/
 │   └── mac/
-│       └── PaletteApp/        # SwiftUI summon window prototype (SwiftPM)
+│       └── FamiliarApp/       # SwiftUI summon window prototype (SwiftPM)
 ├── assets/
 │   └── claude-cli/            # Bundled Claude CLI runtime
 ├── AGENTS.md                  # Contributor guidelines
@@ -75,10 +75,11 @@ familiar/
    ```
 3. Build and launch the macOS app:
    ```bash
-   cd apps/mac/PaletteApp
-   swift run PaletteApp
+   cd apps/mac/FamiliarApp
+   swift build
+   open .build/debug/FamiliarApp.app
    ```
-   (Alternatively, run `./scripts/steel-thread-package.sh` from the repo root to stage `dist/steel-thread/PaletteApp.app`.)
+   (Alternatively, run `./scripts/steel-thread-package.sh` from the repo root to stage `dist/steel-thread/FamiliarApp.app`.)
 4. Open the menu bar preferences, paste your Anthropic API key, and select a workspace directory. The sidecar seeds `steel-thread-demo.txt` inside that folder.
 5. Summon the palette with `⌥Space`, request an edit (e.g., “Append a bullet to the steel thread note”), approve the Write tool, and watch the transcript update with the applied change summary.
 

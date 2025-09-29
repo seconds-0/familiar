@@ -14,25 +14,130 @@ Active work involves comparing desktop frameworks, defining IPC boundaries, and 
 
 ## Collaboration Principles
 
-1. Treat `docs/` as the source of truth for requirements, SDK behaviors, and architectural experiments.
+1. **Documentation First**: Treat `docs/` as the source of truth. Start with **[docs/00-README.md](docs/00-README.md)** for navigation.
+   - Reference docs: `docs/reference/` (claude-code-sdk.md, swiftui-reference.md)
+   - Implementation guides: `docs/implementation/` (phased-enhancements.md, steel-thread-v1.md)
+   - Design specifications: `docs/design/` (aesthetic-system.md, visual-improvements.md)
+   - Future explorations: `docs/future/`
 2. Develop the Python sidecar inside `backend/` using `uv` tooling; keep FastAPI endpoints documented and synced with the Swift client.
 3. Keep `assets/claude-cli/` intact; it provides the canonical CLI runtime for local validation and should be smoke-tested after dependency changes.
-4. Update `AGENTS.md` whenever contributor workflows or security expectations shift so human teammates stay aligned with automated guidance here.
-5. Prefer additive planning artifacts (diagrams, ADRs) over speculative code until an architecture option is approved.
+4. Run Swift unit tests from anywhere via `swift test --package-path apps/mac/FamiliarApp` or the convenience script `./test-swift.sh` (supports `--filter`, `--verbose`, `--enable-code-coverage`, etc.).
+5. Update `AGENTS.md` whenever contributor workflows or security expectations shift so human teammates stay aligned with automated guidance here.
+6. Prefer additive planning artifacts (diagrams, ADRs) over speculative code until an architecture option is approved.
+
+## Framework Research & Documentation
+
+**MANDATORY: Always Use EXA-CODE MCP Server**
+
+For all framework-related questions, implementation patterns, and API research, ALWAYS use the `get_code_context_exa` tool before implementing or making architectural decisions. This is especially critical for:
+
+### Primary Framework Targets
+- **SwiftUI** - UI components, navigation, state management, macOS-specific APIs
+- **FastAPI** - Async endpoints, dependency injection, middleware, SSE streaming
+- **Claude Code SDK** - Session management, MCP server integration, tool execution patterns
+
+### EXA-CODE Usage Patterns
+
+**Before implementing any feature:**
+```
+Use get_code_context_exa to search for:
+- "SwiftUI [specific component] best practices examples"
+- "FastAPI [specific pattern] implementation guide"
+- "Claude Code SDK [functionality] usage examples"
+```
+
+**For debugging and troubleshooting:**
+```
+Use get_code_context_exa to find:
+- "SwiftUI [error/issue] solutions GitHub"
+- "FastAPI [problem] troubleshooting examples"
+- "Claude Code SDK [specific issue] workarounds"
+```
+
+**For architecture decisions:**
+```
+Use get_code_context_exa to research:
+- "[Framework] [pattern] vs [alternative] comparison"
+- "[Technology] production examples real-world"
+- "[Integration] implementation patterns 2024 2025"
+```
+
+### Integration with Local Search
+
+1. **First**: Use `get_code_context_exa` for external framework knowledge
+2. **Then**: Use targeted `rg` queries for local codebase exploration
+3. **Finally**: Reference `docs/` for project-specific architectural decisions
+
+This approach ensures you have the most current framework knowledge before diving into implementation.
 
 ## Search & Analysis Tips
 
 - Use targeted `rg` queries or TypeScript-aware tooling to explore the codebase. Avoid wide wildcard searches that inflate context; narrow by directory or file type.
-- When investigating SDK behavior, reference `docs/claude-code-sdk.md` before diving into external sources.
+- When investigating SDK behavior, reference `docs/reference/claude-code-sdk.md` before diving into external sources.
+- For implementation patterns, check `docs/implementation/` guides for established approaches.
 - Summarize findings with file paths and line numbers so future contributors can trace decisions quickly.
+
+## MCP Server Configuration
+
+The project uses MCP (Model Context Protocol) servers for enhanced AI capabilities. Configuration is managed in `.mcp.json`:
+
+### Active MCP Servers
+
+**EXA-CODE Server** (Production Ready)
+- **Purpose**: Framework research, code examples, documentation search
+- **Transport**: SSE (Server-Sent Events)
+- **Endpoint**: `https://mcp.exa.ai/mcp`
+- **Tools Available**:
+  - `get_code_context_exa` - Search code examples and documentation
+  - `web_search_exa` - Enhanced web search for development
+  - `company_research` - Research companies and organizations
+  - `linkedin_search` - LinkedIn profile and company search
+
+### Configuration Management
+
+- **File**: `.mcp.json` (project root)
+- **Loading**: Automatic via `claude_service.py:117-127`
+- **Schema**: Must include `type` field (`"sse"`, `"stdio"`, `"http"`)
+- **Authentication**: API keys stored in `headers.Authorization`
+
+### Adding New MCP Servers
+
+1. Update `.mcp.json` with new server configuration
+2. Restart backend service to load changes
+3. Test with: `uv run python -c "from src.palette_sidecar.claude_service import session; print(session._options.mcp_servers)"`
 
 ## Build & Test Expectations
 
 - Backend lives under `backend/`; run `uv run uvicorn palette_sidecar.api:app --host 127.0.0.1 --port 8765 --reload` for local development.
-- Execute backend smoke tests with `uv run --with pytest pytest -q` after modifying the FastAPI sidecar or Claude session logic.
-- The Swift client sits under `apps/mac/PaletteApp/`; resolve dependencies with `swift build` or open `Package.swift` in Xcode for UI iteration.
+- Execute backend tests with `uv run pytest tests/ -v` after modifying the FastAPI sidecar or Claude session logic.
+- The Swift client sits under `apps/mac/FamiliarApp/`; resolve dependencies with `swift build` or open `Package.swift` in Xcode for UI iteration.
 - Validate `assets/claude-cli/cli.js` with `node assets/claude-cli/cli.js --help` after modifying bundled tooling.
-- Propose testing strategies aligned with the chosen stack (e.g., pytest, XCTest) and capture rationale in `docs/prd.md` or a dedicated testing note.
+- Propose testing strategies aligned with the chosen stack (e.g., pytest, XCTest) and capture rationale in implementation docs.
+
+### Testing Commands (from project root)
+
+**Swift Tests:**
+```bash
+# Option 1: Direct command
+swift test --package-path apps/mac/FamiliarApp
+
+# Option 2: Convenience script
+./test-swift.sh
+
+# Option 3: With filters
+./test-swift.sh --filter PromptTextEditorTests
+```
+
+**Backend Tests:**
+```bash
+cd backend && uv run pytest tests/ -v
+```
+
+**All Tests:**
+```bash
+# Run both Swift and Python tests
+./test-swift.sh && cd backend && uv run pytest tests/ -v
+```
 
 ## Architecture Requirements
 

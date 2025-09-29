@@ -25,6 +25,12 @@ REPO_ROOT = _detect_repo_root(Path(__file__).resolve())
 BUNDLED_CLI = REPO_ROOT / "assets" / "claude-cli" / "cli.js"
 
 
+AUTH_MODE_API_KEY = "api_key"
+AUTH_MODE_CLAUDE = "claude_ai"
+
+DEFAULT_WORKSPACE_PATH = Path("/")
+
+
 @dataclass
 class Settings:
     """User-configurable settings persisted between launches."""
@@ -32,6 +38,9 @@ class Settings:
     anthropic_api_key: str | None = None
     workspace: str | None = None
     always_allow: dict[str, list[str]] = field(default_factory=dict)
+    auth_mode: str = AUTH_MODE_CLAUDE
+    claude_session_active: bool = False
+    claude_account: str | None = None
 
 
 def _serialise(settings: Settings) -> dict[str, Any]:
@@ -43,6 +52,7 @@ def load_settings() -> Settings:
     if CONFIG_FILE.exists():
         try:
             payload = json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
+            payload.pop("exa", None)
             return Settings(**payload)
         except Exception:
             return Settings()
@@ -60,12 +70,12 @@ def ensure_workspace(path_str: str) -> Path:
 
     marker = path / WORKSPACE_MARKER
     if not marker.exists():
-        marker.write_text("Palette Steel Thread workspace\n", encoding="utf-8")
+        marker.write_text("Familiar Steel Thread workspace\n", encoding="utf-8")
 
     demo_file = path / DEMO_FILE_NAME
     if not demo_file.exists():
         demo_file.write_text(
-            "# Steel Thread Notes\n\nThis file is modified by the Palette Steel Thread demo.\n",
+            "# Steel Thread Notes\n\nThis file is modified by the Familiar Steel Thread demo.\n",
             encoding="utf-8",
         )
 
@@ -79,6 +89,15 @@ def apply_environment(api_key: str | None) -> None:
         os.environ.pop("ANTHROPIC_API_KEY", None)
 
     ensure_cli_environment()
+
+
+def apply_auth_environment(settings: Settings) -> None:
+    """Apply environment variables based on the selected auth mode."""
+
+    if settings.auth_mode == AUTH_MODE_API_KEY:
+        apply_environment(settings.anthropic_api_key)
+    else:
+        apply_environment(None)
 
 
 def ensure_cli_environment() -> None:
@@ -95,18 +114,32 @@ def detect_prerequisites() -> dict[str, bool]:
 
 
 def settings_response_payload(settings: Settings) -> dict[str, Any]:
+    """Build settings response payload for API endpoints.
+
+    This function is retained for backwards compatibility but now uses
+    the Pydantic SettingsResponse model for serialization.
+    """
+    from .models import SettingsResponse
+
     workspace_path = settings.workspace
     demo_file = None
     if workspace_path:
-        demo_candidate = Path(workspace_path) / DEMO_FILE_NAME
-        if demo_candidate.exists():
-            demo_file = str(demo_candidate)
-    return {
-        "hasApiKey": settings.anthropic_api_key is not None,
-        "workspace": workspace_path,
-        "workspaceDemoFile": demo_file,
-        "alwaysAllow": settings.always_allow,
-    }
+        candidate = Path(workspace_path) / DEMO_FILE_NAME
+        if candidate.exists():
+            demo_file = str(candidate)
+
+    response = SettingsResponse(
+        has_api_key=settings.anthropic_api_key is not None,
+        has_claude_session=settings.claude_session_active,
+        claude_account_email=settings.claude_account,
+        workspace=workspace_path,
+        workspace_demo_file=demo_file,
+        always_allow=settings.always_allow,
+        default_workspace=str(DEFAULT_WORKSPACE_PATH),
+        auth_mode=settings.auth_mode,
+    )
+
+    return response.model_dump(by_alias=True)
 
 
 def register_always_allow(settings: Settings, *, tool: str, path: Path) -> None:

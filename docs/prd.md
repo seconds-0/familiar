@@ -45,11 +45,11 @@ I’m assuming macOS first for speed and fit-and-finish, with a portable backend
 familiar/
 ├── apps/
 │   └── mac/
-│       ├── PaletteApp.xcodeproj
-│       ├── PaletteApp/              # SwiftUI app target
+│       ├── FamiliarApp.xcodeproj
+│       ├── FamiliarApp/             # SwiftUI app target
 │       │   ├── App.swift
 │       │   ├── UI/
-│       │   │   ├── PaletteWindow.swift
+│       │   │   ├── FamiliarWindow.swift
 │       │   │   ├── StreamView.swift
 │       │   │   ├── ApprovalsSheet.swift
 │       │   │   ├── SettingsView.swift
@@ -121,7 +121,7 @@ The Steel Thread is the smallest, fully polished workflow that proves the produc
 - Time from fresh clone to working Steel Thread ≤ 15 minutes when following the documented steps.
 - Token stream visible within 1 second of pressing return on a query (M2 baseline).
 - File action writes to the intended sandbox path, persists to disk, and surfaces a diff/summary in the transcript.
-- Palette toggles cleanly and global shortcut can be rebound without restart.
+- Familiar toggles cleanly and the global shortcut can be rebound without restart.
 
 **Scope Guardrails**
 
@@ -151,7 +151,7 @@ class ClaudeSession:
             cwd=cwd,
             # start with no tools; we will gate tools later
             allowed_tools=[], 
-            permission_mode="ask"   # be conservative initially
+            permission_mode="default"   # be conservative initially
         )
         self.client: ClaudeSDKClient | None = None
 
@@ -199,7 +199,7 @@ The SDK gives us persistent sessions and streaming. We render plain text right a
 **macOS global hotkey and summon window**
 
 ```swift
-// apps/mac/PaletteApp/Support/Hotkey.swift
+// apps/mac/FamiliarApp/Support/Hotkey.swift
 import KeyboardShortcuts
 
 extension KeyboardShortcuts.Name {
@@ -211,14 +211,14 @@ extension KeyboardShortcuts.Name {
 ```
 
 ```swift
-// apps/mac/PaletteApp/UI/PaletteWindow.swift
+// apps/mac/FamiliarApp/UI/FamiliarWindow.swift
 import SwiftUI
 import KeyboardShortcuts
 
-final class PaletteWindowController: NSWindowController {
-    static let shared = PaletteWindowController()
+final class FamiliarWindowController: NSWindowController {
+    static let shared = FamiliarWindowController()
     private init() {
-        let hosting = NSHostingController(rootView: PaletteView())
+        let hosting = NSHostingController(rootView: FamiliarView())
         let panel = NSPanel(contentViewController: hosting)
         panel.titleVisibility = .hidden
         panel.isFloatingPanel = true
@@ -237,7 +237,7 @@ final class PaletteWindowController: NSWindowController {
     }
 }
 
-struct PaletteView: View {
+struct FamiliarView: View {
     @State private var input = ""
     @State private var output = ""
     var body: some View {
@@ -249,7 +249,7 @@ struct PaletteView: View {
         .padding(16)
         .frame(width: 680, height: 420)
         .onAppear {
-            KeyboardShortcuts.onKeyUp(for: .summon) { PaletteWindowController.shared.toggle() }
+            KeyboardShortcuts.onKeyUp(for: .summon) { FamiliarWindowController.shared.toggle() }
         }
     }
     func run() {
@@ -329,7 +329,7 @@ async def pre_tool_use(input_data, tool_use_id, context):
 self.options = ClaudeCodeOptions(
     # …
     allowed_tools=["Read", "Write", "Edit", "MultiEdit", "Bash"],  # plus MCPs later
-    permission_mode="ask",
+    permission_mode="default",
     hooks={"PreToolUse": [HookMatcher(matcher="*", hooks=[pre_tool_use])]}
 )
 ```
