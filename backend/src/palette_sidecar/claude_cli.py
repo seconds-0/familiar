@@ -10,17 +10,13 @@ import asyncio
 import json
 import logging
 import os
-import re
 from pathlib import Path
 
 from asyncio.subprocess import PIPE
 
-logger = logging.getLogger(__name__)
+from .patterns import extract_email
 
-# Regular expressions for parsing CLI output
-ANSI_ESCAPE_RE = re.compile(r"\x1B\[[0-?]*[ -/]*[@-~]")
-URL_PATTERN = re.compile(r"https?://[^\s]+")
-EMAIL_PATTERN = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
+logger = logging.getLogger(__name__)
 
 
 class ClaudeCLIUnavailableError(RuntimeError):
@@ -29,8 +25,7 @@ class ClaudeCLIUnavailableError(RuntimeError):
 
 def parse_account_email(output: str) -> str | None:
     """Extract an email address from CLI output."""
-    match = EMAIL_PATTERN.search(output)
-    return match.group(0) if match else None
+    return extract_email(output)
 
 
 async def spawn_cli(*args: str) -> asyncio.subprocess.Process:

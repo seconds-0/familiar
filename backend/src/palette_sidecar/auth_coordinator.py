@@ -11,13 +11,12 @@ import logging
 from dataclasses import dataclass
 
 from .claude_cli import (
-    ANSI_ESCAPE_RE,
-    URL_PATTERN,
     ClaudeCLIUnavailableError,
     parse_account_email,
     run_cli,
     spawn_cli,
 )
+from .patterns import extract_url, strip_ansi
 
 logger = logging.getLogger(__name__)
 
@@ -232,7 +231,7 @@ class ClaudeLoginCoordinator:
     def _record_output(self, text: str) -> None:
         """Parse and record CLI output, extracting login URLs and messages."""
 
-        cleaned = ANSI_ESCAPE_RE.sub("", text).replace("\r", "\n")
+        cleaned = strip_ansi(text).replace("\r", "\n")
         for line in cleaned.splitlines():
             line = line.strip()
             if not line:
@@ -244,9 +243,9 @@ class ClaudeLoginCoordinator:
             if self._initial_event and not self._initial_event.is_set():
                 self._initial_event.set()
             if not self._login_url:
-                match = URL_PATTERN.search(line)
-                if match:
-                    self._login_url = match.group(0).rstrip(")")
+                url = extract_url(line)
+                if url:
+                    self._login_url = url
 
     async def _run_login_flow(self) -> ClaudeAuthStatus:
         """Execute the Claude CLI login process and return final status."""
