@@ -115,90 +115,23 @@ struct SettingsView: View {
     }
 
     private var apiKeySection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Provide an Anthropic API key if you prefer manual authentication.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-
-            HStack(spacing: 8) {
-                Group {
-                    if isApiKeyVisible {
-                        TextField("Anthropic API Key", text: $apiKey)
-                    } else {
-                        SecureField("Anthropic API Key", text: $apiKey)
-                    }
-                }
-                .textFieldStyle(.roundedBorder)
-
-                Button {
-                    let next = !isApiKeyVisible
-                    isApiKeyVisible = next
-                    if next && apiKey.isEmpty && !isRunningTests {
-                        if let storedKey = (try? Keychain.load(key: keychainKey)) ?? nil {
-                            apiKey = storedKey
-                            updateStatusForApiMode()
-                        }
-                    }
-                } label: {
-                    Image(systemName: isApiKeyVisible ? "eye.slash" : "eye")
-                }
-                .buttonStyle(.borderless)
-                .help(isApiKeyVisible ? "Hide API key" : "Show API key")
-
-                Button {
-                    if let clipboard = NSPasteboard.general.string(forType: .string) {
-                        apiKey = clipboard.trimmingCharacters(in: .whitespacesAndNewlines)
-                        updateStatusForApiMode()
-                    }
-                } label: {
-                    Image(systemName: "doc.on.clipboard")
-                }
-                .buttonStyle(.borderless)
-                .help("Paste from clipboard")
-            }
-        }
+        APIKeySection(
+            apiKey: $apiKey,
+            isVisible: $isApiKeyVisible,
+            onPaste: pasteFromClipboard,
+            onVisibilityToggle: toggleApiKeyVisibility
+        )
     }
 
     private var claudeLoginSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Sign in with your Claude.ai account to use Claude Code without managing API keys.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-
-            HStack(spacing: 12) {
-                if hasClaudeSession {
-                    Button("Sign Out") {
-                        isLogoutConfirmationPresented = true
-                    }
-                        .disabled(isLoggingOut || isRefreshingAuth)
-                } else {
-                    Button("Sign In", action: signInClaude)
-                        .disabled(isLoggingIn || isRefreshingAuth)
-                }
-
-                Button("Refresh Status") {
-                    Task { await refreshClaudeStatus(manual: true) }
-                }
-                .disabled(isRefreshingAuth)
-
-                if isLoggingIn || isLoggingOut || isRefreshingAuth {
-                    ProgressView()
-                        .controlSize(.small)
-                }
-            }
-
-            if let account = claudeAccount, !account.isEmpty {
-                Text("Signed in as \(account).")
-                    .font(.subheadline)
-            } else if hasClaudeSession {
-                Text("Claude account connected.")
-                    .font(.subheadline)
-            } else {
-                Text("Not signed in.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-        }
+        ClaudeLoginSection(
+            hasSession: $hasClaudeSession,
+            account: $claudeAccount,
+            isLoading: .constant(isLoggingIn || isLoggingOut || isRefreshingAuth),
+            onSignIn: signInClaude,
+            onSignOut: { isLogoutConfirmationPresented = true },
+            onRefresh: { Task { await refreshClaudeStatus(manual: true) } }
+        )
     }
 
     private var workspaceSection: some View {
@@ -534,5 +467,25 @@ struct SettingsView: View {
             return URL(string: urlString)
         }
         return nil
+    }
+
+    // MARK: - API Key Section Helpers
+
+    private func pasteFromClipboard() {
+        if let clipboard = NSPasteboard.general.string(forType: .string) {
+            apiKey = clipboard.trimmingCharacters(in: .whitespacesAndNewlines)
+            updateStatusForApiMode()
+        }
+    }
+
+    private func toggleApiKeyVisibility() {
+        let next = !isApiKeyVisible
+        isApiKeyVisible = next
+        if next && apiKey.isEmpty && !isRunningTests {
+            if let storedKey = (try? Keychain.load(key: keychainKey)) ?? nil {
+                apiKey = storedKey
+                updateStatusForApiMode()
+            }
+        }
     }
 }
