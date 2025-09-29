@@ -219,83 +219,6 @@ private struct PromptTextViewRepresentable: NSViewRepresentable {
     }
 }
 
-final class PromptNSTextView: NSTextView {
-    var returnKeyHandler: ((NSEvent.ModifierFlags) -> Void)?
-    var beginEditingHandler: (() -> Void)?
-    var endEditingHandler: (() -> Void)?
-    var pasteHandler: ((String) -> Void)?
-
-    override func doCommand(by selector: Selector) {
-        if selector == #selector(insertNewline(_:)) {
-            returnKeyHandler?(window?.currentEvent?.modifierFlags ?? [])
-        } else {
-            super.doCommand(by: selector)
-        }
-    }
-
-    override func becomeFirstResponder() -> Bool {
-        let became = super.becomeFirstResponder()
-        if became {
-            beginEditingHandler?()
-        }
-        return became
-    }
-
-    override func resignFirstResponder() -> Bool {
-        let resigned = super.resignFirstResponder()
-        if resigned {
-            endEditingHandler?()
-        }
-        return resigned
-    }
-
-    override func paste(_ sender: Any?) {
-        if let pasteboard = NSPasteboard.general.string(forType: .string) {
-            pasteHandler?(pasteboard)
-        }
-        super.paste(sender)
-    }
-
-    static func makeHostingScrollView() -> (NSScrollView, PromptNSTextView) {
-        let scrollView = NSTextView.scrollableTextView()
-        scrollView.borderType = .noBorder
-        scrollView.hasVerticalScroller = true
-        scrollView.hasHorizontalScroller = false
-        scrollView.drawsBackground = false
-
-        let textViewFrame = scrollView.documentView?.frame ?? .zero
-        let textView = PromptNSTextView(frame: textViewFrame)
-        textView.autoresizingMask = scrollView.documentView?.autoresizingMask ?? [.width]
-        scrollView.documentView = textView
-
-        return (scrollView, textView)
-    }
-
-    func applyPromptStyling(font: NSFont, textInsets: NSSize, minimumHeight: CGFloat) {
-        isEditable = true
-        isSelectable = true
-        allowsUndo = true
-        self.font = font
-        textColor = NSColor.labelColor
-        insertionPointColor = NSColor.labelColor
-        isRichText = false
-        usesFontPanel = false
-        usesFindBar = true
-        importsGraphics = false
-        textContainerInset = textInsets
-        textContainer?.lineFragmentPadding = 0
-        maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
-        isVerticallyResizable = true
-        isHorizontallyResizable = false
-        textContainer?.widthTracksTextView = true
-        minSize = NSSize(width: 0, height: minimumHeight)
-        autoresizingMask = [.width]
-        drawsBackground = false
-        backgroundColor = .clear
-        wantsLayer = false
-    }
-}
-
 extension PromptTextEditor {
     static func lineHeight(for font: NSFont) -> CGFloat {
         let sample = NSAttributedString(string: "Hg", attributes: [.font: font])
@@ -306,30 +229,4 @@ extension PromptTextEditor {
         let baseHeight = max(contentHeight, minimumHeight)
         return min(baseHeight, maximumHeight)
     }
-}
-
-func calculatePromptContentHeight(textView: NSTextView, minimumHeight: CGFloat) -> CGFloat {
-    let font = textView.font ?? NSFont.preferredFont(forTextStyle: .body)
-    let lineHeight = PromptTextEditor.lineHeight(for: font)
-    let maxVisibleLines: CGFloat = 6
-    let maximumHeight = minimumHeight + lineHeight * (maxVisibleLines - 1)
-
-    guard let textContainer = textView.textContainer,
-          let layoutManager = textView.layoutManager else {
-        return minimumHeight
-    }
-
-    layoutManager.ensureLayout(for: textContainer)
-    let usedRect = layoutManager.usedRect(for: textContainer)
-    let contentHeight = usedRect.height + textView.textContainerInset.height * 2
-    let baseHeight: CGFloat
-    if contentHeight <= 0 {
-        baseHeight = minimumHeight
-    } else if usedRect.height <= lineHeight + 0.5 {
-        baseHeight = minimumHeight
-    } else {
-        baseHeight = contentHeight
-    }
-    let clampedHeight = max(baseHeight, minimumHeight)
-    return min(clampedHeight, maximumHeight)
 }
