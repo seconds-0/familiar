@@ -3,16 +3,13 @@
 from __future__ import annotations
 
 import asyncio
-import difflib
 import json
 import logging
 import os
 import re
 from contextlib import suppress
-from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, AsyncIterator
-from uuid import uuid4
 
 from claude_agent_sdk import (
     AssistantMessage,
@@ -39,6 +36,8 @@ from .config import (
     ensure_cli_environment,
 )
 from .permissions import broker
+from .session_config import SessionConfig, SessionConfigValidator
+from .tool_manager import ToolContext, ToolManager
 
 STEEL_THREAD_SYSTEM_PROMPT = """
 You are the Claude Code engine behind a macOS command palette demo. Keep responses
@@ -54,30 +53,12 @@ _UNSET = object()
 logger = logging.getLogger(__name__)
 
 
-@dataclass
-class SessionConfig:
-    api_key: str | None = None
-    workspace: Path | None = None
-    always_allow: dict[str, list[str]] = field(default_factory=dict)
-    auth_mode: str = AUTH_MODE_CLAUDE
-    claude_session_active: bool = False
-    claude_account: str | None = None
-
-
-@dataclass
-class ToolContext:
-    path: str | None
-    relative_path: str | None
-    input: dict[str, Any]
-    tool: str
-    diff: str | None
-
-
 class ClaudeSession:
     """Manages a persistent ClaudeSDKClient connection and event stream."""
 
     def __init__(self) -> None:
         self._config = SessionConfig()
+        self._validator = SessionConfigValidator(self._config)
         self._options = ClaudeAgentOptions(
             allowed_tools=["Write"],
             permission_mode="default",
@@ -92,7 +73,7 @@ class ClaudeSession:
         self._needs_restart = True
         self._lock = asyncio.Lock()
         self._workspace_root: Path | None = None
-        self._allow_rules: dict[str, set[str]] = {}
+        self._tool_manager = ToolManager()
 
     async def _safe_disconnect(self) -> None:
         if self._client is None:
@@ -126,14 +107,12 @@ class ClaudeSession:
             resolved = workspace.resolve() if workspace else None
             self._config.workspace = resolved  # type: ignore[assignment]
             self._workspace_root = resolved
+            self._tool_manager.set_workspace(resolved)
             self._options.cwd = str(resolved) if resolved else None
         if always_allow is not _UNSET:
             value = always_allow or {}
             self._config.always_allow = value  # type: ignore[assignment]
-            self._allow_rules = {
-                tool: {str(path) for path in paths}
-                for tool, paths in value.items()
-            }
+            self._tool_manager.configure_allow_rules(value)
         if auth_mode is not _UNSET:
             self._config.auth_mode = auth_mode  # type: ignore[assignment]
         if claude_session_active is not _UNSET:
@@ -149,29 +128,10 @@ class ClaudeSession:
 
     @property
     def is_ready(self) -> bool:
-        if self._config.workspace is None:
-            return False
-
-        if self._config.auth_mode == AUTH_MODE_API_KEY:
-            return self._config.api_key is not None
-
-        if self._config.auth_mode == AUTH_MODE_CLAUDE:
-            return self._config.claude_session_active
-
-        # Fallback to require API key for unknown modes
-        return self._config.api_key is not None
+        return self._validator.is_ready
 
     def _configuration_error(self) -> str:
-        if self._config.workspace is None:
-            return "Workspace not configured."
-
-        if self._config.auth_mode == AUTH_MODE_API_KEY:
-            return "API key missing."
-
-        if self._config.auth_mode == AUTH_MODE_CLAUDE:
-            return "Claude.ai login required."
-
-        return "Authentication configuration incomplete."
+        return self._validator.configuration_error
 
     def _load_mcp_config(self) -> dict[str, Any]:
         """Load MCP server configuration from .mcp.json file with environment variable substitution."""
@@ -330,116 +290,6 @@ class ClaudeSession:
         payload = {"event": event, **context}
         logger.info("hook_event %s", json.dumps(payload, ensure_ascii=False))
 
-    def _allow_decision(self) -> dict[str, Any]:
-        return {
-            "hookSpecificOutput": {
-                "hookEventName": "PreToolUse",
-                "permissionDecision": "allow",
-                "permissionDecisionReason": "User approved",
-            }
-        }
-
-    def _deny_decision(self, *, reason: str) -> dict[str, Any]:
-        return {
-            "decision": "block",
-            "hookSpecificOutput": {
-                "hookEventName": "PreToolUse",
-                "permissionDecision": "deny",
-                "permissionDecisionReason": reason,
-            },
-        }
-
-    def _canonicalise_tool_path(
-        self, raw_path: str | None
-    ) -> tuple[Path | None, str | None]:
-        """Resolve a tool path to absolute and relative forms within the workspace.
-
-        Returns (None, None) if the path is outside the workspace boundary.
-        """
-        if not raw_path or not self._workspace_root:
-            return None, None
-
-        # Convert to absolute path, relative to workspace if needed
-        path = Path(raw_path)
-        if not path.is_absolute():
-            path = self._workspace_root / path
-
-        # Resolve symlinks and ensure it's within workspace
-        try:
-            resolved = path.resolve()
-            relative = resolved.relative_to(self._workspace_root)
-            return resolved, str(relative)
-        except (ValueError, OSError):
-            # Path is outside workspace or doesn't exist
-            return None, None
-
-    def _render_diff(
-        self,
-        canonical_path: Path | None,
-        relative_path: str | None,
-        tool_input: dict[str, Any],
-    ) -> str | None:
-        if canonical_path is None:
-            return None
-        content = tool_input.get("content")
-        if not isinstance(content, str):
-            return None
-
-        try:
-            before_text = canonical_path.read_text(encoding="utf-8")
-        except FileNotFoundError:
-            before_text = ""
-        except OSError:
-            return None
-
-        before_lines = before_text.splitlines()
-        after_lines = content.splitlines()
-        from_label = f"a/{relative_path or canonical_path.name}"
-        to_label = f"b/{relative_path or canonical_path.name}"
-        diff_lines = list(
-            difflib.unified_diff(
-                before_lines,
-                after_lines,
-                fromfile=from_label,
-                tofile=to_label,
-                lineterm="",
-                n=3,  # Limit context lines to prevent large diffs
-            )
-        )
-        if not diff_lines:
-            return None
-
-        max_lines = 200
-        if len(diff_lines) > max_lines:
-            diff_lines = diff_lines[:max_lines]
-            diff_lines.append("... diff truncated ...")
-
-        return "\n".join(diff_lines)
-
-    def _should_auto_allow(self, tool_name: str, canonical_path: Path | None) -> bool:
-        if canonical_path is None:
-            return False
-        allowed = self._allow_rules.get(tool_name)
-        if not allowed:
-            return False
-        return str(canonical_path) in allowed
-
-    def _record_auto_allow(self, tool_name: str, canonical_path: Path) -> None:
-        rules = self._allow_rules.setdefault(tool_name, set())
-        rules.add(str(canonical_path))
-
-    @staticmethod
-    def _context_snapshot(context: ToolContext | None) -> dict[str, Any]:
-        if context is None:
-            return {}
-        return {
-            "path": context.path,
-            "relativePath": context.relative_path,
-            "tool": context.tool,
-            "diff": context.diff,
-            "input": context.input,
-        }
-
     async def _query_with_retries(self, prompt: str, session_id: str) -> None:
         attempt = 0
         delay = 0.5
@@ -473,7 +323,7 @@ class ClaudeSession:
         context = self._pending_tools.get(request_id)
         if decision != "allow" and context is not None:
             self._pending_tools.pop(request_id, None)
-        snapshot = self._context_snapshot(context)
+        snapshot = ToolManager.context_snapshot(context)
         await self._emit_event(
             {
                 "type": "permission_resolution",
@@ -496,13 +346,13 @@ class ClaudeSession:
                 }
             )
         elif decision == "allow" and remember and context and context.path:
-            self._record_auto_allow(context.tool, Path(context.path))
+            self._tool_manager.record_auto_allow(context.tool, Path(context.path))
         return snapshot
 
     async def _handle_pre_tool_use(
         self, input_data: dict[str, Any], tool_use_id: str | None, _context: Any
     ) -> dict[str, Any]:
-        request_id = tool_use_id or str(uuid4())
+        request_id = ToolManager.generate_request_id(tool_use_id)
         tool_name = input_data.get("tool_name", "Unknown")
         tool_input = input_data.get("tool_input", {})
         canonical_path: Path | None = None
@@ -510,7 +360,9 @@ class ClaudeSession:
         diff_preview: str | None = None
 
         if tool_name == "Write":
-            canonical_path, relative_path = self._canonicalise_tool_path(tool_input.get("path"))
+            canonical_path, relative_path = self._tool_manager.canonicalise_tool_path(
+                tool_input.get("path")
+            )
             if tool_input.get("path") and canonical_path is None:
                 self._log_hook(
                     "pre_tool_use_blocked",
@@ -524,9 +376,9 @@ class ClaudeSession:
                         "message": "Write requests must stay inside the configured workspace.",
                     }
                 )
-                return self._deny_decision(reason="Path outside workspace")
+                return ToolManager.create_deny_decision(reason="Path outside workspace")
 
-            diff_preview = self._render_diff(canonical_path, relative_path, tool_input)
+            diff_preview = self._tool_manager.render_diff(canonical_path, relative_path, tool_input)
 
         context = ToolContext(
             path=str(canonical_path) if canonical_path else None,
@@ -537,14 +389,14 @@ class ClaudeSession:
         )
         self._pending_tools[request_id] = context
 
-        if self._should_auto_allow(tool_name, canonical_path):
+        if self._tool_manager.should_auto_allow(tool_name, canonical_path):
             self._log_hook(
                 "auto_allow",
                 request_id=request_id,
                 tool=tool_name,
                 path=context.path,
             )
-            return self._allow_decision()
+            return ToolManager.create_allow_decision()
 
         payload = {
             "requestId": request_id,
@@ -572,8 +424,8 @@ class ClaudeSession:
             decision=decision,
         )
         if decision == "allow":
-            return self._allow_decision()
-        return self._deny_decision(reason="User denied")
+            return ToolManager.create_allow_decision()
+        return ToolManager.create_deny_decision(reason="User denied")
 
     @staticmethod
     def _serialise_tool_result(content: Any) -> str:

@@ -51,7 +51,7 @@ struct FamiliarAppMain: App {
         .menuBarExtraStyle(.window)
 
         Settings {
-            SettingsView()
+            SettingsView(appState: appState)
                 .environmentObject(appState)
         }
     }
