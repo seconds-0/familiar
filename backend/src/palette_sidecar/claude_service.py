@@ -610,23 +610,26 @@ class ClaudeSession:
     def _canonicalise_tool_path(
         self, raw_path: str | None
     ) -> tuple[Path | None, str | None]:
-        if not raw_path:
+        """Resolve a tool path to absolute and relative forms within the workspace.
+
+        Returns (None, None) if the path is outside the workspace boundary.
+        """
+        if not raw_path or not self._workspace_root:
             return None, None
-        workspace_root = self._workspace_root
-        candidate = Path(raw_path)
-        if workspace_root is None:
-            return candidate.resolve(), str(candidate)
-        if not candidate.is_absolute():
-            candidate = workspace_root / candidate
+
+        # Convert to absolute path, relative to workspace if needed
+        path = Path(raw_path)
+        if not path.is_absolute():
+            path = self._workspace_root / path
+
+        # Resolve symlinks and ensure it's within workspace
         try:
-            resolved = candidate.resolve()
-        except (OSError, RuntimeError):
-            resolved = workspace_root / Path(raw_path)
-        try:
-            relative = resolved.relative_to(workspace_root)
-        except ValueError:
+            resolved = path.resolve()
+            relative = resolved.relative_to(self._workspace_root)
+            return resolved, str(relative)
+        except (ValueError, OSError):
+            # Path is outside workspace or doesn't exist
             return None, None
-        return resolved, str(relative)
 
     def _render_diff(
         self,
