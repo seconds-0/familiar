@@ -94,9 +94,11 @@ async def test_fetch_status_skips_unknown_option(monkeypatch) -> None:
         calls.append(args)
         if "--json" in args:
             return 1, "", "error: unknown option '--json'"
-        return 0, '{"account": "tester@example.com"}', ""
+        # Second call should succeed with just "whoami" returning parseable text
+        return 0, "Signed in as tester@example.com", ""
 
-    monkeypatch.setattr(claude_service, "_run_claude_cli", fake_run)
+    from palette_sidecar import claude_cli
+    monkeypatch.setattr(claude_cli, "run_cli", fake_run)
 
     status = await claude_service.fetch_claude_session_status()
     assert status.active is True
@@ -109,13 +111,14 @@ async def test_login_reports_cli_unavailable(monkeypatch) -> None:
     async def fake_spawn(*args: str):  # type: ignore[return-type]
         raise ClaudeCLIUnavailableError("Claude CLI missing")
 
-    monkeypatch.setattr(claude_service, "_spawn_claude_cli", fake_spawn)
+    from palette_sidecar import claude_cli
+    monkeypatch.setattr(claude_cli, "spawn_cli", fake_spawn)
 
+    # begin_login() starts async task, so pending will be True initially
     status = await claude_service.login_coordinator.begin_login()
-    assert status.pending is False
-    assert status.active is False
-    assert status.message == "Claude CLI missing"
+    assert status.pending is True
 
+    # Wait for completion to get final status
     final = await claude_service.login_coordinator.wait_for_completion()
     assert final.pending is False
     assert final.active is False

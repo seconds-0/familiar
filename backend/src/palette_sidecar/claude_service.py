@@ -14,8 +14,6 @@ from pathlib import Path
 from typing import Any, AsyncIterator
 from uuid import uuid4
 
-from asyncio.subprocess import PIPE
-
 from claude_code_sdk import (
     AssistantMessage,
     ClaudeCodeOptions,
@@ -28,6 +26,14 @@ from claude_code_sdk import (
     ToolUseBlock,
 )
 
+from .claude_cli import (
+    ANSI_ESCAPE_RE,
+    URL_PATTERN,
+    ClaudeCLIUnavailableError,
+    parse_account_email,
+    run_cli,
+    spawn_cli,
+)
 from .config import (
     AUTH_MODE_API_KEY,
     AUTH_MODE_CLAUDE,
@@ -59,70 +65,12 @@ class ClaudeAuthStatus:
     pending: bool = False
 
 
-class ClaudeCLIUnavailableError(RuntimeError):
-    """Raised when the bundled Claude CLI cannot be executed."""
-
-
-ANSI_ESCAPE_RE = re.compile(r"\x1B\[[0-?]*[ -/]*[@-~]")
-URL_PATTERN = re.compile(r"https?://[^\s]+")
-
-
-def _parse_account_email(output: str) -> str | None:
-    """Extract an email address from CLI output."""
-
-    match = re.search(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", output)
-    if match:
-        return match.group(0)
-    return None
-
-
-async def _spawn_claude_cli(*args: str) -> asyncio.subprocess.Process:
-    """Launch the Claude CLI with the provided arguments."""
-
-    ensure_cli_environment()
-    cli_path = os.environ.get("CLAUDE_CODE_CLI_PATH")
-    if not cli_path:
-        raise ClaudeCLIUnavailableError("Claude CLI path not configured")
-
-    env = os.environ.copy()
-    path_value = env.get("PATH", "")
-    path_parts = [segment for segment in path_value.split(":") if segment]
-    for default_path in ("/usr/bin", "/bin", "/usr/sbin", "/sbin"):
-        if default_path not in path_parts:
-            path_parts.append(default_path)
-    env["PATH"] = ":".join(path_parts)
-    command = ["node", cli_path, *args]
-    try:
-        return await asyncio.create_subprocess_exec(
-            *command,
-            stdout=PIPE,
-            stderr=PIPE,
-            env=env,
-        )
-    except FileNotFoundError as exc:
-        raise ClaudeCLIUnavailableError(
-            "Claude CLI executable not found. Please reinstall or repair the Familiar app."
-        ) from exc
-    except OSError as exc:  # pragma: no cover - defensive
-        raise ClaudeCLIUnavailableError(str(exc)) from exc
-
-
-async def _run_claude_cli(*args: str) -> tuple[int, str, str]:
-    """Execute the bundled Claude CLI and capture its output."""
-
-    process = await _spawn_claude_cli(*args)
-    stdout_bytes, stderr_bytes = await process.communicate()
-    stdout_text = stdout_bytes.decode("utf-8", errors="replace")
-    stderr_text = stderr_bytes.decode("utf-8", errors="replace")
-    return process.returncode, stdout_text, stderr_text
-
-
 async def fetch_claude_session_status() -> ClaudeAuthStatus:
     """Attempt to resolve the current Claude.ai session status via CLI."""
 
     for candidate in (("whoami", "--json"), ("whoami",), ("session", "status")):
         try:
-            code, stdout, stderr = await _run_claude_cli(*candidate)
+            code, stdout, stderr = await run_cli(*candidate)
         except Exception as exc:  # pragma: no cover - defensive
             logger.debug("Failed to execute CLI status command %s: %s", candidate, exc)
             continue
@@ -149,7 +97,7 @@ async def fetch_claude_session_status() -> ClaudeAuthStatus:
             if isinstance(email, str) and email:
                 return ClaudeAuthStatus(active=True, account=email)
 
-        email = _parse_account_email(output)
+        email = parse_account_email(output)
         if email:
             return ClaudeAuthStatus(active=True, account=email, message=output)
 
@@ -162,7 +110,7 @@ async def fetch_claude_session_status() -> ClaudeAuthStatus:
 async def perform_claude_logout() -> ClaudeAuthStatus:
     """Terminate Claude.ai authentication."""
 
-    code, stdout, stderr = await _run_claude_cli("logout")
+    code, stdout, stderr = await run_cli("logout")
     output = stdout.strip() or stderr.strip()
 
     if code != 0:
@@ -306,7 +254,7 @@ class ClaudeLoginCoordinator:
 
     async def _run_login_flow(self) -> ClaudeAuthStatus:
         try:
-            process = await _spawn_claude_cli("login")
+            process = await spawn_cli("login")
         except ClaudeCLIUnavailableError as exc:
             logger.error("Claude CLI unavailable: %s", exc)
             status = ClaudeAuthStatus(active=False, message=str(exc))
