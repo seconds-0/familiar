@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
@@ -10,9 +11,17 @@ from typing import Any
 from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import JSONResponse, StreamingResponse
 
-from .claude_service import session
+from .claude_service import (
+    refresh_claude_auth_state,
+    session,
+    trigger_claude_login,
+    trigger_claude_logout,
+)
 from .config import (
+    AUTH_MODE_API_KEY,
+    AUTH_MODE_CLAUDE,
     apply_environment,
+    apply_auth_environment,
     detect_prerequisites,
     ensure_workspace,
     load_settings,
@@ -24,10 +33,14 @@ from .models import ApprovalPayload, QueryPayload, SettingsPayload
 from .permissions import broker
 
 
+logger = logging.getLogger(__name__)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Handle application lifecycle events."""
     # Startup
+    await _sync_claude_session_state()
     await session.start()
     yield
     # Shutdown
@@ -46,19 +59,24 @@ if _current_settings.workspace:
     except Exception as exc:  # pragma: no cover - defensive
         raise RuntimeError(f"Failed to prepare workspace: {exc}") from exc
 
-if _current_settings.anthropic_api_key:
-    apply_environment(_current_settings.anthropic_api_key)
+apply_auth_environment(_current_settings)
 
 if _workspace_path:
     session.configure(
         api_key=_current_settings.anthropic_api_key,
         workspace=_workspace_path,
         always_allow=_current_settings.always_allow,
+        auth_mode=_current_settings.auth_mode,
+        claude_session_active=_current_settings.claude_session_active,
+        claude_account=_current_settings.claude_account,
     )
 else:
     session.configure(
         api_key=_current_settings.anthropic_api_key,
         always_allow=_current_settings.always_allow,
+        auth_mode=_current_settings.auth_mode,
+        claude_session_active=_current_settings.claude_session_active,
+        claude_account=_current_settings.claude_account,
     )
 
 save_settings(_current_settings)
@@ -66,6 +84,21 @@ save_settings(_current_settings)
 
 def _format_sse(event: dict[str, Any]) -> str:
     return f"data: {json.dumps(event, ensure_ascii=False)}\n\n"
+
+
+async def _sync_claude_session_state() -> None:
+    if _current_settings.auth_mode != AUTH_MODE_CLAUDE:
+        return
+
+    try:
+        status_obj = await refresh_claude_auth_state()
+    except Exception as exc:  # pragma: no cover - defensive
+        logger.debug("Failed to refresh Claude session state: %s", exc)
+        return
+
+    _current_settings.claude_session_active = status_obj.active
+    _current_settings.claude_account = status_obj.account
+    save_settings(_current_settings)
 
 
 @app.post("/query")
@@ -121,7 +154,21 @@ async def update_settings(payload: SettingsPayload) -> JSONResponse:
     if payload.anthropic_api_key is not None:
         key = payload.anthropic_api_key.strip() or None
         _current_settings.anthropic_api_key = key
-        apply_environment(key)
+
+    if payload.auth_mode is not None:
+        mode = payload.auth_mode.strip() or AUTH_MODE_CLAUDE
+        if mode not in {AUTH_MODE_API_KEY, AUTH_MODE_CLAUDE}:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Unsupported auth mode: {mode}",
+            )
+        _current_settings.auth_mode = mode
+        if mode == AUTH_MODE_API_KEY:
+            _current_settings.claude_session_active = False
+            _current_settings.claude_account = None
+        else:
+            # Reset cached status; UI will trigger login flow as needed.
+            _current_settings.claude_session_active = False
 
     if payload.workspace is not None:
         workspace_value = payload.workspace.strip()
@@ -135,21 +182,81 @@ async def update_settings(payload: SettingsPayload) -> JSONResponse:
             except Exception as exc:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
 
+    apply_auth_environment(_current_settings)
+
     save_settings(_current_settings)
     if _workspace_path:
         session.configure(
             api_key=_current_settings.anthropic_api_key,
             workspace=_workspace_path,
             always_allow=_current_settings.always_allow,
+            auth_mode=_current_settings.auth_mode,
+            claude_session_active=_current_settings.claude_session_active,
+            claude_account=_current_settings.claude_account,
         )
     else:
         session.configure(
             api_key=_current_settings.anthropic_api_key,
             always_allow=_current_settings.always_allow,
+            auth_mode=_current_settings.auth_mode,
+            claude_session_active=_current_settings.claude_session_active,
+            claude_account=_current_settings.claude_account,
         )
+
+    if _current_settings.auth_mode == AUTH_MODE_CLAUDE:
+        await _sync_claude_session_state()
 
     await session.start()
     return JSONResponse(settings_response_payload(_current_settings))
+
+
+def _auth_response(status_obj) -> dict[str, Any]:
+    response = {
+        "active": status_obj.active,
+        "account": status_obj.account,
+        "pending": status_obj.pending,
+    }
+    if status_obj.message:
+        response["message"] = status_obj.message
+    if status_obj.login_url:
+        response["loginUrl"] = status_obj.login_url
+    return response
+
+
+@app.post("/auth/claude/login")
+async def auth_claude_login() -> dict[str, Any]:
+    if _current_settings.auth_mode != AUTH_MODE_CLAUDE:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Switch to Claude.ai login mode before initiating login",
+        )
+
+    status_obj = await trigger_claude_login()
+    _current_settings.claude_session_active = status_obj.active
+    _current_settings.claude_account = status_obj.account
+    save_settings(_current_settings)
+
+    return _auth_response(status_obj)
+
+
+@app.post("/auth/claude/logout")
+async def auth_claude_logout() -> dict[str, Any]:
+    status_obj = await trigger_claude_logout()
+    _current_settings.claude_session_active = status_obj.active
+    _current_settings.claude_account = status_obj.account
+    save_settings(_current_settings)
+
+    return _auth_response(status_obj)
+
+
+@app.get("/auth/claude/status")
+async def auth_claude_status() -> dict[str, Any]:
+    status_obj = await refresh_claude_auth_state()
+    _current_settings.claude_session_active = status_obj.active
+    _current_settings.claude_account = status_obj.account
+    save_settings(_current_settings)
+
+    return _auth_response(status_obj)
 
 
 @app.get("/health")

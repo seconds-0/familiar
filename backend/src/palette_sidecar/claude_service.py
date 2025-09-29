@@ -14,6 +14,8 @@ from pathlib import Path
 from typing import Any, AsyncIterator
 from uuid import uuid4
 
+from asyncio.subprocess import PIPE
+
 from claude_code_sdk import (
     AssistantMessage,
     ClaudeCodeOptions,
@@ -26,7 +28,12 @@ from claude_code_sdk import (
     ToolUseBlock,
 )
 
-from .config import apply_environment
+from .config import (
+    AUTH_MODE_API_KEY,
+    AUTH_MODE_CLAUDE,
+    apply_environment,
+    ensure_cli_environment,
+)
 from .permissions import broker
 
 STEEL_THREAD_SYSTEM_PROMPT = """
@@ -44,10 +51,327 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
+class ClaudeAuthStatus:
+    active: bool
+    account: str | None = None
+    message: str | None = None
+    login_url: str | None = None
+    pending: bool = False
+
+
+class ClaudeCLIUnavailableError(RuntimeError):
+    """Raised when the bundled Claude CLI cannot be executed."""
+
+
+ANSI_ESCAPE_RE = re.compile(r"\x1B\[[0-?]*[ -/]*[@-~]")
+URL_PATTERN = re.compile(r"https?://[^\s]+")
+
+
+def _parse_account_email(output: str) -> str | None:
+    """Extract an email address from CLI output."""
+
+    match = re.search(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", output)
+    if match:
+        return match.group(0)
+    return None
+
+
+async def _spawn_claude_cli(*args: str) -> asyncio.subprocess.Process:
+    """Launch the Claude CLI with the provided arguments."""
+
+    ensure_cli_environment()
+    cli_path = os.environ.get("CLAUDE_CODE_CLI_PATH")
+    if not cli_path:
+        raise ClaudeCLIUnavailableError("Claude CLI path not configured")
+
+    env = os.environ.copy()
+    path_value = env.get("PATH", "")
+    path_parts = [segment for segment in path_value.split(":") if segment]
+    for default_path in ("/usr/bin", "/bin", "/usr/sbin", "/sbin"):
+        if default_path not in path_parts:
+            path_parts.append(default_path)
+    env["PATH"] = ":".join(path_parts)
+    command = ["node", cli_path, *args]
+    try:
+        return await asyncio.create_subprocess_exec(
+            *command,
+            stdout=PIPE,
+            stderr=PIPE,
+            env=env,
+        )
+    except FileNotFoundError as exc:
+        raise ClaudeCLIUnavailableError(
+            "Claude CLI executable not found. Please reinstall or repair the Familiar app."
+        ) from exc
+    except OSError as exc:  # pragma: no cover - defensive
+        raise ClaudeCLIUnavailableError(str(exc)) from exc
+
+
+async def _run_claude_cli(*args: str) -> tuple[int, str, str]:
+    """Execute the bundled Claude CLI and capture its output."""
+
+    process = await _spawn_claude_cli(*args)
+    stdout_bytes, stderr_bytes = await process.communicate()
+    stdout_text = stdout_bytes.decode("utf-8", errors="replace")
+    stderr_text = stderr_bytes.decode("utf-8", errors="replace")
+    return process.returncode, stdout_text, stderr_text
+
+
+async def fetch_claude_session_status() -> ClaudeAuthStatus:
+    """Attempt to resolve the current Claude.ai session status via CLI."""
+
+    for candidate in (("whoami", "--json"), ("whoami",), ("session", "status")):
+        try:
+            code, stdout, stderr = await _run_claude_cli(*candidate)
+        except Exception as exc:  # pragma: no cover - defensive
+            logger.debug("Failed to execute CLI status command %s: %s", candidate, exc)
+            continue
+
+        output = stdout.strip() or stderr.strip()
+        if code != 0:
+            normalized = output.lower()
+            if "unknown option" in normalized or "unrecognized option" in normalized:
+                logger.debug(
+                    "Claude CLI command %s does not support flag combination; retrying", candidate
+                )
+                continue
+            if output:
+                return ClaudeAuthStatus(active=False, message=output)
+            continue
+
+        with suppress(json.JSONDecodeError):
+            payload = json.loads(stdout)
+            email = (
+                payload.get("account")
+                or payload.get("email")
+                or payload.get("accountEmail")
+            )
+            if isinstance(email, str) and email:
+                return ClaudeAuthStatus(active=True, account=email)
+
+        email = _parse_account_email(output)
+        if email:
+            return ClaudeAuthStatus(active=True, account=email, message=output)
+
+        if output:
+            return ClaudeAuthStatus(active=True, message=output)
+
+    return ClaudeAuthStatus(active=False)
+
+
+async def perform_claude_logout() -> ClaudeAuthStatus:
+    """Terminate Claude.ai authentication."""
+
+    code, stdout, stderr = await _run_claude_cli("logout")
+    output = stdout.strip() or stderr.strip()
+
+    if code != 0:
+        return ClaudeAuthStatus(active=True, message=output or "Logout failed")
+
+    status = await fetch_claude_session_status()
+    if status.active:
+        # Some CLI builds may not immediately report logged-out state. Force clear.
+        status.active = False
+        status.message = output or status.message
+        status.account = None
+    return status
+
+
+class ClaudeLoginCoordinator:
+    """Manage Claude.ai login flows triggered via the CLI."""
+
+    def __init__(self) -> None:
+        self._task: asyncio.Task[ClaudeAuthStatus] | None = None
+        self._process: asyncio.subprocess.Process | None = None
+        self._initial_event: asyncio.Event | None = None
+        self._ensure_event_task: asyncio.Task[None] | None = None
+        self._pending = False
+        self._status = ClaudeAuthStatus(active=False)
+        self._initial_message: str | None = None
+        self._last_output: str | None = None
+        self._login_url: str | None = None
+        self._start_lock = asyncio.Lock()
+
+    async def begin_login(self) -> ClaudeAuthStatus:
+        """Start a login flow if needed and return the current status."""
+
+        async with self._start_lock:
+            if not self._task or self._task.done():
+                self._reset_state()
+                self._pending = True
+                self._status = ClaudeAuthStatus(active=False, pending=True)
+                self._task = asyncio.create_task(self._run_login_flow())
+                if self._ensure_event_task:
+                    self._ensure_event_task.cancel()
+                self._ensure_event_task = asyncio.create_task(self._ensure_initial_signal())
+
+        if self._initial_event is not None:
+            try:
+                await asyncio.wait_for(self._initial_event.wait(), timeout=10)
+            except asyncio.TimeoutError:
+                pass
+        return self.snapshot()
+
+    def snapshot(self) -> ClaudeAuthStatus:
+        """Return the most recent status, including pending information."""
+
+        message = self._status.message or self._initial_message
+        login_url = self._status.login_url or self._login_url
+        return ClaudeAuthStatus(
+            active=self._status.active,
+            account=self._status.account,
+            message=message,
+            login_url=login_url,
+            pending=self._pending,
+        )
+
+    def merge_status(self, status: ClaudeAuthStatus) -> ClaudeAuthStatus:
+        """Merge external status updates while preserving pending state."""
+
+        status.login_url = status.login_url or self._login_url
+        if self._pending:
+            status.pending = True
+            status.message = status.message or self._initial_message or self._last_output
+        else:
+            status.pending = False
+
+        self._status = status
+        session.configure(
+            claude_session_active=status.active,
+            claude_account=status.account,
+        )
+        return self.snapshot()
+
+    async def wait_for_completion(self) -> ClaudeAuthStatus:
+        task = self._task
+        if not task:
+            return self.snapshot()
+        try:
+            return await task
+        except Exception as exc:  # pragma: no cover - defensive
+            logger.error("Claude login task failed: %s", exc)
+            status = ClaudeAuthStatus(active=False, message=str(exc), login_url=self._login_url)
+            self._finalise(status)
+            return status
+
+    async def cancel(self) -> None:
+        async with self._start_lock:
+            if self._process and self._pending:
+                self._process.terminate()
+            self._pending = False
+            if self._initial_event and not self._initial_event.is_set():
+                self._initial_event.set()
+            if self._ensure_event_task:
+                self._ensure_event_task.cancel()
+                self._ensure_event_task = None
+
+    def _reset_state(self) -> None:
+        if self._ensure_event_task:
+            self._ensure_event_task.cancel()
+            self._ensure_event_task = None
+        self._initial_event = asyncio.Event()
+        self._initial_message = "Opening browser to sign in…"
+        self._last_output = None
+        self._login_url = None
+        self._process = None
+
+    async def _ensure_initial_signal(self) -> None:
+        await asyncio.sleep(1)
+        if self._initial_event and not self._initial_event.is_set():
+            self._initial_event.set()
+
+    async def _consume_stream(self, stream: asyncio.StreamReader) -> None:
+        while True:
+            chunk = await stream.read(1024)
+            if not chunk:
+                break
+            self._record_output(chunk.decode("utf-8", errors="replace"))
+
+    def _record_output(self, text: str) -> None:
+        cleaned = ANSI_ESCAPE_RE.sub("", text).replace("\r", "\n")
+        for line in cleaned.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            logger.debug("Claude CLI login output: %s", line)
+            self._last_output = line
+            if self._initial_message in {None, "Opening browser to sign in…"}:
+                self._initial_message = line
+            if self._initial_event and not self._initial_event.is_set():
+                self._initial_event.set()
+            if not self._login_url:
+                match = URL_PATTERN.search(line)
+                if match:
+                    self._login_url = match.group(0).rstrip(")")
+
+    async def _run_login_flow(self) -> ClaudeAuthStatus:
+        try:
+            process = await _spawn_claude_cli("login")
+        except ClaudeCLIUnavailableError as exc:
+            logger.error("Claude CLI unavailable: %s", exc)
+            status = ClaudeAuthStatus(active=False, message=str(exc))
+            self._initial_message = status.message
+            self._finalise(status)
+            return status
+        except Exception as exc:  # pragma: no cover - defensive
+            logger.error("Failed to start Claude login: %s", exc)
+            status = ClaudeAuthStatus(active=False, message=str(exc))
+            self._finalise(status)
+            return status
+
+        self._process = process
+        stdout_task = asyncio.create_task(self._consume_stream(process.stdout))
+        stderr_task = asyncio.create_task(self._consume_stream(process.stderr))
+
+        try:
+            returncode = await process.wait()
+        finally:
+            await asyncio.gather(stdout_task, stderr_task, return_exceptions=True)
+            self._process = None
+
+        if returncode != 0:
+            message = self._last_output or self._initial_message or "Claude login failed."
+            status = ClaudeAuthStatus(active=False, message=message, login_url=self._login_url)
+            self._finalise(status)
+            return status
+
+        try:
+            status = await fetch_claude_session_status()
+        except Exception as exc:  # pragma: no cover - defensive
+            logger.error("Failed to refresh Claude login status: %s", exc)
+            status = ClaudeAuthStatus(active=False, message=str(exc), login_url=self._login_url)
+        else:
+            status.login_url = status.login_url or self._login_url
+            if not status.message:
+                status.message = self._last_output or self._initial_message
+
+        self._finalise(status)
+        return status
+
+    def _finalise(self, status: ClaudeAuthStatus) -> None:
+        self._pending = False
+        status.login_url = status.login_url or self._login_url
+        status.pending = False
+        self._status = status
+        if self._ensure_event_task:
+            self._ensure_event_task.cancel()
+            self._ensure_event_task = None
+        if self._initial_event and not self._initial_event.is_set():
+            self._initial_event.set()
+        session.configure(
+            claude_session_active=status.active,
+            claude_account=status.account,
+        )
+
+
+@dataclass
 class SessionConfig:
     api_key: str | None = None
     workspace: Path | None = None
     always_allow: dict[str, list[str]] = field(default_factory=dict)
+    auth_mode: str = AUTH_MODE_CLAUDE
+    claude_session_active: bool = False
+    claude_account: str | None = None
 
 
 @dataclass
@@ -80,6 +404,15 @@ class ClaudeSession:
         self._workspace_root: Path | None = None
         self._allow_rules: dict[str, set[str]] = {}
 
+    async def _safe_disconnect(self) -> None:
+        if self._client is None:
+            return
+        try:
+            await self._client.disconnect()
+        except (RuntimeError, AttributeError) as exc:  # pragma: no cover - defensive
+            logger.debug("Ignoring disconnect error: %s", exc)
+        except Exception as exc:  # pragma: no cover - defensive
+            logger.warning("Unexpected disconnect error: %s", exc)
         self._options.hooks = {
             "PreToolUse": [HookMatcher(matcher="*", hooks=[self._handle_pre_tool_use])]
         }
@@ -93,11 +426,12 @@ class ClaudeSession:
         api_key: str | None | object = _UNSET,
         workspace: Path | None | object = _UNSET,
         always_allow: dict[str, list[str]] | None | object = _UNSET,
+        auth_mode: str | object = _UNSET,
+        claude_session_active: bool | object = _UNSET,
+        claude_account: str | None | object = _UNSET,
     ) -> None:
         if api_key is not _UNSET:
             self._config.api_key = api_key  # type: ignore[assignment]
-            if api_key:
-                apply_environment(api_key)
         if workspace is not _UNSET:
             resolved = workspace.resolve() if workspace else None
             self._config.workspace = resolved  # type: ignore[assignment]
@@ -110,11 +444,44 @@ class ClaudeSession:
                 tool: {str(path) for path in paths}
                 for tool, paths in value.items()
             }
+        if auth_mode is not _UNSET:
+            self._config.auth_mode = auth_mode  # type: ignore[assignment]
+        if claude_session_active is not _UNSET:
+            self._config.claude_session_active = bool(claude_session_active)  # type: ignore[assignment]
+        if claude_account is not _UNSET:
+            self._config.claude_account = claude_account  # type: ignore[assignment]
+
+        if self._config.auth_mode == AUTH_MODE_API_KEY:
+            apply_environment(self._config.api_key)
+        else:
+            apply_environment(None)
         self._needs_restart = True
 
     @property
     def is_ready(self) -> bool:
-        return self._config.api_key is not None and self._config.workspace is not None
+        if self._config.workspace is None:
+            return False
+
+        if self._config.auth_mode == AUTH_MODE_API_KEY:
+            return self._config.api_key is not None
+
+        if self._config.auth_mode == AUTH_MODE_CLAUDE:
+            return self._config.claude_session_active
+
+        # Fallback to require API key for unknown modes
+        return self._config.api_key is not None
+
+    def _configuration_error(self) -> str:
+        if self._config.workspace is None:
+            return "Workspace not configured."
+
+        if self._config.auth_mode == AUTH_MODE_API_KEY:
+            return "API key missing."
+
+        if self._config.auth_mode == AUTH_MODE_CLAUDE:
+            return "Claude.ai login required."
+
+        return "Authentication configuration incomplete."
 
     def _load_mcp_config(self) -> dict[str, Any]:
         """Load MCP server configuration from .mcp.json file with environment variable substitution."""
@@ -158,7 +525,7 @@ class ClaudeSession:
                 return
 
             if self._client is not None:
-                await self._client.disconnect()
+                await self._safe_disconnect()
                 self._client = None
 
             self._client = ClaudeSDKClient(options=self._options)
@@ -168,7 +535,7 @@ class ClaudeSession:
     async def shutdown(self) -> None:
         async with self._lock:
             if self._client is not None:
-                await self._client.disconnect()
+                await self._safe_disconnect()
                 self._client = None
             self._needs_restart = True
 
@@ -177,7 +544,7 @@ class ClaudeSession:
         if not self.is_ready:
             yield {
                 "type": "error",
-                "message": "Sidecar not configured. Provide API key and workspace first.",
+                "message": self._configuration_error(),
             }
             return
 
@@ -526,5 +893,29 @@ class ClaudeSession:
         except TypeError:
             return str(content)
 
+
+async def trigger_claude_login() -> ClaudeAuthStatus:
+    """Public entry point for initiating Claude.ai login."""
+
+    status = await login_coordinator.begin_login()
+    return status
+
+
+async def trigger_claude_logout() -> ClaudeAuthStatus:
+    """Public entry point for logging out of Claude.ai."""
+
+    await login_coordinator.cancel()
+    status = await perform_claude_logout()
+    return login_coordinator.merge_status(status)
+
+
+async def refresh_claude_auth_state() -> ClaudeAuthStatus:
+    """Refresh cached Claude.ai authentication status."""
+
+    status = await fetch_claude_session_status()
+    return login_coordinator.merge_status(status)
+
+
+login_coordinator = ClaudeLoginCoordinator()
 
 session = ClaudeSession()

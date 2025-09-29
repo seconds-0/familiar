@@ -14,7 +14,11 @@ Active work involves comparing desktop frameworks, defining IPC boundaries, and 
 
 ## Collaboration Principles
 
-1. Treat `docs/` as the source of truth for requirements, SDK behaviors, and architectural experiments.
+1. **Documentation First**: Treat `docs/` as the source of truth. Start with **[docs/00-README.md](docs/00-README.md)** for navigation.
+   - Reference docs: `docs/reference/` (claude-code-sdk.md, swiftui-reference.md)
+   - Implementation guides: `docs/implementation/` (phased-enhancements.md, steel-thread-v1.md)
+   - Design specifications: `docs/design/` (aesthetic-system.md, visual-improvements.md)
+   - Future explorations: `docs/future/`
 2. Develop the Python sidecar inside `backend/` using `uv` tooling; keep FastAPI endpoints documented and synced with the Swift client.
 3. Keep `assets/claude-cli/` intact; it provides the canonical CLI runtime for local validation and should be smoke-tested after dependency changes.
 4. Run Swift unit tests from anywhere via `swift test --package-path apps/mac/FamiliarApp` or the convenience script `./test-swift.sh` (supports `--filter`, `--verbose`, `--enable-code-coverage`, etc.).
@@ -69,7 +73,8 @@ This approach ensures you have the most current framework knowledge before divin
 ## Search & Analysis Tips
 
 - Use targeted `rg` queries or TypeScript-aware tooling to explore the codebase. Avoid wide wildcard searches that inflate context; narrow by directory or file type.
-- When investigating SDK behavior, reference `docs/claude-code-sdk.md` before diving into external sources.
+- When investigating SDK behavior, reference `docs/reference/claude-code-sdk.md` before diving into external sources.
+- For implementation patterns, check `docs/implementation/` guides for established approaches.
 - Summarize findings with file paths and line numbers so future contributors can trace decisions quickly.
 
 ## MCP Server Configuration
@@ -106,7 +111,7 @@ The project uses MCP (Model Context Protocol) servers for enhanced AI capabiliti
 - Backend lives under `backend/`; run `uv run uvicorn palette_sidecar.api:app --host 127.0.0.1 --port 8765 --reload` for local development.
 - The Swift client sits under `apps/mac/FamiliarApp/`; resolve dependencies with `swift build` or open `Package.swift` in Xcode for UI iteration.
 - Validate `assets/claude-cli/cli.js` with `node assets/claude-cli/cli.js --help` after modifying bundled tooling.
-- Propose testing strategies aligned with the chosen stack (e.g., pytest, XCTest) and capture rationale in `docs/prd.md` or a dedicated testing note.
+- Propose testing strategies aligned with the chosen stack (e.g., pytest, XCTest) and capture rationale in implementation docs.
 
 ### Testing Commands (from project root)
 

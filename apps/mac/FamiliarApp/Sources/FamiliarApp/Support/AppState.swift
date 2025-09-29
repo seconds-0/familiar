@@ -37,8 +37,10 @@ final class AppState: ObservableObject {
     private var healthIsOK = false
     private var configurationIsOK = false
 
-    init() {
-        monitorTask = Task { await monitorSystemHealth() }
+    init(startMonitoring: Bool = true) {
+        if startMonitoring {
+            monitorTask = Task { await monitorSystemHealth() }
+        }
     }
 
     deinit {
@@ -88,8 +90,30 @@ final class AppState: ObservableObject {
     func apply(settings: SidecarSettings) {
         workspaceURL = settings.workspaceURL
         demoFileURL = settings.demoFileURL
-        configurationIsOK = settings.hasApiKey && settings.workspace != nil
-        statusDetail = configurationIsOK ? "Claude configured." : "Add API key and workspace."
+        let hasWorkspace = settings.workspaceURL != nil
+        let hasAuth = settings.isAuthenticated
+
+        configurationIsOK = hasWorkspace && hasAuth
+
+        if configurationIsOK {
+            if settings.isClaudeLoginMode {
+                if let account = settings.connectedAccountLabel, !account.isEmpty {
+                    statusDetail = "Signed in as \(account)."
+                } else {
+                    statusDetail = "Claude account connected."
+                }
+            } else {
+                statusDetail = "Claude configured."
+            }
+        } else {
+            if !hasWorkspace {
+                statusDetail = "Add workspace path."
+            } else if settings.isClaudeLoginMode {
+                statusDetail = "Sign in to Claude.ai."
+            } else {
+                statusDetail = "Add API key and workspace."
+            }
+        }
         updateStatus()
     }
 
@@ -106,7 +130,9 @@ final class AppState: ObservableObject {
             }
         } else {
             status = .ready
-            statusDetail = "Claude configured."
+            if statusDetail == nil || statusDetail?.isEmpty == true {
+                statusDetail = "Claude configured."
+            }
         }
     }
 }

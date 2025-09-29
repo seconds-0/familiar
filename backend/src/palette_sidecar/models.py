@@ -19,3 +19,4 @@ class ApprovalPayload(BaseModel):
 class SettingsPayload(BaseModel):
     anthropic_api_key: str | None = None
     workspace: str | None = None
+    auth_mode: str | None = None

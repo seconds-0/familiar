@@ -31,9 +31,9 @@ actor SidecarClient {
             }
             eventTask?.resume()
 
+            let terminationTask = eventTask
             continuation.onTermination = { _ in
-                eventTask?.cancel()
-                eventTask = nil
+                terminationTask?.cancel()
             }
         }
     }
@@ -49,13 +49,16 @@ actor SidecarClient {
         _ = try await sendJSON(path: "approve", method: "POST", payload: payload) as [String: Any]
     }
 
-    func updateSettings(apiKey: String?, workspace: String?) async throws -> SidecarSettings {
+    func updateSettings(apiKey: String?, workspace: String?, authMode: String?) async throws -> SidecarSettings {
         var payload: [String: Any] = [:]
         if let apiKey {
             payload["anthropic_api_key"] = apiKey
         }
         if let workspace {
             payload["workspace"] = workspace
+        }
+        if let authMode {
+            payload["auth_mode"] = authMode
         }
         return try await sendDecodable(path: "settings", method: "POST", payload: payload)
     }
@@ -66,6 +69,18 @@ actor SidecarClient {
 
     func healthCheck() async throws {
         _ = try await sendJSON(path: "health", method: "GET", payload: nil) as [String: Any]
+    }
+
+    func startClaudeLogin() async throws -> ClaudeAuthState {
+        return try await sendDecodable(path: "auth/claude/login", method: "POST", payload: [:])
+    }
+
+    func logoutClaude() async throws -> ClaudeAuthState {
+        return try await sendDecodable(path: "auth/claude/logout", method: "POST", payload: [:])
+    }
+
+    func fetchClaudeStatus() async throws -> ClaudeAuthState {
+        return try await sendDecodable(path: "auth/claude/status", method: "GET", payload: nil)
     }
 
     // MARK: - Helpers
