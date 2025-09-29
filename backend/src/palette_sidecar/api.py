@@ -11,16 +11,15 @@ from typing import Any
 from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import JSONResponse, StreamingResponse
 
-from .claude_service import (
+from .auth_coordinator import (
     refresh_claude_auth_state,
-    session,
     trigger_claude_login,
     trigger_claude_logout,
 )
+from .claude_service import session
 from .config import (
     AUTH_MODE_API_KEY,
     AUTH_MODE_CLAUDE,
-    apply_environment,
     apply_auth_environment,
     detect_prerequisites,
     ensure_workspace,

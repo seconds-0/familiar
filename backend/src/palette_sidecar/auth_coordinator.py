@@ -294,7 +294,13 @@ class ClaudeLoginCoordinator:
         return status
 
     def _finalise(self, status: ClaudeAuthStatus, session_callback=None) -> None:
-        """Finalize the login flow by updating status and clearing pending state."""
+        """Finalize the login flow by updating status and clearing pending state.
+
+        Args:
+            status: The final authentication status
+            session_callback: Optional callback to configure session. If None, imports
+                            session.configure locally to update the session state.
+        """
 
         self._pending = False
         status.login_url = status.login_url or self._login_url
@@ -305,8 +311,17 @@ class ClaudeLoginCoordinator:
             self._ensure_event_task = None
         if self._initial_event and not self._initial_event.is_set():
             self._initial_event.set()
+
+        # Always update session state, either via provided callback or by importing session
         if session_callback:
             session_callback(
+                claude_session_active=status.active,
+                claude_account=status.account,
+            )
+        else:
+            # Import session locally to avoid circular dependency
+            from .claude_service import session
+            session.configure(
                 claude_session_active=status.active,
                 claude_account=status.account,
             )

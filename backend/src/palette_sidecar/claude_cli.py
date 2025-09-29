@@ -7,11 +7,8 @@ subprocess spawning, output parsing, and session status detection.
 from __future__ import annotations
 
 import asyncio
-import json
 import logging
 import os
-from pathlib import Path
-
 from asyncio.subprocess import PIPE
 
 from .patterns import extract_email

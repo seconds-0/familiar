@@ -31,9 +31,6 @@ from .auth_coordinator import (
     fetch_claude_session_status,
     login_coordinator,
     perform_claude_logout,
-    refresh_claude_auth_state,
-    trigger_claude_login,
-    trigger_claude_logout,
 )
 from .config import (
     AUTH_MODE_API_KEY,

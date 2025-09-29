@@ -12,13 +12,12 @@ import logging
 from dataclasses import dataclass
 
 from .claude_cli import (
-    ANSI_ESCAPE_RE,
-    URL_PATTERN,
     ClaudeCLIUnavailableError,
     parse_account_email,
     run_cli,
     spawn_cli,
 )
+from .patterns import ANSI_ESCAPE, extract_url
 
 logger = logging.getLogger(__name__)
 
@@ -152,13 +151,13 @@ class AuthStateMachine:
                 if not line_bytes:
                     break
                 line = line_bytes.decode("utf-8", errors="replace")
-                clean_line = ANSI_ESCAPE_RE.sub("", line).strip()
+                clean_line = ANSI_ESCAPE.sub("", line).strip()
                 logger.debug("CLI output: %s", clean_line)
 
                 # Extract login URL if present
-                match = URL_PATTERN.search(line)
-                if match:
-                    self._login_url = match.group(0).rstrip(")")
+                url = extract_url(line)
+                if url:
+                    self._login_url = url
             except Exception as exc:  # pragma: no cover
                 logger.debug("Error reading CLI output: %s", exc)
                 break
@@ -177,7 +176,7 @@ async def _fetch_session_status() -> AuthState:
             continue
 
         output = stdout.strip() or stderr.strip()
-        clean = ANSI_ESCAPE_RE.sub("", output).strip()
+        clean = ANSI_ESCAPE.sub("", output).strip()
 
         if code != 0:
             if clean and "not" in clean.lower():
