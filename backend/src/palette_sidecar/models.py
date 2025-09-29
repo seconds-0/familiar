@@ -41,7 +41,6 @@ class SettingsResponse(BaseModel):
     has_claude_session: bool = Field(alias="hasClaudeSession")
     claude_account_email: str | None = Field(alias="claudeAccountEmail")
     workspace: str | None
-    workspace_demo_file: str | None = Field(alias="workspaceDemoFile")
     always_allow: dict[str, list[str]] = Field(alias="alwaysAllow")
     default_workspace: str = Field(alias="defaultWorkspace")
     auth_mode: str = Field(alias="authMode")

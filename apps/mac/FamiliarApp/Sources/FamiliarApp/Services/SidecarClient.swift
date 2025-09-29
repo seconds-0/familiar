@@ -67,8 +67,8 @@ actor SidecarClient {
         return try await sendDecodable(path: "settings", method: "GET", payload: nil)
     }
 
-    func healthCheck() async throws {
-        _ = try await sendJSON(path: "health", method: "GET", payload: nil) as [String: Any]
+    func healthCheck() async throws -> HealthStatus {
+        return try await sendDecodable(path: "health", method: "GET", payload: nil)
     }
 
     func startClaudeLogin() async throws -> ClaudeAuthState {

@@ -51,7 +51,7 @@ class ClaudeSession:
         self._options = ClaudeAgentOptions(
             allowed_tools=["Write"],
             permission_mode="default",
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-5-20250929",
             system_prompt=STEEL_THREAD_SYSTEM_PROMPT,
             mcp_servers=self._load_mcp_config(),
         )

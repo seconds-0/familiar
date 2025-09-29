@@ -126,7 +126,7 @@ The Steel Thread is the smallest, fully polished workflow that proves the produc
 **Scope Guardrails**
 
 - No MCP manifests, slash commands, or multi-tool orchestration in V1.
-- Single Claude model (for example, `claude-3.5-sonnet`) hard-coded; model picker deferred to Phase 2.
+- Single Claude model (`claude-sonnet-4-5-20250929`) hard-coded; model picker deferred to Phase 2.
 - File action limited to the demo directory; no arbitrary filesystem browsing yet.
 - Manual install of Claude Code CLI is fine if the setup flow clearly prompts for it.
 

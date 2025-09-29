@@ -18,9 +18,6 @@ struct SidecarSettings: Decodable {
     /// Current workspace directory path
     let workspace: String?
 
-    /// Path to the demo file in the workspace (if it exists)
-    let workspaceDemoFile: String?
-
     /// Tool permissions that are always allowed (tool name -> paths)
     let alwaysAllow: [String: [String]]
 
@@ -37,7 +34,6 @@ struct SidecarSettings: Decodable {
         case hasApiKey
         case hasClaudeSession
         case workspace
-        case workspaceDemoFile
         case alwaysAllow
         case defaultWorkspace
         case authMode
@@ -49,7 +45,6 @@ struct SidecarSettings: Decodable {
         hasApiKey = try container.decode(Bool.self, forKey: .hasApiKey)
         hasClaudeSession = try container.decodeIfPresent(Bool.self, forKey: .hasClaudeSession) ?? false
         workspace = try container.decodeIfPresent(String.self, forKey: .workspace)
-        workspaceDemoFile = try container.decodeIfPresent(String.self, forKey: .workspaceDemoFile)
         alwaysAllow = try container.decodeIfPresent([String: [String]].self, forKey: .alwaysAllow) ?? [:]
         defaultWorkspace = try container.decodeIfPresent(String.self, forKey: .defaultWorkspace)
         authMode = try container.decodeIfPresent(String.self, forKey: .authMode)
@@ -59,11 +54,6 @@ struct SidecarSettings: Decodable {
     var workspaceURL: URL? {
         guard let workspace else { return nil }
         return URL(fileURLWithPath: workspace)
-    }
-
-    var demoFileURL: URL? {
-        guard let workspaceDemoFile else { return nil }
-        return URL(fileURLWithPath: workspaceDemoFile)
     }
 
     var isClaudeLoginMode: Bool {

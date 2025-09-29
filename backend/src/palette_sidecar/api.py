@@ -34,14 +34,23 @@ from .permissions import broker
 
 logger = logging.getLogger(__name__)
 
+# Initialization state tracking
+_initialization_state: str = "initializing"
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Handle application lifecycle events."""
+    global _initialization_state
+
     # Startup
     await _sync_claude_session_state()
     await session.start()
+    _initialization_state = "ready"
+    logger.info("Backend initialization complete")
+
     yield
+
     # Shutdown
     await session.shutdown()
 
@@ -260,7 +269,20 @@ async def auth_claude_status() -> dict[str, Any]:
 
 @app.get("/health")
 async def health() -> dict[str, Any]:
+    """Health check endpoint with initialization state tracking.
+
+    Returns:
+        dict with:
+        - status: "initializing" | "ready" | "degraded"
+        - missing: list of missing prerequisites (only for degraded state)
+    """
+    if _initialization_state == "initializing":
+        return {"status": "initializing"}
+
     checks = detect_prerequisites()
     missing = [name for name, ok in checks.items() if not ok]
-    status_value = "ok" if not missing else "degraded"
-    return {"status": status_value, "missing": missing}
+
+    if missing:
+        return {"status": "degraded", "missing": missing}
+
+    return {"status": "ready"}

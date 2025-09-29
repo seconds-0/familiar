@@ -29,11 +29,6 @@ struct FamiliarAppMain: App {
                     NSWorkspace.shared.open(workspaceURL)
                 }
             }
-            if let demoURL = appState.demoFileURL {
-                Button("Open Demo Note") {
-                    NSWorkspace.shared.open(demoURL)
-                }
-            }
             Button("Toggle Familiar") {
                 FamiliarWindowController.shared.toggle()
             }

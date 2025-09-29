@@ -5,6 +5,8 @@ ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 BACKEND_DIR="$ROOT_DIR/backend"
 APP_DIR="$ROOT_DIR/apps/mac/FamiliarApp"
 APP_BINARY="$APP_DIR/.build/debug/FamiliarApp"
+PORT=8765
+MAX_WAIT=10  # Maximum seconds to wait for graceful shutdown
 
 # Optional verbose flag (-v / --verbose)
 VERBOSE=0
@@ -17,9 +19,63 @@ if [[ $# -gt 0 ]]; then
   esac
 fi
 
-# Stop any running backend or UI instances quietly
-pkill -f "uvicorn palette_sidecar.api" 2>/dev/null || true
-pkill -f "FamiliarApp" 2>/dev/null || true
+# Helper functions for port management
+port_in_use() {
+    lsof -i ":$PORT" -sTCP:LISTEN >/dev/null 2>&1
+}
+
+get_port_pids() {
+    lsof -ti ":$PORT" 2>/dev/null || true
+}
+
+# Stop any running backend or UI instances with robust cleanup
+printf '🛑 Stopping existing processes...\n'
+
+# Stop Mac app first
+if pgrep -f "FamiliarApp" >/dev/null 2>&1; then
+    printf '   Stopping FamiliarApp...\n'
+    pkill -f "FamiliarApp" 2>/dev/null || true
+    sleep 1
+fi
+
+# Stop backend with graceful shutdown
+if port_in_use; then
+    PIDS=$(get_port_pids)
+    if [ -n "$PIDS" ]; then
+        printf '   Stopping backend (PIDs: %s)...\n' "$PIDS"
+
+        # Try graceful shutdown first
+        kill $PIDS 2>/dev/null || true
+
+        # Wait for graceful shutdown
+        WAITED=0
+        while port_in_use && [ $WAITED -lt $MAX_WAIT ]; do
+            sleep 1
+            WAITED=$((WAITED + 1))
+        done
+
+        # Force kill if still running
+        if port_in_use; then
+            printf '   ⚠️  Graceful shutdown timed out, force killing...\n'
+            REMAINING_PIDS=$(get_port_pids)
+            if [ -n "$REMAINING_PIDS" ]; then
+                kill -9 $REMAINING_PIDS 2>/dev/null || true
+                sleep 1
+            fi
+        fi
+
+        # Final check
+        if port_in_use; then
+            printf '❌ Error: Unable to free port %s\n' "$PORT" >&2
+            lsof -i ":$PORT" >&2
+            exit 1
+        fi
+
+        printf '   ✅ Backend stopped\n'
+    fi
+fi
+
+printf '✅ All processes stopped\n\n'
 
 # Ensure the macOS client is built
 printf '🛠️  Building FamiliarApp…\n'
@@ -34,13 +90,20 @@ printf '🧪 Running Swift tests…\n'
   ./test-swift.sh
 )
 
+# Verify port is free before starting
+if port_in_use; then
+    printf '❌ Error: Port %s is still in use after cleanup!\n' "$PORT" >&2
+    lsof -i ":$PORT" >&2
+    exit 1
+fi
+
 # Relaunch backend with reload enabled
 printf '🔥 Starting Familiar sidecar…\n'
 (
   cd "$BACKEND_DIR"
   UVICORN_FLAGS=(
     --host 127.0.0.1
-    --port 8765
+    --port "$PORT"
     --reload
   )
   if [[ "$VERBOSE" -eq 1 ]]; then

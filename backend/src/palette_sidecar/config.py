@@ -19,8 +19,6 @@ def _detect_repo_root(start: Path) -> Path:
 
 CONFIG_DIR = Path.home() / ".palette-app"
 CONFIG_FILE = CONFIG_DIR / "config.json"
-WORKSPACE_MARKER = ".steel-thread-workspace"
-DEMO_FILE_NAME = "steel-thread-demo.txt"
 REPO_ROOT = _detect_repo_root(Path(__file__).resolve())
 BUNDLED_CLI = REPO_ROOT / "assets" / "claude-cli" / "cli.js"
 
@@ -28,7 +26,8 @@ BUNDLED_CLI = REPO_ROOT / "assets" / "claude-cli" / "cli.js"
 AUTH_MODE_API_KEY = "api_key"
 AUTH_MODE_CLAUDE = "claude_ai"
 
-DEFAULT_WORKSPACE_PATH = Path("/")
+# Default to user's home directory for system-wide access
+DEFAULT_WORKSPACE_PATH = Path.home()
 
 
 @dataclass
@@ -65,19 +64,33 @@ def save_settings(settings: Settings) -> None:
 
 
 def ensure_workspace(path_str: str) -> Path:
+    """Validate and resolve a workspace path.
+
+    Args:
+        path_str: Path string to validate (may contain ~ for home directory)
+
+    Returns:
+        Resolved absolute Path object
+
+    Raises:
+        ValueError: If path is invalid or inaccessible
+        PermissionError: If path exists but isn't readable
+    """
     path = Path(path_str).expanduser().resolve()
-    path.mkdir(parents=True, exist_ok=True)
 
-    marker = path / WORKSPACE_MARKER
-    if not marker.exists():
-        marker.write_text("Familiar Steel Thread workspace\n", encoding="utf-8")
+    # If path doesn't exist, verify we can create it
+    if not path.exists():
+        try:
+            path.mkdir(parents=True, exist_ok=True)
+        except (OSError, PermissionError) as e:
+            raise ValueError(f"Cannot create workspace directory: {e}") from e
 
-    demo_file = path / DEMO_FILE_NAME
-    if not demo_file.exists():
-        demo_file.write_text(
-            "# Steel Thread Notes\n\nThis file is modified by the Familiar Steel Thread demo.\n",
-            encoding="utf-8",
-        )
+    # Verify path is a directory and readable
+    if not path.is_dir():
+        raise ValueError(f"Workspace path exists but is not a directory: {path}")
+
+    if not os.access(path, os.R_OK):
+        raise PermissionError(f"Workspace directory is not readable: {path}")
 
     return path
 
@@ -121,19 +134,11 @@ def settings_response_payload(settings: Settings) -> dict[str, Any]:
     """
     from .models import SettingsResponse
 
-    workspace_path = settings.workspace
-    demo_file = None
-    if workspace_path:
-        candidate = Path(workspace_path) / DEMO_FILE_NAME
-        if candidate.exists():
-            demo_file = str(candidate)
-
     response = SettingsResponse(
         has_api_key=settings.anthropic_api_key is not None,
         has_claude_session=settings.claude_session_active,
         claude_account_email=settings.claude_account,
-        workspace=workspace_path,
-        workspace_demo_file=demo_file,
+        workspace=settings.workspace,
         always_allow=settings.always_allow,
         default_workspace=str(DEFAULT_WORKSPACE_PATH),
         auth_mode=settings.auth_mode,

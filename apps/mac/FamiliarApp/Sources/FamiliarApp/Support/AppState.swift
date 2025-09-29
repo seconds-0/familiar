@@ -5,6 +5,7 @@ import SwiftUI
 final class AppState: ObservableObject {
     enum SidecarStatus: String {
         case unknown
+        case initializing
         case ready
         case offline
         case needsConfiguration
@@ -12,6 +13,7 @@ final class AppState: ObservableObject {
         var label: String {
             switch self {
             case .unknown: return "Checking…"
+            case .initializing: return "Starting…"
             case .ready: return "Connected"
             case .offline: return "Offline"
             case .needsConfiguration: return "Needs Setup"
@@ -21,6 +23,7 @@ final class AppState: ObservableObject {
         var systemImage: String {
             switch self {
             case .unknown: return "questionmark.circle"
+            case .initializing: return "hourglass"
             case .ready: return "checkmark.circle.fill"
             case .offline: return "exclamationmark.triangle.fill"
             case .needsConfiguration: return "gearshape.exclamationmark"
@@ -31,10 +34,9 @@ final class AppState: ObservableObject {
     @Published var status: SidecarStatus = .unknown
     @Published var statusDetail: String?
     @Published var workspaceURL: URL?
-    @Published var demoFileURL: URL?
 
     private var monitorTask: Task<Void, Never>?
-    private var healthIsOK = false
+    private var backendStatus: String = "unknown"
     private var configurationIsOK = false
 
     init(startMonitoring: Bool = true) {
@@ -64,10 +66,16 @@ final class AppState: ObservableObject {
 
     private func checkHealth() async {
         do {
-            try await SidecarClient.shared.healthCheck()
-            healthIsOK = true
+            let health = try await SidecarClient.shared.healthCheck()
+            backendStatus = health.status
+
+            if health.status == "degraded", let missing = health.missing {
+                statusDetail = "Backend degraded: missing \(missing.joined(separator: ", "))"
+            } else if health.status == "initializing" {
+                statusDetail = "Backend is starting up..."
+            }
         } catch {
-            healthIsOK = false
+            backendStatus = "offline"
             statusDetail = "Sidecar unreachable: \(error.localizedDescription)"
         }
         updateStatus()
@@ -89,7 +97,6 @@ final class AppState: ObservableObject {
 
     func apply(settings: SidecarSettings) {
         workspaceURL = settings.workspaceURL
-        demoFileURL = settings.demoFileURL
         let hasWorkspace = settings.workspaceURL != nil
         let hasAuth = settings.isAuthenticated
 
@@ -118,11 +125,25 @@ final class AppState: ObservableObject {
     }
 
     private func updateStatus() {
-        if !healthIsOK {
+        // Handle backend status first
+        switch backendStatus {
+        case "initializing":
+            status = .initializing
+            return
+        case "offline":
             status = .offline
+            return
+        case "degraded":
+            status = .offline
+            return
+        case "ready":
+            break // Continue to check configuration
+        default:
+            status = .unknown
             return
         }
 
+        // Backend is ready, check configuration
         if !configurationIsOK {
             status = .needsConfiguration
             if statusDetail == nil || statusDetail?.isEmpty == true {
