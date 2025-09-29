@@ -48,7 +48,7 @@ final class FamiliarViewModel: ObservableObject {
         promptPreview = nil
         startLoadingMessages()
 
-        streamTask = Task {
+        streamTask = Task { @MainActor in
             do {
                 let stream = await client.stream(prompt: trimmed)
                 for try await event in stream {
@@ -76,12 +76,18 @@ final class FamiliarViewModel: ObservableObject {
     func respond(to request: PermissionRequest, decision: String, remember: Bool) {
         guard !isProcessingPermission else { return }
         isProcessingPermission = true
-        Task { [weak self] in
+        Task { @MainActor [weak self] in
+            defer {
+                // Ensure spinner is always reset, even if resolution event is dropped
+                self?.isProcessingPermission = false
+            }
             do {
                 try await self?.client.approve(requestId: request.id, decision: decision, remember: remember)
+                // Permission resolution event will update UI state when it arrives
             } catch {
-                self?.errorMessage = error.localizedDescription
-                self?.isProcessingPermission = false
+                await MainActor.run {
+                    self?.errorMessage = error.localizedDescription
+                }
             }
         }
     }
