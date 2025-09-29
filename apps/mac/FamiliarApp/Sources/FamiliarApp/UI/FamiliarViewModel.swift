@@ -1,78 +1,6 @@
 import Foundation
 import SwiftUI
 
-struct UsageTotals: Equatable {
-    var inputTokens: Int = 0
-    var outputTokens: Int = 0
-    var cost: Double = 0
-    var currency: String = "USD"
-
-    var totalTokens: Int { inputTokens + outputTokens }
-
-    var hasData: Bool {
-        totalTokens > 0 || cost > 0
-    }
-
-    func adding(_ other: UsageTotals) -> UsageTotals {
-        UsageTotals(
-            inputTokens: inputTokens + other.inputTokens,
-            outputTokens: outputTokens + other.outputTokens,
-            cost: cost + other.cost,
-            currency: currency
-        )
-    }
-
-    init() {}
-
-    init(inputTokens: Int, outputTokens: Int, cost: Double, currency: String) {
-        self.inputTokens = inputTokens
-        self.outputTokens = outputTokens
-        self.cost = cost
-        self.currency = currency
-    }
-
-    init?(usageDict: [String: Any]?, costDict: [String: Any]?) {
-        guard let usageDict else { return nil }
-        let input = UsageTotals.parseInt(usageDict["inputTokens"]) ?? 0
-        let output = UsageTotals.parseInt(usageDict["outputTokens"]) ?? 0
-        if input == 0, output == 0, costDict == nil {
-            return nil
-        }
-        let totalCost = UsageTotals.parseDouble(costDict?["total"]) ?? 0
-        let currencyValue = (costDict?["currency"] as? String) ?? "USD"
-        inputTokens = input
-        outputTokens = output
-        cost = totalCost
-        currency = currencyValue
-    }
-
-    private static func parseInt(_ value: Any?) -> Int? {
-        switch value {
-        case let intValue as Int:
-            return intValue
-        case let doubleValue as Double:
-            return Int(doubleValue)
-        case let number as NSNumber:
-            return number.intValue
-        default:
-            return nil
-        }
-    }
-
-    private static func parseDouble(_ value: Any?) -> Double? {
-        switch value {
-        case let doubleValue as Double:
-            return doubleValue
-        case let intValue as Int:
-            return Double(intValue)
-        case let number as NSNumber:
-            return number.doubleValue
-        default:
-            return nil
-        }
-    }
-}
-
 @MainActor
 final class FamiliarViewModel: ObservableObject {
     @Published var prompt: String = ""
@@ -96,7 +24,7 @@ final class FamiliarViewModel: ObservableObject {
     private var streamTask: Task<Void, Never>?
     private let client = SidecarClient.shared
     private var loadingTask: Task<Void, Never>?
-    private let loadingPhrases: [String] = [
+    private let loadingController = LoadingMessageController(phrases: [
         "Tracing the magical ley lines…",
         "Consulting the grimoire of code…",
         "Listening for compiler whispers…",
@@ -104,7 +32,7 @@ final class FamiliarViewModel: ObservableObject {
         "Recruiting helper sprites…",
         "Sharpening the spell quill…",
         "Puzzling through the arcane diagrams…"
-    ]
+    ])
 
     func submit() {
         let trimmed = prompt.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -179,44 +107,72 @@ final class FamiliarViewModel: ObservableObject {
     private func handle(_ event: SidecarEvent) {
         switch event.type {
         case .assistantText:
-            if let text = event.text {
-                transcript.append(text)
-            }
+            handleAssistantText(event)
         case .toolResult:
-            toolSummary = ToolSummary.from(event: event)
+            handleToolResult(event)
         case .permissionRequest:
-            permissionRequest = PermissionRequest.from(event: event)
-            isProcessingPermission = false
+            handlePermissionRequest(event)
         case .permissionResolution:
-            isProcessingPermission = false
-            permissionRequest = nil
-            if event.decision == "deny" {
-                errorMessage = "Permission denied. Claude could not run the requested action."
-                isStreaming = false
-            }
+            handlePermissionResolution(event)
         case .result:
-            if let totals = UsageTotals(usageDict: event.usage, costDict: event.cost) {
-                usageTotals = usageTotals.adding(totals)
-                lastUsage = totals
-            }
-            isStreaming = false
+            handleResult(event)
         case .error:
-            errorMessage = event.message ?? "Unknown error"
-            isStreaming = false
+            handleError(event)
         default:
             break
         }
     }
 
+    // MARK: - Event Handlers
+
+    private func handleAssistantText(_ event: SidecarEvent) {
+        if let text = event.text {
+            transcript.append(text)
+        }
+    }
+
+    private func handleToolResult(_ event: SidecarEvent) {
+        toolSummary = ToolSummary.from(event: event)
+    }
+
+    private func handlePermissionRequest(_ event: SidecarEvent) {
+        permissionRequest = PermissionRequest.from(event: event)
+        isProcessingPermission = false
+    }
+
+    private func handlePermissionResolution(_ event: SidecarEvent) {
+        isProcessingPermission = false
+        permissionRequest = nil
+        if event.decision == "deny" {
+            errorMessage = "Permission denied. Claude could not run the requested action."
+            isStreaming = false
+        }
+    }
+
+    private func handleResult(_ event: SidecarEvent) {
+        if let totals = UsageTotals(usageDict: event.usage, costDict: event.cost) {
+            usageTotals = usageTotals.adding(totals)
+            lastUsage = totals
+        }
+        isStreaming = false
+    }
+
+    private func handleError(_ event: SidecarEvent) {
+        errorMessage = event.message ?? "Unknown error"
+        isStreaming = false
+    }
+
+    // MARK: - Loading Messages
+
     private func startLoadingMessages() {
         loadingTask?.cancel()
-        loadingMessage = nextLoadingMessage()
+        loadingMessage = loadingController.nextMessage()
         loadingTask = Task { [weak self] in
             while !(Task.isCancelled) {
                 try? await Task.sleep(nanoseconds: 2 * 1_000_000_000)
                 await MainActor.run { [weak self] in
                     guard let self else { return }
-                    loadingMessage = nextLoadingMessage()
+                    loadingMessage = loadingController.nextMessage()
                 }
             }
         }
@@ -226,21 +182,7 @@ final class FamiliarViewModel: ObservableObject {
         loadingTask?.cancel()
         loadingTask = nil
         loadingMessage = nil
-    }
-
-    private func nextLoadingMessage() -> String {
-        guard !loadingPhrases.isEmpty else {
-            return "Working on it…"
-        }
-        var candidate = loadingPhrases.randomElement() ?? "Working on it…"
-        if let current = loadingMessage, loadingPhrases.count > 1 {
-            var attempts = 0
-            while candidate == current && attempts < 5 {
-                candidate = loadingPhrases.randomElement() ?? candidate
-                attempts += 1
-            }
-        }
-        return candidate
+        loadingController.reset()
     }
 
     var usageTotalsDisplay: UsageTotals? {
