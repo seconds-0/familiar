@@ -1,13 +1,36 @@
 import Foundation
 
+/// Settings response from the Python sidecar backend.
+///
+/// **Schema Contract:**
+/// This model must stay synchronized with `SettingsResponse` in
+/// `backend/src/palette_sidecar/models.py`.
+///
+/// Field names use camelCase to match JSON serialization from Python's
+/// Pydantic model (which uses `by_alias=True`).
 struct SidecarSettings: Decodable {
+    /// Whether an Anthropic API key is configured
     let hasApiKey: Bool
+
+    /// Whether a Claude.ai session is active
     let hasClaudeSession: Bool
+
+    /// Current workspace directory path
     let workspace: String?
+
+    /// Path to the demo file in the workspace (if it exists)
     let workspaceDemoFile: String?
+
+    /// Tool permissions that are always allowed (tool name -> paths)
     let alwaysAllow: [String: [String]]
+
+    /// Default workspace path suggested by backend
     let defaultWorkspace: String?
+
+    /// Authentication mode: "api_key" or "claude_ai"
     let authMode: String?
+
+    /// Connected Claude.ai account email (if authenticated via claude_ai mode)
     let claudeAccountEmail: String?
 
     private enum CodingKeys: String, CodingKey {

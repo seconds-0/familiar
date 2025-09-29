@@ -379,7 +379,6 @@
       "otherArguments" : [
         "-target",
         "arm64-apple-macosx13.0",
-        "-v",
         "-incremental",
         "-enable-batch-mode",
         "-serialize-diagnostics",
@@ -571,7 +570,6 @@
       "otherArguments" : [
         "-target",
         "arm64-apple-macosx13.0",
-        "-v",
         "-incremental",
         "-enable-batch-mode",
         "-serialize-diagnostics",
@@ -678,7 +676,6 @@
       "otherArguments" : [
         "-target",
         "arm64-apple-macosx14.0",
-        "-v",
         "-incremental",
         "-enable-batch-mode",
         "-serialize-diagnostics",
@@ -834,7 +831,6 @@
       "otherArguments" : [
         "-target",
         "arm64-apple-macosx10.15",
-        "-v",
         "-incremental",
         "-enable-batch-mode",
         "-serialize-diagnostics",
@@ -993,7 +989,6 @@
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/Modules",
       "-target",
       "arm64-apple-macosx13.0",
-      "-v",
       "-incremental",
       "-enable-batch-mode",
       "-serialize-diagnostics",
@@ -1060,7 +1055,6 @@
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/Modules",
       "-target",
       "arm64-apple-macosx13.0",
-      "-v",
       "-incremental",
       "-enable-batch-mode",
       "-serialize-diagnostics",
@@ -1128,7 +1122,6 @@
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/Modules",
       "-target",
       "arm64-apple-macosx14.0",
-      "-v",
       "-incremental",
       "-enable-batch-mode",
       "-serialize-diagnostics",
@@ -1204,7 +1197,6 @@
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/Modules",
       "-target",
       "arm64-apple-macosx10.15",
-      "-v",
       "-incremental",
       "-enable-batch-mode",
       "-serialize-diagnostics",

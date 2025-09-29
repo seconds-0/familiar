@@ -24,7 +24,16 @@ class SettingsPayload(BaseModel):
 
 
 class SettingsResponse(BaseModel):
-    """Settings response with camelCase field names for Swift client."""
+    """Settings response with camelCase field names for Swift client.
+
+    Schema Contract:
+    ----------------
+    This model must stay synchronized with `SidecarSettings` in
+    `apps/mac/FamiliarApp/Sources/FamiliarApp/Models/SidecarSettings.swift`.
+
+    Field aliases define the JSON key names sent to Swift. The Swift model
+    decodes these camelCase keys directly.
+    """
 
     model_config = ConfigDict(populate_by_name=True)
 
