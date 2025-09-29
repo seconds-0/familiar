@@ -1,4 +1,5 @@
 import AppKit
+import Combine
 import Foundation
 
 /// Coordinates Claude.ai authentication flow
@@ -57,7 +58,7 @@ final class AuthenticationCoordinator {
         try await SidecarClient.shared.fetchClaudeStatus()
     }
 
-    /// Poll for login completion with exponential backoff
+    /// Poll for login completion with fixed delay
     ///
     /// Polls the server until login completes or timeout is reached.
     ///

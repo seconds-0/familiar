@@ -23,18 +23,7 @@ from claude_agent_sdk import (
     ToolUseBlock,
 )
 
-from .auth_coordinator import (
-    ClaudeAuthStatus,
-    fetch_claude_session_status,
-    login_coordinator,
-    perform_claude_logout,
-)
-from .config import (
-    AUTH_MODE_API_KEY,
-    AUTH_MODE_CLAUDE,
-    apply_environment,
-    ensure_cli_environment,
-)
+from .config import AUTH_MODE_API_KEY, apply_environment
 from .permissions import broker
 from .session_config import SessionConfig, SessionConfigValidator
 from .tool_manager import ToolContext, ToolManager
