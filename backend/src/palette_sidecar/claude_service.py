@@ -661,7 +661,7 @@ class ClaudeSession:
                 fromfile=from_label,
                 tofile=to_label,
                 lineterm="",
-                n=3,
+                n=3,  # Limit context lines to prevent large diffs
             )
         )
         if not diff_lines:

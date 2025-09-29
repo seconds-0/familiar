@@ -149,4 +149,5 @@ def register_always_allow(settings: Settings, *, tool: str, path: Path) -> None:
         rules.append(canonical)
 
 
+
 ensure_cli_environment()

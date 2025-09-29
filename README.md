@@ -79,10 +79,11 @@ familiar/
    swift build
    open .build/debug/FamiliarApp.app
    ```
+   (Alternatively, run `./scripts/steel-thread-package.sh` from the repo root to stage `dist/steel-thread/FamiliarApp.app`.)
 4. Open the menu bar preferences, paste your Anthropic API key, and select a workspace directory. The sidecar seeds `steel-thread-demo.txt` inside that folder.
 5. Summon the palette with `⌥Space`, request an edit (e.g., “Append a bullet to the steel thread note”), approve the Write tool, and watch the transcript update with the applied change summary.
 
-See `docs/steel-thread.md` for packaging and smoke test details.
+See `docs/steel-thread.md` for full packaging and smoke test details.
 
 ## Contributing
 

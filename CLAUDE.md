@@ -109,6 +109,7 @@ The project uses MCP (Model Context Protocol) servers for enhanced AI capabiliti
 ## Build & Test Expectations
 
 - Backend lives under `backend/`; run `uv run uvicorn palette_sidecar.api:app --host 127.0.0.1 --port 8765 --reload` for local development.
+- Execute backend tests with `uv run pytest tests/ -v` after modifying the FastAPI sidecar or Claude session logic.
 - The Swift client sits under `apps/mac/FamiliarApp/`; resolve dependencies with `swift build` or open `Package.swift` in Xcode for UI iteration.
 - Validate `assets/claude-cli/cli.js` with `node assets/claude-cli/cli.js --help` after modifying bundled tooling.
 - Propose testing strategies aligned with the chosen stack (e.g., pytest, XCTest) and capture rationale in implementation docs.
