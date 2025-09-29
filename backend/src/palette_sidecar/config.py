@@ -114,22 +114,32 @@ def detect_prerequisites() -> dict[str, bool]:
 
 
 def settings_response_payload(settings: Settings) -> dict[str, Any]:
+    """Build settings response payload for API endpoints.
+
+    This function is retained for backwards compatibility but now uses
+    the Pydantic SettingsResponse model for serialization.
+    """
+    from .models import SettingsResponse
+
     workspace_path = settings.workspace
     demo_file = None
     if workspace_path:
         candidate = Path(workspace_path) / DEMO_FILE_NAME
         if candidate.exists():
             demo_file = str(candidate)
-    return {
-        "hasApiKey": settings.anthropic_api_key is not None,
-        "hasClaudeSession": settings.claude_session_active,
-        "claudeAccountEmail": settings.claude_account,
-        "workspace": workspace_path,
-        "workspaceDemoFile": demo_file,
-        "alwaysAllow": settings.always_allow,
-        "defaultWorkspace": str(DEFAULT_WORKSPACE_PATH),
-        "authMode": settings.auth_mode,
-    }
+
+    response = SettingsResponse(
+        has_api_key=settings.anthropic_api_key is not None,
+        has_claude_session=settings.claude_session_active,
+        claude_account_email=settings.claude_account,
+        workspace=workspace_path,
+        workspace_demo_file=demo_file,
+        always_allow=settings.always_allow,
+        default_workspace=str(DEFAULT_WORKSPACE_PATH),
+        auth_mode=settings.auth_mode,
+    )
+
+    return response.model_dump(by_alias=True)
 
 
 def register_always_allow(settings: Settings, *, tool: str, path: Path) -> None:
