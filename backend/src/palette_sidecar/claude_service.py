@@ -14,9 +14,9 @@ from pathlib import Path
 from typing import Any, AsyncIterator
 from uuid import uuid4
 
-from claude_code_sdk import (
+from claude_agent_sdk import (
     AssistantMessage,
-    ClaudeCodeOptions,
+    ClaudeAgentOptions,
     ClaudeSDKClient,
     HookMatcher,
     ResultMessage,
@@ -336,7 +336,7 @@ class ClaudeSession:
 
     def __init__(self) -> None:
         self._config = SessionConfig()
-        self._options = ClaudeCodeOptions(
+        self._options = ClaudeAgentOptions(
             allowed_tools=["Write"],
             permission_mode="default",
             model="claude-sonnet-4-20250514",

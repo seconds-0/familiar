@@ -10,7 +10,7 @@ dependencies = [
   "anyio>=4.4",
   "pydantic>=2.7",
   "sse-starlette>=1.8",
-  "claude-code-sdk>=0.0.23",
+  "claude-agent-sdk>=0.1.0",
   "python-dotenv>=1.0"
 ]
 
