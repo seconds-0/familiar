@@ -13,6 +13,7 @@ struct ZeroStateView: View {
     let fetchSuggestions: () async -> [String]
 
     @State private var loadingState: LoadingState = .loading
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     enum LoadingState {
         case loading
@@ -39,7 +40,9 @@ struct ZeroStateView: View {
                         SuggestionCard(text: suggestion) {
                             onSuggestionTap(suggestion)
                         }
-                        .transition(.opacity.combined(with: .scale(scale: 0.95)))
+                        .transition(
+                            reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 0.95))
+                        )
                     }
 
                 case .error:
