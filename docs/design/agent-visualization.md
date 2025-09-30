@@ -1,4 +1,5 @@
 # Magical Agent Visualization System
+
 > Transforming Claude Code's autonomous orchestration into an enchanting, transparent experience
 
 ## Concept Overview
@@ -12,11 +13,13 @@ The Familiar app currently presents Claude Code as a single, monolithic assistan
 ### User Mental Model Transformation
 
 **Current Experience**:
+
 - User asks question → Black box thinking → Answer appears
 - No visibility into magical process complexity or parallel spell work
 - Single progress indicator for all mystical activity
 
 **Magical Experience**:
+
 - User asks question → Familiar starts glowing with magical intent
 - Specialized agents materialize with spell-casting animations and unique magical icons
 - Real-time status updates with contextual, mystical summaries
@@ -59,30 +62,35 @@ The current Familiar window (720x460 fixed) expands to accommodate a resizable r
 Each agent type gets a distinctive magical icon with enchanting animation states:
 
 #### **🔍 Code Search Specialist**
+
 - **Icon**: Magnifying glass with sparkles
 - **Spawning**: Glass materializes with light refraction effect (0.8s)
 - **Working**: Sparkles orbit the lens, searching beam sweeps
 - **Complete**: Bright flash as findings are discovered
 
 #### **🏗️ Engineering Manager**
+
 - **Icon**: Blueprint scroll with floating gears
 - **Spawning**: Scroll unfurls with architectural symbols appearing (0.5s)
 - **Working**: Gears rotate, blueprint glows with planning activity
 - **Complete**: Gears align with satisfying click, scroll rolls up
 
 #### **✨ General Purpose**
+
 - **Icon**: Multi-colored swirling energy orb
 - **Spawning**: Energy coalesces from scattered particles (0.6s)
 - **Working**: Colors shift and pulse with task complexity
 - **Complete**: Orb crystallizes into gem-like clarity
 
 #### **⚡ Background Processes**
+
 - **Icon**: Lightning bolt for shell commands
 - **Spawning**: Electric arc forms between connection points (0.4s)
 - **Working**: Continuous electrical animation with crackling
 - **Complete**: Lightning settles into stable power symbol
 
 #### **🎯 Task Orchestrator**
+
 - **Icon**: Conductor's baton with musical notes
 - **Spawning**: Baton appears with a flourish of musical symbols (0.7s)
 - **Working**: Notes dance around baton as tasks are coordinated
@@ -91,26 +99,31 @@ Each agent type gets a distinctive magical icon with enchanting animation states
 ### Status Color Language
 
 **Spawning State** (Cornflower Blue `#6495ED`)
+
 - Gentle blue glow during magical initialization
 - Particle effects as agent materializes
 - Transition duration: 0.8 seconds
 
 **Active Working** (Golden Amber `#FFB000`)
+
 - Warm, pulsing glow indicating productive spell activity
 - Breath-like rhythm: 2-second inhale/exhale cycle
 - Intensity varies with magical processing complexity
 
 **Waiting/Blocked** (Soft Purple `#9370DB`)
+
 - Cooler tone indicating dependency wait for other spells
 - Slower, more subtle pulsing pattern
 - Gentle reminder without urgency
 
 **Success Complete** (Forest Green `#228B22`)
+
 - Bright flash transitioning to steady checkmark
 - Sparkle particle burst on spell completion
 - Fades to subtle green outline for magical history
 
 **Error/Blocked** (Warning Red `#DC143C`)
+
 - Attention-getting pulse with warning symbol
 - Distinct from active working through urgency pattern
 - Clear visual hierarchy for spell resolution needs
@@ -118,6 +131,7 @@ Each agent type gets a distinctive magical icon with enchanting animation states
 ### Agent Interaction States
 
 #### **Compact Mode** (Default)
+
 ```
 🔍 Seeking patterns        [2m ago]
 🏗️ Weaving structure      [active]
@@ -125,6 +139,7 @@ Each agent type gets a distinctive magical icon with enchanting animation states
 ```
 
 #### **Expanded Mode** (On Click)
+
 ```
 🔍 Code Search Specialist             [2m ago]
 ├─ Searched 247 files for "auth"
@@ -144,6 +159,7 @@ Each agent type gets a distinctive magical icon with enchanting animation states
 Following Claude Code's current pattern, Familiar displays a **magical action bar** at the bottom of the main content area showing real-time spell activities:
 
 #### **Action Bar Examples**:
+
 ```
 🔍 Searching through authentication patterns in 247 files...
 
@@ -157,6 +173,7 @@ Following Claude Code's current pattern, Familiar displays a **magical action ba
 ```
 
 #### **Action Bar Behavior**:
+
 - **Real-time updates**: Shows current primary action from most active agent
 - **Contextual verbs**: Uses magical language ("weaving", "conjuring", "divining")
 - **Progress indication**: Optional progress bar for determinate operations
@@ -164,6 +181,7 @@ Following Claude Code's current pattern, Familiar displays a **magical action ba
 - **Dismissible**: Users can hide the action bar for minimal UI mode
 
 #### **Integration with Sidebar**:
+
 - Action bar shows **primary spell** in progress
 - Sidebar shows **all active spells** with hierarchy
 - Clicking action bar highlights corresponding agent in sidebar
@@ -176,6 +194,7 @@ Following Claude Code's current pattern, Familiar displays a **magical action ba
 Generate contextual, human-readable status summaries using Haiku-3.5 for cost-effective real-time updates:
 
 **API Call Structure**:
+
 ```python
 def generate_agent_summary(agent_type: str, current_task: str, context: dict) -> str:
     prompt = f"""
@@ -198,13 +217,13 @@ def generate_agent_summary(agent_type: str, current_task: str, context: dict) ->
 
 ### Context-Aware Examples
 
-| Agent Activity | Raw Technical Status | Magical Summary |
-|---------------|---------------------|-----------------|
-| File search with regex patterns | `grep -r "authentication" --include="*.ts"` | `🔍 Seeking auth secrets` |
-| Test execution in background | `npm test -- --coverage --reporter=json` | `⚡ Validating changes` |
-| Planning architecture changes | `Analyzing dependencies for refactor` | `🏗️ Designing structure` |
-| Code analysis and review | `Reading 15 files, extracting patterns` | `✨ Understanding codebase` |
-| Permission system evaluation | `Checking file access permissions` | `🛡️ Verifying safety` |
+| Agent Activity                  | Raw Technical Status                        | Magical Summary             |
+| ------------------------------- | ------------------------------------------- | --------------------------- |
+| File search with regex patterns | `grep -r "authentication" --include="*.ts"` | `🔍 Seeking auth secrets`   |
+| Test execution in background    | `npm test -- --coverage --reporter=json`    | `⚡ Validating changes`     |
+| Planning architecture changes   | `Analyzing dependencies for refactor`       | `🏗️ Designing structure`    |
+| Code analysis and review        | `Reading 15 files, extracting patterns`     | `✨ Understanding codebase` |
+| Permission system evaluation    | `Checking file access permissions`          | `🛡️ Verifying safety`       |
 
 ## Technical Architecture
 
@@ -421,6 +440,7 @@ struct ParticleSystemView: View {
 ### Typical Interaction Sequence
 
 1. **Initial Query Submission**
+
    ```
    User: "Help me refactor the authentication system"
 
@@ -430,6 +450,7 @@ struct ParticleSystemView: View {
    ```
 
 2. **Agent Orchestration Begins**
+
    ```
    Claude Code Decision: Spawn code-search-specialist + engineering-manager
 
@@ -440,6 +461,7 @@ struct ParticleSystemView: View {
    ```
 
 3. **Parallel Agent Activity**
+
    ```
    Search Agent: Scanning codebase
    Planning Agent: Waiting for search results
@@ -451,6 +473,7 @@ struct ParticleSystemView: View {
    ```
 
 4. **Sub-Agent Spawning**
+
    ```
    Engineering Manager spawns: security-specialist + performance-analyst
 
@@ -461,6 +484,7 @@ struct ParticleSystemView: View {
    ```
 
 5. **Completion and Results**
+
    ```
    All agents complete their specialized tasks
 
@@ -474,6 +498,7 @@ struct ParticleSystemView: View {
 ### Interactive Behaviors
 
 **Agent Click Actions**:
+
 - **Single tap**: Toggle expanded/compact view for details
 - **Double tap**: Focus main transcript on agent's contributions
 - **Right-click**: Context menu with options:
@@ -482,6 +507,7 @@ struct ParticleSystemView: View {
   - "Hide completed agents"
 
 **Sidebar Behaviors**:
+
 - **Drag edge**: Resize sidebar width (200-400px range)
 - **Collapse button**: Minimize to icon-only mode
 - **Clear history**: Remove completed agents from view
@@ -490,9 +516,11 @@ struct ParticleSystemView: View {
 ## Implementation Phases
 
 ### Phase 1: Foundation (Week 1-2)
+
 **Goal**: Basic sidebar infrastructure without animations
 
 **Tasks**:
+
 - [ ] Extend Familiar window layout to HSplitView architecture
 - [ ] Create AgentSidebarView with static agent list
 - [ ] Add basic AgentVisualizationManager for state management
@@ -500,15 +528,18 @@ struct ParticleSystemView: View {
 - [ ] Add mock agent data for UI development
 
 **Acceptance Criteria**:
+
 - Sidebar appears and resizes properly
 - Static agent list displays with correct icons
 - No performance impact on main UI
 - Graceful fallback if sidebar is disabled
 
 ### Phase 2: Agent Lifecycle Events (Week 3-4)
-**Goal**: Real-time agent tracking from Claude Code SDK
+
+**Goal**: Real-time agent tracking from Claude Agent SDK
 
 **Tasks**:
+
 - [ ] Extend ClaudeSession with agent lifecycle monitoring
 - [ ] Add new SSE event types: agent_spawned, agent_progress, agent_completed
 - [ ] Implement AgentContext tracking in backend
@@ -516,15 +547,18 @@ struct ParticleSystemView: View {
 - [ ] Add basic status text updates (no summaries yet)
 
 **Acceptance Criteria**:
+
 - Agents appear in real-time as Claude Code spawns them
 - Status updates reflect actual agent activity
 - Hierarchy relationships display correctly
 - Error handling for malformed agent events
 
 ### Phase 3: Magical Animations (Week 5-6)
+
 **Goal**: Delightful spawn/completion effects
 
 **Tasks**:
+
 - [ ] Implement ParticleSystemView with Canvas for performance
 - [ ] Create SpellEffectView for agent-specific animations
 - [ ] Add spawn burst effects for agent materialization
@@ -533,15 +567,18 @@ struct ParticleSystemView: View {
 - [ ] Add accessibility support with prefersReducedMotion
 
 **Acceptance Criteria**:
+
 - Smooth 60fps animations on typical hardware
 - Graceful degradation for reduced motion preferences
 - No animation interference with text readability
 - Battery-conscious particle counts
 
 ### Phase 4: Status Summarization (Week 7-8)
+
 **Goal**: Human-readable agent descriptions
 
 **Tasks**:
+
 - [ ] Integrate Haiku-3.5 for cheap status summarization
 - [ ] Build HaikuSummarizer class with caching
 - [ ] Add context-aware prompt templates for different agent types
@@ -549,15 +586,18 @@ struct ParticleSystemView: View {
 - [ ] Create fallback descriptions for API failures
 
 **Acceptance Criteria**:
+
 - Contextual, magical status descriptions
 - Cost under $0.01 per typical user session
 - 500ms max latency for status updates
 - Meaningful fallbacks when summarization fails
 
 ### Phase 5: Polish and Interactions (Week 9-10)
+
 **Goal**: Professional, interactive experience
 
 **Tasks**:
+
 - [ ] Add click interactions for agent expansion
 - [ ] Implement agent execution history/logs
 - [ ] Create context menus for agent actions
@@ -566,6 +606,7 @@ struct ParticleSystemView: View {
 - [ ] Performance optimization for large agent hierarchies
 
 **Acceptance Criteria**:
+
 - Responsive interactions under 100ms
 - Useful debugging information for developers
 - Smooth sidebar state transitions
@@ -576,18 +617,21 @@ struct ParticleSystemView: View {
 ### Animation Performance
 
 **Target Specifications**:
+
 - 60 FPS on 2019+ MacBook Pro
 - 120 FPS on ProMotion displays when available
 - Graceful degradation on older hardware
 - Battery impact under 2% during typical use
 
 **Optimization Strategies**:
+
 - Canvas-based particles instead of View-based for high counts
 - Particle pooling to avoid allocation overhead
 - Frame rate adaptation based on system performance
 - Animation complexity scaling with hardware capabilities
 
 **Memory Management**:
+
 ```swift
 class AgentVisualizationManager: ObservableObject {
     private let maxHistorySize = 50  // Limit completed agent storage
@@ -606,12 +650,14 @@ class AgentVisualizationManager: ObservableObject {
 ### Real-time Update Efficiency
 
 **SSE Event Handling**:
+
 - Batch multiple agent updates into single UI refresh
 - Debounce rapid status changes (max 2 updates/second per agent)
 - Prioritize visible agents for summary generation
 - Queue background updates when sidebar is collapsed
 
 **Cost Management**:
+
 - Cache Haiku summaries for identical contexts (5-minute TTL)
 - Rate limit to 10 summary generations per minute
 - Fallback to template-based descriptions under high load
@@ -620,18 +666,21 @@ class AgentVisualizationManager: ObservableObject {
 ## Future Enhancements
 
 ### Advanced Interactions
+
 - **Agent Debugging**: Click agent to see full execution trace with tool calls
 - **Performance Metrics**: Show agent CPU/memory usage and execution time
 - **Agent Communication**: Visualize data flow between parent/child agents
 - **Custom Agent Icons**: User-configurable spell themes and icon sets
 
 ### Intelligence Features
+
 - **Predictive Status**: Use agent history to predict completion times
 - **Workload Balancing**: Visual indicators when agents are resource-constrained
 - **Pattern Recognition**: Highlight frequently used agent combinations
 - **Learning Integration**: Adapt animations based on user interaction patterns
 
 ### Platform Integration
+
 - **Menu Bar Summary**: Show active agent count in status bar
 - **Notification Center**: Agent completion notifications
 - **Shortcuts Integration**: Trigger agent analysis via macOS shortcuts
@@ -640,12 +689,14 @@ class AgentVisualizationManager: ObservableObject {
 ## Success Metrics
 
 ### User Experience Goals
+
 - **Transparency**: 90% of users understand what Claude Code is doing during complex requests
 - **Engagement**: 40% increase in user confidence when working with complex tasks
 - **Performance**: Zero perceived latency impact on core functionality
 - **Accessibility**: Full compatibility with assistive technologies
 
 ### Technical Benchmarks
+
 - **Animation Performance**: Consistent 60+ FPS during active agent work
 - **Memory Usage**: Under 50MB additional RAM for agent visualization
 - **Battery Impact**: Less than 2% additional drain during normal use

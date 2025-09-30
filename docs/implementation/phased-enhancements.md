@@ -17,9 +17,11 @@ This document outlines 4 phases of enhancements to transform Familiar from a fun
 ## Phase 1: Claude Login Polish (1 week)
 
 ### Goal
+
 Make the Claude.ai authentication flow intuitive, transparent, and error-proof.
 
 ### Current Pain Points
+
 - Button states are binary (enabled/disabled) - no intermediate feedback
 - Browser launch is silent - users don't know what happened
 - Errors are generic - no actionable guidance
@@ -45,6 +47,7 @@ enum ClaudeLoginState: Equatable {
 ```
 
 **Implementation**:
+
 - Extract state logic from `SettingsView.swift:312-334` to dedicated view model
 - Add state-specific button styling and labels
 - Smooth transitions with `.animation(.familiarEaseInOut)`
@@ -169,11 +172,13 @@ enum LoginError {
 ### Phase 1 Implementation Checklist
 
 **Backend (Python)**:
+
 - [ ] Ensure `loginUrl` is returned in all auth responses
 - [ ] Add structured error types with user-friendly messages
 - [ ] Improve CLI output parsing reliability
 
 **Frontend (SwiftUI)**:
+
 - [ ] Create `ClaudeLoginState` enum and view model
 - [ ] Implement state machine UI with proper transitions
 - [ ] Add "Copy URL" fallback button
@@ -182,6 +187,7 @@ enum LoginError {
 - [ ] Add `LoginErrorView` with contextual messages
 
 **Testing**:
+
 - [ ] Unit test state machine transitions
 - [ ] Manual QA with slow network
 - [ ] Manual QA with browser not installed
@@ -193,6 +199,7 @@ enum LoginError {
 ## Phase 2: Settings UX Overhaul (2 weeks)
 
 ### Goal
+
 Transform settings from cramped form into intuitive, guided experience.
 
 ### Improvements
@@ -243,6 +250,7 @@ Step 3: Select Workspace
 ```
 
 **Implementation**:
+
 - Create `OnboardingFlow` view with `@State var currentStep: Step`
 - Only show on first launch (check `UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")`)
 - Allow skipping to settings for advanced users
@@ -252,12 +260,12 @@ Step 3: Select Workspace
 **Problem**: Users don't understand trade-offs
 **Solution**: Side-by-side comparison
 
-| Feature | Claude.ai Login | API Key |
-|---------|----------------|---------|
-| Setup Time | 30 seconds | 2 minutes |
-| Cost | Free with Max plan | Pay-per-use |
-| Management | Automatic | Manual rotation |
-| Best For | Most users | Advanced/enterprise |
+| Feature    | Claude.ai Login    | API Key             |
+| ---------- | ------------------ | ------------------- |
+| Setup Time | 30 seconds         | 2 minutes           |
+| Cost       | Free with Max plan | Pay-per-use         |
+| Management | Automatic          | Manual rotation     |
+| Best For   | Most users         | Advanced/enterprise |
 
 **Visual Treatment**: Cards with icons, not just text table
 
@@ -361,7 +369,8 @@ func validateApiKey(_ key: String) {
 ## Phase 3: SDK Feature Exposure (3 weeks)
 
 ### Goal
-Surface powerful Claude Code SDK features through intuitive UI.
+
+Surface powerful Claude Agent SDK features through intuitive UI.
 
 ### 3.1 Slash Commands Autocomplete
 
@@ -389,6 +398,7 @@ if prompt.hasPrefix("/") {
 **Backend**: Add `/commands` endpoint to list available commands
 
 **Example Commands**:
+
 - `/review` - Code review current file
 - `/test` - Generate tests for selection
 - `/explain` - Explain complex code
@@ -417,6 +427,7 @@ Settings → Memory tab
 ```
 
 **Features**:
+
 - Live preview of how Claude sees the memory
 - Templates for common memory structures
 - Undo/redo with version history
@@ -506,6 +517,7 @@ Settings → Integrations tab
 ```
 
 **Backend**:
+
 - Serve curated MCP registry from JSON file
 - Handle installation (npm/pip/binary)
 - Manage `.mcp.json` updates
@@ -587,6 +599,7 @@ struct ToolHistoryView: View {
 ## Phase 4: Agent Visualization (4 weeks)
 
 ### Goal
+
 Transform Claude Code's invisible agent orchestration into transparent, delightful experience.
 
 **See**: `docs/design/agent-visualization.md` for complete specification
@@ -594,27 +607,32 @@ Transform Claude Code's invisible agent orchestration into transparent, delightf
 ### Highlights
 
 #### 4.1 Right Sidebar Architecture
+
 - Resizable sidebar (200-400px) showing active agents
 - HSplitView layout expanding main window
 - Collapsible to icon-only mode
 
 #### 4.2 Deterministic Sigil System
+
 - SHA1-based visual anchors for sessions/tools
 - Consistent glyphs from seed: `session_id|prompt|path|tool_name`
 - Rendered on Canvas for performance
 
 #### 4.3 Magical Animations
+
 - **Spawning**: Particle burst as agent materializes (0.8s)
 - **Working**: Golden pulsing with 2s breath cycle
 - **Completion**: Green sparkle burst
 - Respects `prefersReducedMotion`
 
 #### 4.4 Haiku-Powered Status Summaries
+
 - Real-time "Seeking patterns..." style descriptions
 - Cost: ~$0.0001 per summary (sustainable)
 - Fallback to templates on API failure
 
 #### 4.5 Agent Hierarchy Tree
+
 - Parent/child relationships visualized
 - Indentation and connecting lines
 - Click to expand details
@@ -665,6 +683,7 @@ As we implement phases, refactor:
 ### Documentation Updates
 
 As each phase completes:
+
 - [ ] Update README with new features
 - [ ] Add implementation guide to `docs/implementation/`
 - [ ] Record decisions in ADR format
@@ -674,12 +693,12 @@ As each phase completes:
 
 ## Timeline Summary
 
-| Phase | Duration | Key Deliverable |
-|-------|----------|----------------|
-| Phase 1 | 1 week | Polished Claude login flow |
-| Phase 2 | 2 weeks | Intuitive settings & onboarding |
-| Phase 3 | 3 weeks | SDK features exposed in UI |
-| Phase 4 | 4 weeks | Agent visualization sidebar |
+| Phase     | Duration     | Key Deliverable                  |
+| --------- | ------------ | -------------------------------- |
+| Phase 1   | 1 week       | Polished Claude login flow       |
+| Phase 2   | 2 weeks      | Intuitive settings & onboarding  |
+| Phase 3   | 3 weeks      | SDK features exposed in UI       |
+| Phase 4   | 4 weeks      | Agent visualization sidebar      |
 | **Total** | **10 weeks** | Production-ready, delightful app |
 
 ---

@@ -1,4 +1,4 @@
-"""Claude Code SDK session management for the native palette sidecar."""
+"""Claude Agent SDK session management for the native palette sidecar."""
 
 from __future__ import annotations
 
@@ -49,12 +49,16 @@ class ClaudeSession:
         self._config = SessionConfig()
         self._validator = SessionConfigValidator(self._config)
         self._options = ClaudeAgentOptions(
-            allowed_tools=["Write"],
+            allowed_tools=None,  # Allow all SDK tools including TodoWrite
             permission_mode="default",
             model="claude-sonnet-4-20250514",
             system_prompt=STEEL_THREAD_SYSTEM_PROMPT,
             mcp_servers=self._load_mcp_config(),
         )
+        # Install permission hooks up front so the initial connection has PreToolUse
+        self._options.hooks = {
+            "PreToolUse": [HookMatcher(matcher="*", hooks=[self._handle_pre_tool_use])]
+        }
         self._client: ClaudeSDKClient | None = None
         self._receiver_task: asyncio.Task[None] | None = None
         self._event_queue: asyncio.Queue[dict[str, Any]] | None = None
@@ -73,9 +77,7 @@ class ClaudeSession:
             logger.debug("Ignoring disconnect error: %s", exc)
         except Exception as exc:  # pragma: no cover - defensive
             logger.warning("Unexpected disconnect error: %s", exc)
-        self._options.hooks = {
-            "PreToolUse": [HookMatcher(matcher="*", hooks=[self._handle_pre_tool_use])]
-        }
+        # Hooks remain configured in self._options across reconnects
 
     # ------------------------------------------------------------------
     # Configuration management
@@ -223,7 +225,7 @@ class ClaudeSession:
         except Exception as exc:  # pragma: no cover - defensive logging
             self._needs_restart = True
             self._log_hook("stream_error", error=str(exc))
-            friendly = "Claude request failed after multiple attempts. Please try again."
+            friendly = "Hmm, something went wrong. Want to try again?"
             await self._emit_event({"type": "error", "message": friendly})
         finally:
             if self._receiver_task:
@@ -331,7 +333,7 @@ class ClaudeSession:
             await self._emit_event(
                 {
                     "type": "error",
-                    "message": "Permission denied. Claude could not run the requested action.",
+                    "message": "Got it — I won’t run that.",
                 }
             )
         elif decision == "allow" and remember and context and context.path:

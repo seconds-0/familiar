@@ -10,28 +10,28 @@ struct SettingsView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: FamiliarSpacing.md) {
             authenticationSection
             workspaceSection
 
             if let statusMessage = viewModel.statusMessage {
                 Text(statusMessage)
-                    .font(.subheadline)
+                    .font(.familiarBody)
                     .foregroundStyle(viewModel.statusColor)
             }
 
             HStack {
-                Button("Test Connection", action: viewModel.testConnection)
+                Button("Check if it works", action: viewModel.testConnection)
                     .disabled(viewModel.isTesting)
                 Spacer()
-                Button("Save", action: viewModel.save)
+                Button("Looks good", action: viewModel.save)
                     .buttonStyle(.borderedProminent)
                     .disabled(viewModel.isSaving)
             }
 
             Spacer()
         }
-        .padding(24)
+        .padding(FamiliarSpacing.md)
         .frame(width: 520, height: 360)
         .task { await viewModel.loadSettings() }
         .onChange(of: viewModel.selectedAuthMode) { _ in
@@ -39,19 +39,19 @@ struct SettingsView: View {
             viewModel.handleAuthModeChange()
         }
         .alert("Sign out of Claude Code?", isPresented: $viewModel.isLogoutConfirmationPresented) {
-            Button("Cancel", role: .cancel) {}
-            Button("Sign Out", role: .destructive) {
+            Button("Not right now", role: .cancel) {}
+            Button("Yes, sign me out", role: .destructive) {
                 viewModel.signOutClaude()
             }
         } message: {
-            Text("Signing out here also logs you out of Claude Code in the terminal.")
+            Text("This will also sign you out of Claude Code in the terminal.")
         }
     }
 
     private var authenticationSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: FamiliarSpacing.sm) {
             Text("Authentication")
-                .font(.headline)
+                .font(.familiarHeading)
 
             Picker("Authentication", selection: $viewModel.selectedAuthMode) {
                 ForEach(SettingsViewModel.AuthMode.allCases) { mode in
@@ -94,9 +94,9 @@ struct SettingsView: View {
     }
 
     private var workspaceSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: FamiliarSpacing.xs) {
             Text("Workspace")
-                .font(.headline)
+                .font(.familiarHeading)
             HStack(spacing: 8) {
                 TextField("/path/to/workspace", text: $viewModel.workspacePath)
                     .textFieldStyle(.roundedBorder)

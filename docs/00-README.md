@@ -18,7 +18,7 @@
 
 Foundational knowledge and technical specifications:
 
-- **[claude-code-sdk.md](reference/claude-code-sdk.md)** - Complete Claude Code SDK reference
+- **[claude-agent-sdk.md](reference/claude-agent-sdk.md)** - Complete Claude Agent SDK reference
   - Options, permissions, hooks, MCP servers
   - Python SDK patterns and examples
   - Headless mode and streaming
@@ -27,7 +27,7 @@ Foundational knowledge and technical specifications:
   - Components, layout, state management
   - macOS-specific APIs
 
-- **[architecture.md](reference/architecture.md)** *(TO BE CREATED)*
+- **[architecture.md](reference/architecture.md)** _(TO BE CREATED)_
   - System design and component interaction
   - FastAPI sidecar + SwiftUI client pattern
   - Data flow and responsibility boundaries
@@ -44,17 +44,17 @@ Step-by-step guides for building features:
   - macOS app integration
   - QA and smoke tests
 
-- **[auth-login-flow.md](implementation/auth-login-flow.md)** *(TO BE CREATED)*
+- **[auth-login-flow.md](implementation/auth-login-flow.md)** _(TO BE CREATED)_
   - Claude.ai OAuth-style authentication
   - API key fallback mode
   - Session management
 
-- **[mcp-integration.md](implementation/mcp-integration.md)** *(TO BE CREATED)*
+- **[mcp-integration.md](implementation/mcp-integration.md)** _(TO BE CREATED)_
   - MCP server configuration
   - Tool namespace handling
   - Installation and lifecycle
 
-- **[phased-enhancements.md](implementation/phased-enhancements.md)** *(COMING SOON)*
+- **[phased-enhancements.md](implementation/phased-enhancements.md)** _(COMING SOON)_
   - Phase 1: Claude Login Polish
   - Phase 2: Settings UX Overhaul
   - Phase 3: SDK Feature Exposure
@@ -78,7 +78,7 @@ Visual and interaction design specifications:
   - Haiku-powered status summaries
   - Implementation phases and performance
 
-- **[visual-improvements.md](design/visual-improvements.md)** *(TO BE CREATED)*
+- **[visual-improvements.md](design/visual-improvements.md)** _(TO BE CREATED)_
   - Consolidated visual polish tasks
   - Quick wins and design token system
   - Component improvements

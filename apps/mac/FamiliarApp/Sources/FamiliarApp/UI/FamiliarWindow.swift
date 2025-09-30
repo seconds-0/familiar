@@ -47,12 +47,12 @@ struct FamiliarView: View {
     @FocusState private var isPromptFocused: Bool
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: FamiliarSpacing.sm) {
             ScrollView(.vertical, showsIndicators: true) {
-                LazyVStack(alignment: .leading, spacing: 12) {
+                LazyVStack(alignment: .leading, spacing: FamiliarSpacing.sm) {
                     if !viewModel.transcript.isEmpty {
                         Text(viewModel.transcript)
-                            .font(.system(.body, design: .monospaced))
+                            .font(.familiarMono)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .textSelection(.enabled)
                     }
@@ -63,7 +63,7 @@ struct FamiliarView: View {
 
                     if let error = viewModel.errorMessage {
                         Label(error, systemImage: "exclamationmark.circle")
-                            .foregroundStyle(.red)
+                            .foregroundStyle(Color.familiarError)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -76,21 +76,22 @@ struct FamiliarView: View {
             }
 
             if viewModel.isStreaming {
-                HStack(spacing: 8) {
-                    ProgressView().progressViewStyle(.circular)
+                HStack(spacing: FamiliarSpacing.xs) {
+                    BreathingDotView()
                     Text(viewModel.loadingMessage ?? "Working on it…")
-                        .font(.footnote)
+                        .font(.familiarCaption)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
                 }
+                .animation(.familiar, value: viewModel.isStreaming)
             }
 
             Spacer(minLength: 0)
 
             Divider()
 
-            VStack(alignment: .leading, spacing: 4) {
-                HStack(alignment: .center, spacing: 8) {
+            VStack(alignment: .leading, spacing: FamiliarSpacing.xs / 2) {
+                HStack(alignment: .center, spacing: FamiliarSpacing.xs) {
                     PromptTextEditor(
                         text: $viewModel.prompt,
                         preview: viewModel.promptPreview,
@@ -104,30 +105,38 @@ struct FamiliarView: View {
                         Button {
                             viewModel.cancelStreaming()
                         } label: {
-                            Image(systemName: "stop.circle.fill")
+                            Label("Stop", systemImage: "stop.circle.fill")
                         }
                         .buttonStyle(.bordered)
+                        .controlSize(.large)
+                        .tint(.familiarWarning)
                         .help("Stop current request")
                     } else {
                         Button {
                             viewModel.submit()
                         } label: {
-                            Image(systemName: "paperplane.fill")
+                            Label("Send", systemImage: "paperplane.fill")
                         }
                         .buttonStyle(.borderedProminent)
-                        .help("Send prompt")
+                        .controlSize(.large)
+                        .help("Send prompt (Enter)")
                     }
                 }
 
                 HStack(spacing: 0) {
                     Text("New line: Shift+Enter    Send: Enter")
-                        .font(.footnote)
+                        .font(.familiarCaption)
                         .foregroundStyle(.secondary)
                     Spacer()
                 }
             }
         }
-        .padding(EdgeInsets(top: 20, leading: 20, bottom: 12, trailing: 20))
+        .padding(EdgeInsets(
+            top: FamiliarSpacing.md,
+            leading: FamiliarSpacing.md,
+            bottom: FamiliarSpacing.sm,
+            trailing: FamiliarSpacing.md
+        ))
         .frame(
             minWidth: 600,
             idealWidth: 720,

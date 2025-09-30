@@ -1,18 +1,21 @@
 # Steel Thread V1 Checklist
 
 ## Onboarding & Install
+
 - [x] Package build script: `scripts/steel-thread-package.sh` stages FamiliarApp.app with backend sidecar
 - [x] Health endpoint surfaces missing prerequisites (Node, bundled Claude CLI)
 - [x] Settings view captures and persists the Anthropic API key via Keychain
 - [x] Workspace selection writes `.steel-thread-workspace` marker and demo note file
 
 ## Backend (FastAPI Sidecar)
+
 - [x] Persistent `ClaudeSDKClient` wired with `Write` tool, Sonnet model, and system prompt
 - [x] `PreToolUse` hook emits permission requests and waits for UI approval
 - [x] Write tool results return path/snippet metadata for the transcript
 - [x] `/query`, `/approve`, `/settings`, `/health` expose SSE streaming and control plane
 
 ## macOS App (SwiftUI)
+
 - [x] Menu bar extra shows sidecar status and `⌥Space` summon shortcut
 - [x] Familiar window streams assistant tokens and supports cancellation
 - [x] Approval sheet summarises file edits with Allow Once / Deny actions
@@ -20,6 +23,7 @@
 - [x] Settings manage API key + workspace with inline status feedback
 
 ## QA & Docs
+
 - [x] Steel Thread doc covers install → query → approve → exit
 - [x] `docs/steel-thread.md` includes manual smoke test checklist
 - [x] README updated with backend/frontend structure and commands
@@ -72,18 +76,22 @@
 ## Troubleshooting
 
 ### Missing Node.js Runtime
+
 - Run `node --version`; install via `brew install node` if the command fails.
 - Verify the bundled CLI is reachable: `node assets/claude-cli/cli.js --help`.
 
 ### Anthropic API Key Not Detected
+
 - Open **Palette -> Open Settings...** and re-enter the key; the status banner should turn green after saving.
 - Confirm the macOS Keychain entry `anthropic_api_key` exists and is not locked.
 
 ### Workspace or CLI Path Errors
+
 - Ensure the selected workspace contains `.steel-thread-workspace`; rerun the setup to recreate it if missing.
 - Inspect the CLI path exported by the sidecar via `echo $CLAUDE_CODE_CLI_PATH` in the packaged environment; it should point to `assets/claude-cli/cli.js`.
 
 ### Permission Flow Hints
+
 - Diff previews now render unified diffs; scroll to review multi-line edits before approving.
 - Use **Always Allow** when you trust a file path - the decision is stored per tool in `~/.palette-app/config.json` and auto-applies on future runs.
 - Denied requests immediately stop the active stream and surface a localized error so the user can retry with adjusted context.
