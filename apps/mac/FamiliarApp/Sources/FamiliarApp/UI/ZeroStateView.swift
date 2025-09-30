@@ -36,7 +36,7 @@ struct ZeroStateView: View {
                     }
 
                 case .loaded(let suggestions):
-                    ForEach(suggestions, id: \.self) { suggestion in
+                    ForEach(Array(suggestions.enumerated()), id: \.offset) { _, suggestion in
                         SuggestionCard(text: suggestion) {
                             onSuggestionTap(suggestion)
                         }

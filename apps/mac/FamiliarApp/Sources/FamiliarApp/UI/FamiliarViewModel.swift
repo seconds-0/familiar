@@ -20,6 +20,7 @@ final class FamiliarViewModel: ObservableObject {
     @Published var promptPreview: String?
     @Published private(set) var usageTotals = UsageTotals()
     @Published private(set) var lastUsage: UsageTotals?
+    @Published private var zeroStateCache: [String]? = nil
 
     private var streamTask: Task<Void, Never>?
     private let client = SidecarClient.shared
@@ -111,8 +112,13 @@ final class FamiliarViewModel: ObservableObject {
     }
 
     func fetchZeroStateSuggestions() async -> [String] {
+        if let cached = zeroStateCache, !cached.isEmpty {
+            return cached
+        }
         do {
-            return try await client.fetchZeroStateSuggestions()
+            let suggestions = try await client.fetchZeroStateSuggestions()
+            await MainActor.run { self.zeroStateCache = suggestions }
+            return suggestions
         } catch {
             // Return empty array on error - ZeroStateView will show fallback text
             return []

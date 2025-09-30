@@ -42,3 +42,16 @@ def test_zero_state_suggestions_fallback_on_error(monkeypatch) -> None:
     # Ensure we hit the known fallback phrase
     assert data["suggestions"][0] == "Organize something that needs tidying"
 
+
+def test_zero_state_suggestions_get_variant(monkeypatch) -> None:
+    async def fake_generate_suggestions(count: int = 4):  # type: ignore[return-type]
+        return ["A", "B", "C", "D"][:count]
+
+    monkeypatch.setattr(api, "generate_suggestions", fake_generate_suggestions)
+
+    with TestClient(api.app) as client:
+        response = client.get("/zero-state/suggestions")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data == {"suggestions": ["A", "B", "C", "D"]}

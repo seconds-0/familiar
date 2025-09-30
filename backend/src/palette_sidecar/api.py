@@ -284,3 +284,9 @@ async def zero_state_suggestions() -> dict[str, Any]:
                 "Solve a problem you're facing"
             ]
         }
+
+
+@app.get("/zero-state/suggestions")
+async def zero_state_suggestions_get() -> dict[str, Any]:
+    """Idempotent variant of zero state suggestions."""
+    return await zero_state_suggestions()
