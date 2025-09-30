@@ -10,9 +10,29 @@ struct ApprovalSheet: View {
     let isProcessing: Bool
     let onDecision: (ApprovalDecision) -> Void
 
+    /// Generate human-friendly action description from tool name
+    private var actionDescription: String {
+        switch request.toolName.lowercased() {
+        case "read":
+            return "read this file"
+        case "write":
+            return "create this file"
+        case "edit":
+            return "edit this file"
+        case "bash":
+            return "run this command"
+        case "grep":
+            return "search these files"
+        case "glob":
+            return "find these files"
+        default:
+            return "use \(request.toolName)"
+        }
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Approve \(request.toolName) tool?")
+        VStack(alignment: .leading, spacing: FamiliarSpacing.sm) {
+            Text("I can \(actionDescription) for you")
                 .font(.title3)
                 .bold()
 
@@ -25,7 +45,7 @@ struct ApprovalSheet: View {
             if let diff = request.diff, !diff.isEmpty {
                 DiffPreviewView(diff: diff)
             } else if let preview = request.preview, !preview.isEmpty {
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: FamiliarSpacing.xs) {
                     Text("Proposed content")
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -38,7 +58,7 @@ struct ApprovalSheet: View {
                     }
                     .frame(minHeight: 120, idealHeight: 180, maxHeight: 280)
                     .background(Color(nsColor: .textBackgroundColor))
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .clipShape(RoundedRectangle(cornerRadius: FamiliarRadius.control))
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(Color(nsColor: .separatorColor).opacity(0.3), lineWidth: 1)
@@ -55,7 +75,7 @@ struct ApprovalSheet: View {
             }
 
             HStack {
-                Button("Deny") {
+                Button("Not right now") {
                     onDecision(ApprovalDecision(decision: "deny", remember: false))
                 }
                 .buttonStyle(.bordered)
@@ -64,21 +84,21 @@ struct ApprovalSheet: View {
                 Spacer()
 
                 if request.canonicalPath != nil {
-                    Button("Always Allow") {
+                    Button("Always ok") {
                         onDecision(ApprovalDecision(decision: "allow", remember: true))
                     }
                     .buttonStyle(.bordered)
                     .disabled(isProcessing)
                 }
 
-                Button("Allow Once") {
+                Button("Yes, do it") {
                     onDecision(ApprovalDecision(decision: "allow", remember: false))
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(isProcessing)
             }
         }
-        .padding(24)
+        .padding(FamiliarSpacing.md)
         .frame(
             minWidth: 380,
             idealWidth: 420,
@@ -96,7 +116,7 @@ private struct DiffPreviewView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: FamiliarSpacing.xs) {
             Text("Proposed diff")
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -116,9 +136,9 @@ private struct DiffPreviewView: View {
             }
             .frame(minHeight: 150, idealHeight: 220, maxHeight: 320)
             .background(Color(nsColor: .textBackgroundColor))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .clipShape(RoundedRectangle(cornerRadius: FamiliarRadius.control))
             .overlay(
-                RoundedRectangle(cornerRadius: 8)
+                RoundedRectangle(cornerRadius: FamiliarRadius.control)
                     .stroke(Color(nsColor: .separatorColor).opacity(0.3), lineWidth: 1)
             )
         }

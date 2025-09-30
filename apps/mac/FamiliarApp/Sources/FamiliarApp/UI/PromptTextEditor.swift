@@ -35,7 +35,7 @@ struct PromptTextEditor: View {
     }
 
     var body: some View {
-        let backgroundShape = RoundedRectangle(cornerRadius: 10, style: .continuous)
+        let backgroundShape = RoundedRectangle(cornerRadius: FamiliarRadius.control, style: .continuous)
 
         return PromptTextViewRepresentable(
             text: $text,
@@ -51,7 +51,7 @@ struct PromptTextEditor: View {
         .frame(minHeight: visibleHeight, maxHeight: visibleHeight, alignment: .top)
         .frame(maxWidth: .infinity, alignment: .leading)
         .fixedSize(horizontal: false, vertical: true)
-        .animation(.easeInOut(duration: 0.15), value: visibleHeight)
+        .animation(.familiarInteractive, value: visibleHeight)
         .background(
             backgroundShape
                 .fill(Color(nsColor: .textBackgroundColor))
@@ -65,13 +65,13 @@ struct PromptTextEditor: View {
                     .padding(.leading, textInsets.width)
                     .allowsHitTesting(false)
                     .opacity(isEditing ? 0 : 1)
-                    .animation(.easeInOut(duration: 0.1), value: isEditing)
+                    .animation(.familiarInteractive, value: isEditing)
             }
         }
         .clipShape(backgroundShape)
         .overlay(
             backgroundShape
-                .stroke(Color(nsColor: .separatorColor).opacity(0.4), lineWidth: 1)
+                .stroke(Color.familiarAccent.opacity(0.35), lineWidth: 1)
         )
     }
 }
