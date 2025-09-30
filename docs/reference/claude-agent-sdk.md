@@ -1,13 +1,24 @@
-# Claude Code TypeScript SDK Documentation
+# Claude Agent SDK Documentation
+
+> **Note**: This SDK was renamed from "Claude Code SDK" to "Claude Agent SDK" to reflect its broader capabilities for building AI agents beyond coding tasks. See the [Migration Guide](#migration-from-claude-code-sdk) below if you're upgrading from the old package.
 
 ## Overview
 
-The Claude Code TypeScript SDK provides a powerful interface for building AI-powered development tools. It enables streaming interactions with Claude, tool usage control, and integration with Model Context Protocol (MCP) servers.
+The Claude Agent SDK provides a powerful interface for building AI-powered agents and tools. It enables streaming interactions with Claude, tool usage control, and integration with Model Context Protocol (MCP) servers. Built on the same infrastructure that powers Claude Code, this SDK can be used to create agents for coding, business operations, customer support, research, and more.
 
 ## Installation
 
 ```bash
-npm install @anthropic-ai/claude-code
+npm install @anthropic-ai/claude-agent-sdk
+```
+
+### Upgrading from Claude Code SDK
+
+If you're migrating from the old package:
+
+```bash
+npm uninstall @anthropic-ai/claude-code
+npm install @anthropic-ai/claude-agent-sdk
 ```
 
 ## Core API
@@ -17,13 +28,13 @@ npm install @anthropic-ai/claude-code
 The primary function for interacting with Claude Code. Creates an async generator that streams messages as they arrive.
 
 ```typescript
-import { query } from "@anthropic-ai/claude-code";
+import { query } from "@anthropic-ai/claude-agent-sdk";
 
 async function main() {
   for await (const message of query({
     prompt: "Help me understand this codebase",
     options: {
-      model: "claude-3-opus-20240229",
+      model: "claude-sonnet-4-5-20250929",
       includePartialMessages: true,
       mcpServers: {},
       permissionMode: "default"
@@ -225,7 +236,7 @@ const mcpServers = {
 Create an MCP server within your application:
 
 ```typescript
-import { createSdkMcpServer, tool } from "@anthropic-ai/claude-code";
+import { createSdkMcpServer, tool } from "@anthropic-ai/claude-agent-sdk";
 
 const mcpServer = createSdkMcpServer({
   name: "custom-tools",
@@ -428,7 +439,7 @@ interface GrepInput {
 ### Creating Custom Tools
 
 ```typescript
-import { tool } from "@anthropic-ai/claude-code";
+import { tool } from "@anthropic-ai/claude-agent-sdk";
 import { z } from "zod";
 
 const customTool = tool({
@@ -628,10 +639,115 @@ import type {
   PermissionResult,
   ToolInput,
   ToolOutput
-} from "@anthropic-ai/claude-code";
+} from "@anthropic-ai/claude-agent-sdk";
 ```
 
-## Migration Guide
+## Migration from Claude Code SDK
+
+### Breaking Changes
+
+When migrating from `@anthropic-ai/claude-code` to `@anthropic-ai/claude-agent-sdk`, be aware of these breaking changes:
+
+#### 1. System Prompt Behavior
+
+The SDK **no longer uses Claude Code's default system prompt automatically**. If you want Claude Code-like behavior, you must explicitly configure the system prompt:
+
+```typescript
+import { query } from "@anthropic-ai/claude-agent-sdk";
+
+for await (const message of query({
+  prompt: "fix the build",
+  options: {
+    systemPrompt: "You are a helpful coding assistant..." // Explicit system prompt
+  }
+})) {
+  // Handle messages
+}
+```
+
+#### 2. Settings Sources
+
+The SDK **no longer automatically loads filesystem settings by default**. You must explicitly specify settings sources:
+
+```typescript
+import { query } from "@anthropic-ai/claude-agent-sdk";
+
+for await (const message of query({
+  prompt: "fix the build",
+  options: {
+    settingSources: ['user', 'project', 'local'] // Explicitly load settings
+  }
+})) {
+  // Handle messages
+}
+```
+
+### Migration Steps
+
+**1. Update Package**
+
+```bash
+npm uninstall @anthropic-ai/claude-code
+npm install @anthropic-ai/claude-agent-sdk
+```
+
+**2. Update Imports**
+
+```typescript
+// Old
+import { query } from "@anthropic-ai/claude-code";
+
+// New
+import { query } from "@anthropic-ai/claude-agent-sdk";
+```
+
+**3. Add Settings Configuration (if needed)**
+
+If you were relying on automatic settings loading:
+
+```typescript
+const options = {
+  settingSources: ['user', 'project', 'local'],
+  // ... other options
+};
+```
+
+**4. Configure System Prompt (if needed)**
+
+If you want Claude Code-like behavior:
+
+```typescript
+const options = {
+  systemPrompt: "You are a helpful AI assistant that helps with coding tasks...",
+  // ... other options
+};
+```
+
+### Migration Example
+
+**Before (Claude Code SDK)**:
+```typescript
+import { query } from "@anthropic-ai/claude-code";
+
+for await (const message of query({ prompt: "fix the build" })) {
+  console.log(message.content);
+}
+```
+
+**After (Claude Agent SDK)**:
+```typescript
+import { query } from "@anthropic-ai/claude-agent-sdk";
+
+for await (const message of query({
+  prompt: "fix the build",
+  options: {
+    settingSources: ['user', 'project', 'local'],
+    systemPrompt: "You are a helpful coding assistant..."
+  }
+})) {
+  console.log(message.content);
+}
+```
 
 ### From CLI to SDK
 
@@ -640,7 +756,7 @@ import type {
 // $ claude "fix the build"
 
 // SDK equivalent
-import { query } from "@anthropic-ai/claude-code";
+import { query } from "@anthropic-ai/claude-agent-sdk";
 
 for await (const message of query({
   prompt: "fix the build"
@@ -651,7 +767,17 @@ for await (const message of query({
 
 ## Additional Resources
 
-- [Official Documentation](https://docs.claude.com/en/docs/claude-code/sdk/sdk-typescript)
-- [GitHub Repository](https://github.com/anthropics/claude-code)
+- [Official Agent SDK Documentation](https://docs.claude.com/en/api/agent-sdk/overview)
+- [TypeScript SDK Documentation](https://docs.claude.com/en/api/agent-sdk/typescript)
+- [Migration Guide](https://docs.claude.com/en/docs/claude-code/sdk/migration-guide)
+- [GitHub Repository](https://github.com/anthropics/anthropic-sdk-typescript)
 - [MCP Specification](https://github.com/modelcontextprotocol/modelcontextprotocol)
 - [Discord Community](https://discord.gg/anthropic)
+
+## Version History
+
+- **v2.0+** (2025-01): Renamed to Claude Agent SDK (`@anthropic-ai/claude-agent-sdk`)
+  - Breaking: System prompt no longer uses default Claude Code prompt
+  - Breaking: Settings sources must be explicitly configured
+  - Expanded capabilities beyond coding to support all types of agents
+- **v1.x** (2024): Original Claude Code SDK (`@anthropic-ai/claude-code`)

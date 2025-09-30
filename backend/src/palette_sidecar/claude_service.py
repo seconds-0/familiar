@@ -49,7 +49,7 @@ class ClaudeSession:
         self._config = SessionConfig()
         self._validator = SessionConfigValidator(self._config)
         self._options = ClaudeAgentOptions(
-            allowed_tools=["Write"],
+            allowed_tools=None,  # Allow all SDK tools including TodoWrite
             permission_mode="default",
             model="claude-sonnet-4-20250514",
             system_prompt=STEEL_THREAD_SYSTEM_PROMPT,
