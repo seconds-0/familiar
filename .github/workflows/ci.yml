@@ -1,0 +1,59 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [ "main", "develop", "feature/**" ]
+  push:
+    branches: [ "main", "develop", "feature/**" ]
+
+jobs:
+  prettier:
+    name: Prettier Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Run Prettier
+        run: npx -y prettier@3.6.2 --check .
+
+  python-tests:
+    name: Backend Tests (pytest via uv)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Sync and run tests
+        working-directory: backend
+        run: |
+          uv sync
+          uv run pytest -q
+
+  swift-tests:
+    name: Swift Build and Tests
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: swift build --package-path apps/mac/FamiliarApp
+      - name: Test
+        run: swift test --package-path apps/mac/FamiliarApp -q
+
+  cli-smoke:
+    name: CLI Smoke Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Smoke test Claude CLI bundle
+        run: node assets/claude-cli/cli.js --help
+
