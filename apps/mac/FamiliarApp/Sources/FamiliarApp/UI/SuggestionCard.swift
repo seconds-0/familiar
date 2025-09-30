@@ -29,6 +29,8 @@ struct SuggestionCard: View {
             )
         }
         .buttonStyle(.plain)
+        .accessibilityLabel("Suggestion: \(text)")
+        .accessibilityHint("Paste this suggestion into the prompt")
         .onHover { hovering in
             withAnimation(.familiar) {
                 isHovered = hovering

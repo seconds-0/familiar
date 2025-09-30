@@ -74,9 +74,9 @@ async def generate_suggestions(count: int = 4) -> list[str]:
 
         prompt = build_suggestion_prompt(time_of_day, day_of_week)
 
-        # Query the session and collect the response text
-        response_text = []
-        async for event in session.query(prompt):
+        # Stream the session and collect the response text
+        response_text: list[str] = []
+        async for event in session.stream(prompt, session_id="zero-state"):
             if event.get("type") == "assistant_text":
                 response_text.append(event.get("text", ""))
             elif event.get("type") == "error":

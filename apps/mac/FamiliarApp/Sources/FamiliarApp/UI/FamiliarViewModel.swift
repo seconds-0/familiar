@@ -159,7 +159,7 @@ final class FamiliarViewModel: ObservableObject {
         isProcessingPermission = false
         permissionRequest = nil
         if event.decision == "deny" {
-            errorMessage = "Permission denied. Claude could not run the requested action."
+            errorMessage = "Got it — I won’t run that."
             isStreaming = false
         }
     }
