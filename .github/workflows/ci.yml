@@ -33,7 +33,7 @@ jobs:
       - name: Sync and run tests
         working-directory: backend
         run: |
-          uv sync
+          uv sync --seed
           uv run python -m pip install pytest
           uv run pytest -q
 
