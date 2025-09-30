@@ -30,6 +30,7 @@ from .config import (
 )
 from .models import ApprovalPayload, QueryPayload, SettingsPayload
 from .permissions import broker
+from .zero_state import generate_suggestions
 
 
 logger = logging.getLogger(__name__)
@@ -264,3 +265,22 @@ async def health() -> dict[str, Any]:
     missing = [name for name, ok in checks.items() if not ok]
     status_value = "ok" if not missing else "degraded"
     return {"status": status_value, "missing": missing}
+
+
+@app.post("/zero-state/suggestions")
+async def zero_state_suggestions() -> dict[str, Any]:
+    """Generate AI-powered zero state suggestions."""
+    try:
+        suggestions = await generate_suggestions(count=4)
+        return {"suggestions": suggestions}
+    except Exception as e:
+        logger.error(f"Zero state endpoint error: {e}")
+        # Return fallback on any error
+        return {
+            "suggestions": [
+                "Organize something that needs tidying",
+                "Create something new",
+                "Learn about a topic you're curious about",
+                "Solve a problem you're facing"
+            ]
+        }
