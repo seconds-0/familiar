@@ -37,7 +37,7 @@ jobs:
         working-directory: backend
         run: |
           uv sync
-          uv run python -m pip install pytest
+          uv run python -m pip install pytest pytest-asyncio
           uv run pytest -q
 
   swift-tests:
