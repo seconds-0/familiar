@@ -110,6 +110,15 @@ final class FamiliarViewModel: ObservableObject {
         }
     }
 
+    func fetchZeroStateSuggestions() async -> [String] {
+        do {
+            return try await client.fetchZeroStateSuggestions()
+        } catch {
+            // Return empty array on error - ZeroStateView will show fallback text
+            return []
+        }
+    }
+
     private func handle(_ event: SidecarEvent) {
         switch event.type {
         case .assistantText:

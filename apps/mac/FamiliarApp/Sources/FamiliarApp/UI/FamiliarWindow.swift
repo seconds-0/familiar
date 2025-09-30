@@ -47,15 +47,31 @@ struct FamiliarView: View {
     @FocusState private var isPromptFocused: Bool
 
     var body: some View {
-        VStack(spacing: FamiliarSpacing.sm) {
-            ScrollView(.vertical, showsIndicators: true) {
-                LazyVStack(alignment: .leading, spacing: FamiliarSpacing.sm) {
-                    if !viewModel.transcript.isEmpty {
-                        Text(viewModel.transcript)
-                            .font(.familiarMono)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .textSelection(.enabled)
+        ZStack {
+            // Zero state - show when empty
+            if viewModel.transcript.isEmpty && viewModel.prompt.isEmpty {
+                ZeroStateView(
+                    onSuggestionTap: { suggestion in
+                        viewModel.prompt = suggestion
+                        isPromptFocused = true
+                    },
+                    fetchSuggestions: {
+                        await viewModel.fetchZeroStateSuggestions()
                     }
+                )
+                .transition(.opacity.animation(.familiar))
+            }
+
+            // Main content
+            VStack(spacing: FamiliarSpacing.sm) {
+                ScrollView(.vertical, showsIndicators: true) {
+                    LazyVStack(alignment: .leading, spacing: FamiliarSpacing.sm) {
+                        if !viewModel.transcript.isEmpty {
+                            Text(viewModel.transcript)
+                                .font(.familiarMono)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .textSelection(.enabled)
+                        }
 
                     if let summary = viewModel.toolSummary {
                         ToolSummaryView(summary: summary)
@@ -129,6 +145,7 @@ struct FamiliarView: View {
                         .foregroundStyle(.secondary)
                     Spacer()
                 }
+            }
             }
         }
         .padding(EdgeInsets(
