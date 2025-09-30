@@ -30,10 +30,13 @@ jobs:
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Create venv (seed pip)
+        working-directory: backend
+        run: uv venv --seed
       - name: Sync and run tests
         working-directory: backend
         run: |
-          uv sync --seed
+          uv sync
           uv run python -m pip install pytest
           uv run pytest -q
 
