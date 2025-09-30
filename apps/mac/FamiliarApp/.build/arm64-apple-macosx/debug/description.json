@@ -269,6 +269,26 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarColor.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarMotion.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarRadius.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarSpacing.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarTypography.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/ClaudeAuthState.swift"
         },
         {
@@ -286,6 +306,14 @@
         {
           "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/ToolSummary.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/UsageTotals.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Services/AuthenticationCoordinator.swift"
         },
         {
           "kind" : "file",
@@ -309,11 +337,31 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/LoadingMessageController.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/PromptNSTextView.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/SettingsWindowController.swift"
         },
         {
           "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/APIKeySection.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/ApprovalSheet.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/BreathingDotView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/ClaudeLoginSection.swift"
         },
         {
           "kind" : "file",
@@ -341,6 +389,10 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/ViewModels/SettingsViewModel.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
         },
         {
@@ -357,24 +409,37 @@
       "moduleOutputPath" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/Modules/FamiliarApp.swiftmodule",
       "objects" : [
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/App.swift.o",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarColor.swift.o",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarMotion.swift.o",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarRadius.swift.o",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarSpacing.swift.o",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarTypography.swift.o",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ClaudeAuthState.swift.o",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/PermissionRequest.swift.o",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SidecarEvent.swift.o",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SidecarSettings.swift.o",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ToolSummary.swift.o",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/UsageTotals.swift.o",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/AuthenticationCoordinator.swift.o",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/EventSource.swift.o",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SidecarClient.swift.o",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/AppState.swift.o",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/Hotkey.swift.o",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/Keychain.swift.o",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/LoadingMessageController.swift.o",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/PromptNSTextView.swift.o",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SettingsWindowController.swift.o",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/APIKeySection.swift.o",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ApprovalSheet.swift.o",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/BreathingDotView.swift.o",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ClaudeLoginSection.swift.o",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarViewModel.swift.o",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarWindow.swift.o",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/PromptTextEditor.swift.o",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SettingsView.swift.o",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ToolSummaryView.swift.o",
-        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/UsageSummaryView.swift.o"
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/UsageSummaryView.swift.o",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SettingsViewModel.swift.o"
       ],
       "otherArguments" : [
         "-target",
@@ -439,6 +504,26 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarColor.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarMotion.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarRadius.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarSpacing.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarTypography.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ClaudeAuthState.swift.o"
         },
         {
@@ -456,6 +541,14 @@
         {
           "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ToolSummary.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/UsageTotals.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/AuthenticationCoordinator.swift.o"
         },
         {
           "kind" : "file",
@@ -479,11 +572,31 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/LoadingMessageController.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/PromptNSTextView.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SettingsWindowController.swift.o"
         },
         {
           "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/APIKeySection.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ApprovalSheet.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/BreathingDotView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ClaudeLoginSection.swift.o"
         },
         {
           "kind" : "file",
@@ -511,30 +624,47 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SettingsViewModel.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/Modules/FamiliarApp.swiftmodule"
         }
       ],
       "prepareForIndexing" : false,
       "sources" : [
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/App.swift",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarColor.swift",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarMotion.swift",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarRadius.swift",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarSpacing.swift",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarTypography.swift",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/ClaudeAuthState.swift",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/PermissionRequest.swift",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/SidecarEvent.swift",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/SidecarSettings.swift",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/ToolSummary.swift",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/UsageTotals.swift",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Services/AuthenticationCoordinator.swift",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Services/EventSource.swift",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Services/SidecarClient.swift",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/AppState.swift",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/Hotkey.swift",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/Keychain.swift",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/LoadingMessageController.swift",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/PromptNSTextView.swift",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/SettingsWindowController.swift",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/APIKeySection.swift",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/ApprovalSheet.swift",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/BreathingDotView.swift",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/ClaudeLoginSection.swift",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/FamiliarViewModel.swift",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/FamiliarWindow.swift",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/PromptTextEditor.swift",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/SettingsView.swift",
         "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/ToolSummaryView.swift",
-        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/UsageSummaryView.swift"
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/UsageSummaryView.swift",
+        "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/ViewModels/SettingsViewModel.swift"
       ],
       "tempsPath" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build",
       "wholeModuleOptimization" : false
@@ -967,24 +1097,37 @@
       "familiarapp",
       "-c",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/App.swift",
+      "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarColor.swift",
+      "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarMotion.swift",
+      "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarRadius.swift",
+      "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarSpacing.swift",
+      "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarTypography.swift",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/ClaudeAuthState.swift",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/PermissionRequest.swift",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/SidecarEvent.swift",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/SidecarSettings.swift",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/ToolSummary.swift",
+      "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/UsageTotals.swift",
+      "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Services/AuthenticationCoordinator.swift",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Services/EventSource.swift",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Services/SidecarClient.swift",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/AppState.swift",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/Hotkey.swift",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/Keychain.swift",
+      "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/LoadingMessageController.swift",
+      "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/PromptNSTextView.swift",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/SettingsWindowController.swift",
+      "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/APIKeySection.swift",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/ApprovalSheet.swift",
+      "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/BreathingDotView.swift",
+      "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/ClaudeLoginSection.swift",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/FamiliarViewModel.swift",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/FamiliarWindow.swift",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/PromptTextEditor.swift",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/SettingsView.swift",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/ToolSummaryView.swift",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/UsageSummaryView.swift",
+      "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/ViewModels/SettingsViewModel.swift",
       "-I",
       "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/Modules",
       "-target",
@@ -1321,6 +1464,26 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarColor.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarMotion.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarRadius.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarSpacing.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarTypography.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/ClaudeAuthState.swift"
         },
         {
@@ -1338,6 +1501,14 @@
         {
           "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/ToolSummary.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/UsageTotals.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Services/AuthenticationCoordinator.swift"
         },
         {
           "kind" : "file",
@@ -1361,11 +1532,31 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/LoadingMessageController.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/PromptNSTextView.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/SettingsWindowController.swift"
         },
         {
           "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/APIKeySection.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/ApprovalSheet.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/BreathingDotView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/ClaudeLoginSection.swift"
         },
         {
           "kind" : "file",
@@ -1390,6 +1581,10 @@
         {
           "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/UsageSummaryView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/ViewModels/SettingsViewModel.swift"
         }
       ],
       "outputFilePath" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/sources"
@@ -1400,6 +1595,10 @@
         {
           "kind" : "virtual",
           "name" : "<link-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/APIKeySection.swift.o"
         },
         {
           "kind" : "file",
@@ -1415,11 +1614,43 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/AuthenticationCoordinator.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/BreathingDotView.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ClaudeAuthState.swift.o"
         },
         {
           "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ClaudeLoginSection.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/EventSource.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarColor.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarMotion.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarRadius.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarSpacing.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarTypography.swift.o"
         },
         {
           "kind" : "file",
@@ -1439,7 +1670,15 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/LoadingMessageController.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/PermissionRequest.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/PromptNSTextView.swift.o"
         },
         {
           "kind" : "file",
@@ -1448,6 +1687,10 @@
         {
           "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SettingsView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SettingsViewModel.swift.o"
         },
         {
           "kind" : "file",
@@ -1476,6 +1719,10 @@
         {
           "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/UsageSummaryView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/UsageTotals.swift.o"
         },
         {
           "kind" : "file",
@@ -1547,6 +1794,10 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/APIKeySection.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/App.swift.o"
         },
         {
@@ -1559,11 +1810,43 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/AuthenticationCoordinator.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/BreathingDotView.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ClaudeAuthState.swift.o"
         },
         {
           "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ClaudeLoginSection.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/EventSource.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarColor.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarMotion.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarRadius.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarSpacing.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarTypography.swift.o"
         },
         {
           "kind" : "file",
@@ -1583,7 +1866,15 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/LoadingMessageController.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/PermissionRequest.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/PromptNSTextView.swift.o"
         },
         {
           "kind" : "file",
@@ -1592,6 +1883,10 @@
         {
           "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SettingsView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SettingsViewModel.swift.o"
         },
         {
           "kind" : "file",
@@ -1620,6 +1915,10 @@
         {
           "kind" : "file",
           "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/UsageSummaryView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/UsageTotals.swift.o"
         },
         {
           "kind" : "file",

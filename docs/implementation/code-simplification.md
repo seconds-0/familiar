@@ -22,6 +22,7 @@ The current codebase (19 Swift files, ~2,500 LOC + Python backend) works well bu
 ### 1. SettingsView.swift (539 lines → ~380 lines)
 
 **Current Problems**:
+
 - Single massive view with nested auth logic
 - Four similar status update functions
 - Deeply nested state management
@@ -30,6 +31,7 @@ The current codebase (19 Swift files, ~2,500 LOC + Python backend) works well bu
 #### Refactoring Plan
 
 **Extract Auth Sections** (saves ~100 lines):
+
 ```swift
 // NEW FILE: ClaudeLoginSection.swift
 struct ClaudeLoginSection: View {
@@ -95,6 +97,7 @@ var authenticationSection: some View {
 ```
 
 **Consolidate Status Updates** (saves ~40 lines):
+
 ```swift
 // CURRENT: 4 separate functions
 // - updateStatusForClaudeMode(with:)
@@ -133,6 +136,7 @@ private func updateStatusMessage(
 ```
 
 **Simplify Auth Logic** (saves ~20 lines):
+
 ```swift
 // CURRENT: Manual state tracking with multiple @State vars
 @State private var isLoggingIn = false
@@ -157,6 +161,7 @@ var isAuthBusy: Bool {
 ```
 
 #### Impact
+
 - **Before**: 539 lines, hard to navigate, duplicated logic
 - **After**: ~380 lines, clear sections, testable components
 - **Savings**: 159 lines (29% reduction)
@@ -166,6 +171,7 @@ var isAuthBusy: Bool {
 ### 2. FamiliarViewModel.swift (254 lines → ~200 lines)
 
 **Current Problems**:
+
 - Large `handle(_ event:)` switch statement (30 lines)
 - UsageTotals parsing mixed with view logic
 - Loading message logic could be extracted
@@ -173,6 +179,7 @@ var isAuthBusy: Bool {
 #### Refactoring Plan
 
 **Extract Event Handlers** (saves ~20 lines):
+
 ```swift
 // CURRENT: Single switch with inline handling
 private func handle(_ event: SidecarEvent) {
@@ -213,6 +220,7 @@ private func handleToolResult(_ event: SidecarEvent) {
 ```
 
 **Move UsageTotals Parsing to Model** (saves ~20 lines):
+
 ```swift
 // MOVE FROM: FamiliarViewModel.swift
 // TO: UsageTotals struct in Models/
@@ -242,6 +250,7 @@ private func handleResult(_ event: SidecarEvent) {
 ```
 
 **Extract Loading Message Controller** (saves ~14 lines):
+
 ```swift
 // NEW FILE: LoadingMessageController.swift
 final class LoadingMessageController {
@@ -288,6 +297,7 @@ private func startLoadingMessages() {
 ```
 
 #### Impact
+
 - **Before**: 254 lines, monolithic event handling
 - **After**: ~200 lines, focused responsibilities
 - **Savings**: 54 lines (21% reduction)
@@ -297,15 +307,18 @@ private func startLoadingMessages() {
 ### 3. Minor Simplifications Across Other Files
 
 **AppState.swift** (139 lines → ~120 lines):
+
 - Combine `healthIsOK` and `configurationIsOK` into single `SystemStatus` enum
 - Extract `updateStatus()` logic into computed property
 - **Savings**: 19 lines
 
 **ToolSummaryView.swift** (~80 lines):
+
 - Already well-factored, no major changes
 - Consider extracting snippet rendering to separate view
 
 **ApprovalSheet.swift** (~100 lines):
+
 - Extract diff rendering to `DiffPreviewView` component
 - Add syntax highlighting as separate extension
 - **Savings**: Neutral (improves modularity, not LOC)
@@ -317,6 +330,7 @@ private func startLoadingMessages() {
 ### 1. claude_service.py (922 lines → ~700 lines)
 
 **Current Problems**:
+
 - `ClaudeLoginCoordinator` (185 lines) embedded in service file
 - Duplicate URL pattern matching (2 regex patterns)
 - Three similar async auth functions
@@ -324,6 +338,7 @@ private func startLoadingMessages() {
 #### Refactoring Plan
 
 **Extract Login Coordinator** (saves ~185 lines from main file):
+
 ```python
 # NEW FILE: backend/src/palette_sidecar/auth_coordinator.py
 """Claude.ai login flow coordination."""
@@ -368,6 +383,7 @@ from .auth_coordinator import (
 ```
 
 **Unify URL Pattern Matching** (saves ~10 lines):
+
 ```python
 # CURRENT: Two separate patterns
 ANSI_ESCAPE_RE = re.compile(r"\x1B\[[0-?]*[ -/]*[@-~]")
@@ -408,6 +424,7 @@ def strip_ansi(text: str) -> str:
 ```
 
 **Consolidate Auth Status Functions** (saves ~15 lines):
+
 ```python
 # CURRENT: Three similar functions
 async def fetch_claude_session_status() -> ClaudeAuthStatus:
@@ -472,6 +489,7 @@ async def perform_claude_logout() -> ClaudeAuthStatus:
 ```
 
 #### Impact
+
 - **Before**: 922 lines, mixed concerns
 - **After**: ~700 lines in main file, ~220 in extracted modules
 - **Savings**: 222 lines of perceived complexity in main file
@@ -481,12 +499,14 @@ async def perform_claude_logout() -> ClaudeAuthStatus:
 ### 2. api.py (268 lines → ~240 lines)
 
 **Current Issues**:
+
 - Repeated `_auth_response()` dict construction
 - Redundant try/except patterns
 
 #### Quick Wins
 
 **Use Pydantic Models for Responses** (saves ~15 lines):
+
 ```python
 # NEW: models.py addition
 class ClaudeAuthResponse(BaseModel):
@@ -520,6 +540,7 @@ async def auth_claude_login() -> ClaudeAuthResponse:
 ```
 
 **Error Handling Decorator** (saves ~13 lines):
+
 ```python
 # NEW: Reusable error handler
 def handle_settings_errors(func):
@@ -540,6 +561,7 @@ async def update_settings(payload: SettingsPayload) -> JSONResponse:
 ```
 
 #### Impact
+
 - **Before**: 268 lines, repeated patterns
 - **After**: ~240 lines, cleaner endpoints
 - **Savings**: 28 lines (10% reduction)
@@ -548,32 +570,35 @@ async def update_settings(payload: SettingsPayload) -> JSONResponse:
 
 ## Summary of Simplifications
 
-| File | Before | After | Savings | % Reduction |
-|------|--------|-------|---------|-------------|
-| **Swift** |
-| SettingsView.swift | 539 | 380 | 159 | 29% |
-| FamiliarViewModel.swift | 254 | 200 | 54 | 21% |
-| AppState.swift | 139 | 120 | 19 | 14% |
-| **Python** |
-| claude_service.py | 922 | 700 | 222 | 24% |
-| api.py | 268 | 240 | 28 | 10% |
-| **Total** | **2,122** | **1,640** | **482** | **23%** |
+| File                    | Before    | After     | Savings | % Reduction |
+| ----------------------- | --------- | --------- | ------- | ----------- |
+| **Swift**               |
+| SettingsView.swift      | 539       | 380       | 159     | 29%         |
+| FamiliarViewModel.swift | 254       | 200       | 54      | 21%         |
+| AppState.swift          | 139       | 120       | 19      | 14%         |
+| **Python**              |
+| claude_service.py       | 922       | 700       | 222     | 24%         |
+| api.py                  | 268       | 240       | 28      | 10%         |
+| **Total**               | **2,122** | **1,640** | **482** | **23%**     |
 
 ---
 
 ## Implementation Strategy
 
 ### Phase 1: Low-Risk Extractions (Week 1)
+
 1. Extract `ClaudeLoginSection` and `APIKeySection` from SettingsView
 2. Move `UsageTotals` parsing to model layer
 3. Create `patterns.py` module for regex consolidation
 
 ### Phase 2: Behavioral Refactoring (Week 2)
+
 4. Extract `ClaudeLoginCoordinator` to separate file
 5. Consolidate status update functions in SettingsView
 6. Extract event handlers in FamiliarViewModel
 
 ### Phase 3: Polish & Validation (Week 3)
+
 7. Add unit tests for extracted components
 8. Verify zero behavioral changes (compare test coverage)
 9. Update documentation and code comments
@@ -583,16 +608,19 @@ async def update_settings(payload: SettingsPayload) -> JSONResponse:
 ## Testing Approach
 
 **Unit Tests**:
+
 - Each extracted component gets dedicated test file
 - Cover edge cases that were hard to test before
 - Aim for 80%+ coverage on new modules
 
 **Integration Tests**:
+
 - No existing tests should break
 - Behavior should be identical before/after
 - Use snapshot tests for UI components
 
 **Manual QA**:
+
 - Full smoke test after each refactoring
 - Verify auth flows still work
 - Check error handling paths

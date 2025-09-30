@@ -5,26 +5,26 @@ struct UsageSummaryView: View {
     let last: UsageTotals?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(spacing: 12) {
+        VStack(alignment: .leading, spacing: FamiliarSpacing.xs) {
+            HStack(spacing: FamiliarSpacing.sm) {
                 Label("Session", systemImage: "sparkles")
                 Text("\(totals.totalTokens) tokens")
                 if totals.cost > 0 {
                     Text(currencyString(for: totals.cost, currency: totals.currency))
                 }
             }
-            .font(.subheadline)
+            .font(.familiarBody)
             .foregroundStyle(.secondary)
 
             if let last, last.hasData {
-                HStack(spacing: 12) {
+                HStack(spacing: FamiliarSpacing.sm) {
                     Label("Last", systemImage: "clock.arrow.circlepath")
                     Text("\(last.totalTokens) tokens")
                     if last.cost > 0 {
                         Text(currencyString(for: last.cost, currency: last.currency))
                     }
                 }
-                .font(.footnote)
+                .font(.familiarCaption)
                 .foregroundStyle(.tertiary)
             }
         }

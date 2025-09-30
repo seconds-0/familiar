@@ -15,7 +15,9 @@ Active work involves comparing desktop frameworks, defining IPC boundaries, and 
 ## Core Design Philosophy
 
 ### The Ive Test (Primary Decision Framework)
+
 Every decision must pass these four criteria:
+
 - **Is it inevitable?** (feels obvious in hindsight)
 - **Is it essential?** (nothing superfluous)
 - **Does it show care?** (attention to detail perceptible)
@@ -24,9 +26,11 @@ Every decision must pass these four criteria:
 Reference: docs/design/aesthetic-system.md:851-857
 
 ### Sophisticated Simplicity
+
 Familiar is designed for **everyone** - from grandma organizing files to developers debugging systems.
 
 Core principles:
+
 - **Immediately understandable**: No learning curve
 - **Joyful to use**: Delightful interactions, not transactional
 - **Respectful of attention**: Present when invoked, absent otherwise
@@ -37,6 +41,7 @@ Core principles:
 Reference: docs/design/aesthetic-system.md:5-18
 
 ### The Four Pillars
+
 1. **Clarity Over Decoration**: Every element serves communication
 2. **Joy Through Interaction**: Delight from how it works, not looks
 3. **Human Language**: "Is that ok?" not "Approve?"
@@ -47,6 +52,7 @@ Reference: docs/design/aesthetic-system.md:22-53
 ## Decision Frameworks
 
 ### The Three-Layer Abstraction System
+
 **Layer 1: Human Outcomes (Default)** - "Organized 47 images"
 **Layer 2: How It Works (Collapsed)** - "I used a Python script..."
 **Layer 3: Technical Details (Hidden)** - Full code, paths, errors
@@ -56,19 +62,24 @@ Reference: docs/design/aesthetic-system.md:22-53
 Reference: docs/design/aesthetic-system.md:363-392
 
 ### The Grandma Test
+
 Before implementing or describing anything:
+
 - Can grandma understand this?
 - Would I say this to a friend?
 - Or does it sound corporate/robotic?
 
 ### The Language Test
+
 **Good**: "Is that ok?", "Done!", "Hmm, something went wrong"
 **Bad**: "Approve?", "Operation completed", "Error: Permission denied"
 
 Reference: docs/design/aesthetic-system.md:283-313
 
 ### Motion First, Sound Silent
+
 **Distinctive Element**: The "Familiar Spring" animation
+
 ```swift
 Animation.spring(response: 0.3, dampingFraction: 0.7)
 ```
@@ -80,6 +91,7 @@ Reference: docs/design/aesthetic-system.md:165-237, 466-519
 ## Non-Negotiable Constraints
 
 ### Accessibility Requirements
+
 - WCAG AA minimum (AAA preferred)
 - VoiceOver fully supported
 - Keyboard navigation complete
@@ -93,13 +105,16 @@ Reference: docs/design/aesthetic-system.md:165-237, 466-519
 Reference: docs/design/aesthetic-system.md:421-442
 
 ### Human Language Standards
+
 **Do**:
+
 - "I can organize your desktop for you"
 - "Is that ok?"
 - "Done! Your files are organized"
 - "Hmm, I can't access that file"
 
 **Don't**:
+
 - "Familiar wants to execute command"
 - "Approve?"
 - "Operation completed successfully"
@@ -108,9 +123,11 @@ Reference: docs/design/aesthetic-system.md:421-442
 Reference: docs/design/aesthetic-system.md:283-313
 
 ### Permission Philosophy
+
 Permissions exist to **build trust, not satisfy legal requirements**.
 
 **Template**:
+
 ```
 I can [action] for you:
 • [Specific detail with real numbers]
@@ -126,11 +143,13 @@ Reference: docs/design/aesthetic-system.md:318-360
 ## Mandatory Design Consultation
 
 ### Before ANY Design Decision
+
 1. Read `docs/design/aesthetic-system.md`
 2. Apply **The Ive Test** (is it inevitable, essential, careful, invisible?)
 3. Verify it passes **The Grandma Test**
 
 ### Before Implementing Visual Changes
+
 1. Check **locked design tokens** in `docs/design/aesthetic-system.md:522-663`
 2. Use 8pt grid spacing (xs: 8, sm: 16, md: 24, lg: 32, xl: 48)
 3. Use corner radius (control: 8pt, card: 12pt)
@@ -138,6 +157,7 @@ Reference: docs/design/aesthetic-system.md:318-360
 5. Consult `docs/design/visual-improvements.md` for patterns
 
 ### Before Adding Features
+
 1. Read `docs/design/hidden-delights.md:493-516`
 2. Apply **The Test**:
    - Does it delight without confusing?
@@ -146,17 +166,20 @@ Reference: docs/design/aesthetic-system.md:318-360
    - Is it tasteful? (Would Jony Ive approve?)
 
 ### Before Implementing Permissions
+
 1. Use permission language templates from `docs/design/aesthetic-system.md:318-360`
 2. Say specifically what will happen
 3. Use real numbers (47 images, not "files")
 4. Make approval collaborative, not bureaucratic
 
 ### Before Implementing Steel Thread Features
+
 1. Read `docs/implementation/steel-thread-v1.md`
 2. **Steel Thread Definition**: The smallest, fully polished workflow that proves the product vision
 3. V1 is done when a new user can complete the full workflow cleanly
 
 ### For SDK Integration
+
 1. **Always** consult `docs/reference/claude-agent-sdk.md`
 2. Understand Options, permissions, hooks, MCP servers
 3. Follow established patterns
@@ -164,6 +187,7 @@ Reference: docs/design/aesthetic-system.md:318-360
 ## Core Vocabulary
 
 ### Product Language
+
 - **Familiar** (not "Familiar App" or "the tool")
 - **Summon** (not "open" or "launch")
 - **Steel Thread** (not "MVP" or "v0.1")
@@ -172,12 +196,14 @@ Reference: docs/design/aesthetic-system.md:318-360
 - **Sophisticated Simplicity** (core aesthetic)
 
 ### Permission Language
+
 - "Is that ok?" (not "Approve?")
 - "Yes, do it" / "Sounds good" (not "Approve")
 - "Not right now" / "No thanks" (not "Deny")
 - "Show me how" (not "Show details")
 
 ### Technical Terms
+
 - **Sidecar** (Python FastAPI backend)
 - **PreToolUse** / **PostToolUse** (permission hooks)
 - **The Familiar Spring** (signature animation)
@@ -186,7 +212,7 @@ Reference: docs/design/aesthetic-system.md:318-360
 ## Collaboration Principles
 
 1. **Documentation First**: Treat `docs/` as the source of truth. Start with **[docs/00-README.md](docs/00-README.md)** for navigation.
-   - Reference docs: `docs/reference/` (claude-code-sdk.md, swiftui-reference.md)
+   - Reference docs: `docs/reference/` (claude-agent-sdk.md, swiftui-reference.md)
    - Implementation guides: `docs/implementation/` (phased-enhancements.md, steel-thread-v1.md)
    - Design specifications: `docs/design/` (aesthetic-system.md, visual-improvements.md)
    - Future explorations: `docs/future/`
@@ -203,29 +229,33 @@ Reference: docs/design/aesthetic-system.md:318-360
 For all framework-related questions, implementation patterns, and API research, ALWAYS use the `get_code_context_exa` tool before implementing or making architectural decisions. This is especially critical for:
 
 ### Primary Framework Targets
+
 - **SwiftUI** - UI components, navigation, state management, macOS-specific APIs
 - **FastAPI** - Async endpoints, dependency injection, middleware, SSE streaming
-- **Claude Code SDK** - Session management, MCP server integration, tool execution patterns
+- **Claude Agent SDK** - Session management, MCP server integration, tool execution patterns
 
 ### EXA-CODE Usage Patterns
 
 **Before implementing any feature:**
+
 ```
 Use get_code_context_exa to search for:
 - "SwiftUI [specific component] best practices examples"
 - "FastAPI [specific pattern] implementation guide"
-- "Claude Code SDK [functionality] usage examples"
+- "Claude Agent SDK [functionality] usage examples"
 ```
 
 **For debugging and troubleshooting:**
+
 ```
 Use get_code_context_exa to find:
 - "SwiftUI [error/issue] solutions GitHub"
 - "FastAPI [problem] troubleshooting examples"
-- "Claude Code SDK [specific issue] workarounds"
+- "Claude Agent SDK [specific issue] workarounds"
 ```
 
 **For architecture decisions:**
+
 ```
 Use get_code_context_exa to research:
 - "[Framework] [pattern] vs [alternative] comparison"
@@ -244,7 +274,7 @@ This approach ensures you have the most current framework knowledge before divin
 ## Search & Analysis Tips
 
 - Use targeted `rg` queries or TypeScript-aware tooling to explore the codebase. Avoid wide wildcard searches that inflate context; narrow by directory or file type.
-- When investigating SDK behavior, reference `docs/reference/claude-code-sdk.md` before diving into external sources.
+- When investigating SDK behavior, reference `docs/reference/claude-agent-sdk.md` before diving into external sources.
 - For implementation patterns, check `docs/implementation/` guides for established approaches.
 - Summarize findings with file paths and line numbers so future contributors can trace decisions quickly.
 
@@ -255,6 +285,7 @@ The project uses MCP (Model Context Protocol) servers for enhanced AI capabiliti
 ### Active MCP Servers
 
 **EXA-CODE Server** (Production Ready)
+
 - **Purpose**: Framework research, code examples, documentation search
 - **Transport**: SSE (Server-Sent Events)
 - **Endpoint**: `https://mcp.exa.ai/mcp`
@@ -288,6 +319,7 @@ The project uses MCP (Model Context Protocol) servers for enhanced AI capabiliti
 ### Testing Commands (from project root)
 
 **Swift Tests:**
+
 ```bash
 # Option 1: Direct command
 swift test --package-path apps/mac/FamiliarApp
@@ -300,11 +332,13 @@ swift test --package-path apps/mac/FamiliarApp
 ```
 
 **Backend Tests:**
+
 ```bash
 cd backend && uv run pytest tests/ -v
 ```
 
 **All Tests:**
+
 ```bash
 # Run both Swift and Python tests
 ./test-swift.sh && cd backend && uv run pytest tests/ -v
@@ -312,7 +346,7 @@ cd backend && uv run pytest tests/ -v
 
 ## Architecture Requirements
 
-- Full Claude Code SDK integration, including MCP servers and shell tool execution
+- Full Claude Agent SDK integration, including MCP servers and shell tool execution
 - Global hotkey activation with responsive UI overlays
 - Fine-grained permission and audit flows for file edits, shell commands, and external services
 - Real-time process monitoring with ability to cancel or retry tasks

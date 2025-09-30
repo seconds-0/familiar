@@ -11,12 +11,14 @@ This document specifies the voice interface for Familiar. Voice is not an add-on
 ### The Universal Interface Problem
 
 **Text interfaces require**:
+
 - Technical vocabulary
 - Comfort with typing commands
 - Understanding of what's possible
 - Computer literacy
 
 **Voice interfaces require**:
+
 - Just saying what you want
 - Natural language (however you say it)
 - No interface anxiety
@@ -29,6 +31,7 @@ This document specifies the voice interface for Familiar. Voice is not an add-on
 Consider two experiences:
 
 **Text interaction**:
+
 ```
 User types: "organize my desktop"
 Familiar shows: Code blocks, file paths, commands
@@ -36,6 +39,7 @@ Even if collapsed, the technical nature is visible
 ```
 
 **Voice interaction**:
+
 ```
 User: "Can you organize my desktop?"
 Familiar: "Sure! I found 47 images, 23 PDFs, and 8 videos.
@@ -55,11 +59,13 @@ This is why voice enables the vision of "Familiar for everyone."
 ### 1. Conversational, Not Command-Based
 
 **Wrong** (Siri-like commands):
+
 - "Hey Familiar, organize desktop files"
 - Rigid syntax, specific phrasing required
 - Feels robotic and transactional
 
 **Right** (Natural conversation):
+
 - "My desktop is a mess, can you help?"
 - "I need to organize these photos"
 - "What should I do with all these files?"
@@ -70,6 +76,7 @@ This is why voice enables the vision of "Familiar for everyone."
 **The problem with many voice assistants**: You can't interrupt them.
 
 **Familiar voice UX**:
+
 - User can interrupt mid-response
 - "Wait, stop" cancels immediately
 - "Actually, I meant..." corrects understanding
@@ -78,6 +85,7 @@ This is why voice enables the vision of "Familiar for everyone."
 ### 3. Privacy First
 
 **Voice data handling**:
+
 - Never stored (processed and discarded)
 - Clear indication when microphone is active
 - User chooses transcription method (local vs cloud)
@@ -86,6 +94,7 @@ This is why voice enables the vision of "Familiar for everyone."
 ### 4. Optional but Recommended
 
 **Voice should be**:
+
 - Default enabled on first launch
 - Easy to disable in settings
 - Seamlessly switches to text-only
@@ -100,17 +109,20 @@ This is why voice enables the vision of "Familiar for everyone."
 **Option 1: macOS Native (SFSpeechRecognizer)**
 
 **Pros**:
+
 - Free, no API costs
 - Works offline
 - Respects system language preferences
 - Privacy: on-device processing
 
 **Cons**:
+
 - Requires microphone permission
 - Accuracy varies by accent/language
 - Limited to macOS supported languages
 
 **Implementation**:
+
 ```swift
 import Speech
 
@@ -128,17 +140,20 @@ class VoiceInputManager {
 **Option 2: OpenAI Whisper API**
 
 **Pros**:
+
 - Better accuracy for diverse accents
 - Multilingual support
 - Handles background noise well
 - Continuous improvement
 
 **Cons**:
+
 - Requires API key and internet
 - Costs money (but cheap: ~$0.006/minute)
 - Audio sent to OpenAI
 
 **Implementation**:
+
 ```python
 # Backend endpoint
 @app.post("/transcribe")
@@ -148,6 +163,7 @@ async def transcribe_audio(audio: UploadFile):
 ```
 
 **Recommendation**:
+
 - V2: Start with macOS native (free, fast, private)
 - V3+: Add Whisper as option for users who want better accuracy
 - User setting: "Transcription: On-device / Cloud (more accurate)"
@@ -157,17 +173,20 @@ async def transcribe_audio(audio: UploadFile):
 **Option 1: macOS Native (AVSpeechSynthesizer)**
 
 **Pros**:
+
 - Free, no API costs
 - Many voices available
 - System integration
 - Works offline
 
 **Cons**:
+
 - Less natural than modern TTS
 - Limited voice personality options
 - Can sound robotic
 
 **Implementation**:
+
 ```swift
 import AVFoundation
 
@@ -190,17 +209,20 @@ class VoiceOutputManager {
 **Option 2: OpenAI TTS API**
 
 **Pros**:
+
 - Very natural sounding
 - Multiple voice options (alloy, echo, fable, onyx, nova, shimmer)
 - Consistent quality
 - Can stream for low latency
 
 **Cons**:
+
 - Requires API key and internet
 - Costs money (~$15/1M characters)
 - Latency (network dependent)
 
 **Recommendation**:
+
 - V2: Start with native (fast, free, offline)
 - V3+: Add OpenAI TTS as premium option
 - User setting: "Voice: System / Natural (premium)"
@@ -212,21 +234,25 @@ class VoiceOutputManager {
 **Technical Approaches**:
 
 **Option 1: Porcupine (Picovoice)**
+
 - On-device wake word detection
 - Low latency (~1 second)
 - Free tier available
 - Works offline
 
 **Option 2: Snowboy (Deprecated)**
+
 - Previously popular, now unmaintained
 - Not recommended
 
 **Option 3: Custom ML Model**
+
 - Train Core ML model for "Hey Familiar"
 - Most privacy-preserving
 - Requires ML expertise
 
 **Recommendation**:
+
 - V3-V4: Add wake word detection
 - Start with Porcupine (proven solution)
 - User setting: "Activation: Hotkey only / 'Hey Familiar' / Both"
@@ -238,6 +264,7 @@ class VoiceOutputManager {
 ### Activation
 
 **Method 1: Hotkey + Voice (V2)**
+
 1. User presses Cmd+Space (or configured hotkey)
 2. Window appears with listening indicator
 3. Familiar: "What can I help you with?"
@@ -245,6 +272,7 @@ class VoiceOutputManager {
 5. Visual transcription appears as they speak
 
 **Method 2: Wake Word (V3+)**
+
 1. User says "Hey Familiar"
 2. Chime sound indicates activation
 3. Listening indicator appears
@@ -254,18 +282,21 @@ class VoiceOutputManager {
 ### Listening Indicators
 
 **Visual**:
+
 - Pulsing circle (breathes while listening)
 - Color: Accent color
 - Size: Grows slightly with voice volume
 - Position: Center of window or floating orb
 
 **Audio**:
+
 - Activation: Brief ascending chime
 - Listening: Subtle ambient pulse (optional)
 - Understood: Confirmation tone
 - Error: Apologetic descending tone
 
 **Text**:
+
 - "I'm listening..." (fades in after 2s if user hasn't spoken)
 - Transcription appears live as user speaks
 - "I heard: [transcription]" (confirms understanding)
@@ -273,6 +304,7 @@ class VoiceOutputManager {
 ### Transcription Feedback
 
 **Real-time display**:
+
 ```
 ┌─────────────────────────────────┐
 │  🎤  Listening...               │
@@ -283,6 +315,7 @@ class VoiceOutputManager {
 ```
 
 **After completion**:
+
 ```
 ┌─────────────────────────────────┐
 │  I heard:                       │
@@ -293,12 +326,14 @@ class VoiceOutputManager {
 ```
 
 User can:
+
 - Confirm ("That's right" or just wait 2s → auto-confirm)
 - Correct ("Let me fix it" → shows editable text field)
 
 ### Conversation Flow
 
 **Standard flow**:
+
 ```
 User: "Can you organize my desktop?"
 Familiar: [thinks for 1-2 seconds]
@@ -315,6 +350,7 @@ Familiar: "Happy to help!"
 ```
 
 **With clarification**:
+
 ```
 User: "Help me with the photos"
 Familiar: "Sure! I can see you have photos in several places.
@@ -326,6 +362,7 @@ Familiar: "Got it, organizing desktop photos now..."
 ```
 
 **With interruption**:
+
 ```
 Familiar: "I'll organize all 150 files on your desktop into—"
 User: "Wait, stop"
@@ -336,6 +373,7 @@ Familiar: "Okay, stopped. What would you like to do instead?"
 ### Permissions via Voice
 
 **Voice-based approval**:
+
 ```
 Familiar: "To organize your desktop, I'll create three folders
 and move files around. Is that okay?"
@@ -351,6 +389,7 @@ User: "No" / "Not right now" / "Cancel"
 ```
 
 **Visual backup**:
+
 - While waiting for voice approval, show visual approval sheet
 - User can approve via voice OR click button
 - Whichever comes first
@@ -358,11 +397,13 @@ User: "No" / "Not right now" / "Cancel"
 ### Error Handling
 
 **Didn't understand**:
+
 ```
 Familiar: "Sorry, I didn't catch that. Could you say it again?"
 ```
 
 **Ambiguous request**:
+
 ```
 User: "Fix it"
 Familiar: "I'm not sure what you'd like me to fix. Can you be
@@ -370,12 +411,14 @@ more specific?"
 ```
 
 **Permission denied**:
+
 ```
 Familiar: "Hmm, I can't access that folder - it seems I don't
 have permission. Should I try something else?"
 ```
 
 **Background noise**:
+
 ```
 Familiar: "Sorry, there's a lot of background noise. Can you
 try again in a quieter place, or would you like to type instead?"
@@ -388,6 +431,7 @@ try again in a quieter place, or would you like to type instead?"
 ### Mode 1: Voice + Visual (Default)
 
 **Window shows**:
+
 - Transcription of what user said
 - Familiar's responses (text + voice)
 - Visual progress for long operations
@@ -395,6 +439,7 @@ try again in a quieter place, or would you like to type instead?"
 - Can click anything while voice is active
 
 **Best for**:
+
 - First-time users
 - Complex tasks
 - When you want to see results
@@ -403,12 +448,14 @@ try again in a quieter place, or would you like to type instead?"
 ### Mode 2: Voice-Only (Advanced)
 
 **No window needed**:
+
 - "Hey Familiar" → starts listening
 - Entire conversation via voice
 - Notification for completion
 - Results announced verbally
 
 **Best for**:
+
 - Power users
 - Quick tasks
 - Hands-free situations
@@ -417,17 +464,20 @@ try again in a quieter place, or would you like to type instead?"
 ### Mode 3: Text-Only (Fallback)
 
 **Voice disabled**:
+
 - Type requests in prompt field
 - No voice input or output
 - Everything else works normally
 
 **Best for**:
+
 - Quiet environments (library, late night)
 - Users who prefer typing
 - Accessibility (some deaf users may prefer text)
 - When microphone unavailable
 
 **User setting**:
+
 ```
 Interface Mode:
 ● Voice + Visual (recommended)
@@ -445,6 +495,7 @@ Interface Mode:
 ### Voice Data Handling
 
 **Input (User speech)**:
+
 - Audio captured temporarily in memory
 - Transcribed to text (on-device OR via Whisper)
 - Audio immediately discarded after transcription
@@ -452,11 +503,13 @@ Interface Mode:
 - User can review transcription before sending
 
 **Output (Familiar speech)**:
+
 - Generated text-to-speech on demand
 - No audio stored
 - No logging of voice content
 
 **Settings**:
+
 ```
 Privacy Settings:
 
@@ -478,10 +531,12 @@ Clear Voice History: [Button]
 ### Permissions
 
 **macOS Permissions Required**:
+
 - Microphone access (for speech input)
 - Speech recognition (for on-device transcription)
 
 **User Control**:
+
 - Can revoke permissions anytime in System Settings
 - Familiar gracefully falls back to text-only mode
 - Clear explanation of why each permission is needed
@@ -537,6 +592,7 @@ Familiar: "You're welcome! Enjoy sharing the memories."
 ```
 
 **Key observations**:
+
 - Natural back-and-forth
 - Familiar asks clarifying questions
 - Options explained in human terms
@@ -580,6 +636,7 @@ Familiar: "All tests pass. You're good to commit."
 ```
 
 **Key observations**:
+
 - Technical user gets technical details
 - Voice + visual works together
 - Can reference code while talking
@@ -623,6 +680,7 @@ Familiar: "Smart! They're ready when you need them."
 ```
 
 **Key observations**:
+
 - Business context, not technical
 - Familiar offers to do more (email invoices)
 - User stays in control (reviews first)
@@ -638,6 +696,7 @@ Familiar: "Smart! They're ready when you need them."
 **Goal**: Speak requests, hear responses
 
 **Features**:
+
 - Hotkey activates voice input
 - macOS native speech recognition
 - Visual transcription feedback
@@ -645,6 +704,7 @@ Familiar: "Smart! They're ready when you need them."
 - Voice + visual mode only
 
 **Implementation**:
+
 - 2-3 weeks
 - SwiftUI voice input component
 - Integration with existing conversation flow
@@ -655,6 +715,7 @@ Familiar: "Smart! They're ready when you need them."
 **Goal**: Polished voice interaction
 
 **Features**:
+
 - OpenAI Whisper option (better accuracy)
 - OpenAI TTS option (natural voice)
 - Improved conversation flow
@@ -662,6 +723,7 @@ Familiar: "Smart! They're ready when you need them."
 - Voice interruption support
 
 **Implementation**:
+
 - 2-3 weeks after V2
 - Backend transcription endpoint
 - TTS generation service
@@ -672,12 +734,14 @@ Familiar: "Smart! They're ready when you need them."
 **Goal**: Hands-free operation
 
 **Features**:
+
 - "Hey Familiar" wake word detection
 - Voice-only mode (no window needed)
 - Background operation
 - Continuous conversation
 
 **Implementation**:
+
 - 3-4 weeks after V3
 - Wake word detection integration
 - Voice-only UI mode
@@ -686,6 +750,7 @@ Familiar: "Smart! They're ready when you need them."
 ### V5+: Advanced Features
 
 **Possible future enhancements**:
+
 - Multiple voice personalities
 - Voice customization (pitch, speed, style)
 - Emotion detection (adapt responses)
@@ -701,6 +766,7 @@ Familiar: "Smart! They're ready when you need them."
 **Problem**: Voice interaction feels slow if there's latency
 
 **Solutions**:
+
 - Transcribe while user is still speaking
 - Start processing before user finishes
 - Stream TTS output (don't wait for full response)
@@ -713,12 +779,14 @@ Familiar: "Smart! They're ready when you need them."
 **Problem**: Voice requests can be imprecise
 
 **Solutions**:
+
 - Ask clarifying questions
 - Show visual options to choose from
 - Learn from corrections
 - Default to safest interpretation
 
 **Example**:
+
 ```
 User: "Help me with the files"
 Familiar: "Which files? I can see your desktop, downloads, and
@@ -730,6 +798,7 @@ documents folder. Or did you mean something specific?"
 **Problem**: Poor transcription in noisy environments
 
 **Solutions**:
+
 - Use Whisper (better noise handling)
 - Detect poor audio quality → suggest quiet place
 - Show confidence score → confirm if low
@@ -740,12 +809,14 @@ documents folder. Or did you mean something specific?"
 **Problem**: User needs to interrupt Familiar
 
 **Technical solution**:
+
 - Continuous microphone monitoring
 - Detect voice activity during TTS
 - Immediate stop on interruption
 - Resume capability
 
 **UX pattern**:
+
 ```
 Familiar: "I'll organize all 150 files on your—"
 User: "Wait" [detected]
@@ -762,6 +833,7 @@ Voice opens unique opportunities for easter eggs and surprises.
 ### Voice-Only Secrets
 
 **"Tell me a secret"**:
+
 ```
 User: "Tell me a secret"
 Familiar: "Okay, here's one: If you say 'midnight mode' between
@@ -769,6 +841,7 @@ Familiar: "Okay, here's one: If you say 'midnight mode' between
 ```
 
 **"Who made you?"**:
+
 ```
 User: "Who made you?"
 Familiar: "I was created by someone who believes AI should be
@@ -776,6 +849,7 @@ magical but accessible. Want to hear the full story?"
 ```
 
 **"Sing me a song"**:
+
 ```
 User: "Sing me a song"
 Familiar: "I'm better at organizing files than singing, but I
@@ -786,6 +860,7 @@ instead?"
 ### Voice Personality
 
 Familiar can develop personality through voice:
+
 - Slight humor in responses
 - Warmth in error messages
 - Enthusiasm for success
@@ -831,7 +906,7 @@ Familiar can develop personality through voice:
 
 ---
 
-*Voice isn't just a feature - it's how Familiar becomes universally accessible.*
+_Voice isn't just a feature - it's how Familiar becomes universally accessible._
 
 **Last Updated**: September 30, 2025
 **Status**: Future (V2+) — Essential for universal accessibility vision

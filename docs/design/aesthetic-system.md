@@ -22,30 +22,35 @@ Familiar is designed for **everyone**: from grandma organizing desktop files to 
 ## Design Principles
 
 ### 1. Clarity Over Decoration
+
 - Every visual element serves communication, not ornamentation
 - Information hierarchy is immediately apparent
 - No aesthetic choices that obscure function
 - "Can grandma understand this?" is the litmus test
 
 ### 2. Joy Through Interaction
+
 - Delight comes from how it works, not how it looks
 - Micro-interactions feel alive and responsive
 - Success moments are celebrated subtly
 - The experience itself brings satisfaction
 
 ### 3. Human Language
+
 - Write like you're talking to a friend
 - "Is that ok?" not "Approve?"
 - "I can help with that" not "Processing request"
 - Precise but warm, clear but personable
 
 ### 4. Mystery Through Discovery
+
 - Hidden features reward exploration
 - Easter eggs for power users and curious minds
 - Depth is discoverable, not presented
 - You can use Familiar forever and still find surprises
 
 ### 5. Function Over Ornamentation
+
 - Beauty through purposeful design, not decoration
 - Every animation communicates state
 - Sound is informative and iconic
@@ -58,17 +63,20 @@ Familiar is designed for **everyone**: from grandma organizing desktop files to 
 ### Palette: Refined Neutrals + One Distinctive Touch
 
 **Foundation** (System Colors):
+
 - Background: macOS native window background
 - Surface elevated: Slightly lighter/darker depending on mode
 - Text primary: System label color
 - Text secondary: System secondary label
 
 **Distinctive Accent**:
+
 - Primary accent: System accent (respects user preference) OR
 - Custom signature color: To be defined (sophisticated, not loud)
 - Used sparingly: CTAs, active states, success confirmations
 
 **Semantic Colors**:
+
 - Success: Forest green `#2D7A4F`
 - Warning: Warm amber `#F59E0B`
 - Error: Muted crimson `#DC2626`
@@ -79,6 +87,7 @@ Familiar is designed for **everyone**: from grandma organizing desktop files to 
 ### Typography: System Native
 
 **Font**: San Francisco (macOS system font)
+
 - Title: `.title2`, weight `.semibold`
 - Heading: `.headline`, weight `.medium`
 - Body: `.body`, weight `.regular`
@@ -86,6 +95,7 @@ Familiar is designed for **everyone**: from grandma organizing desktop files to 
 - Mono: `.body`, design `.monospaced` (for paths, code when visible)
 
 **Hierarchy**:
+
 - Use size, weight, and color to establish importance
 - Body text 100% opacity, secondary 70%, tertiary 50%
 - Never sacrifice legibility for aesthetic
@@ -93,6 +103,7 @@ Familiar is designed for **everyone**: from grandma organizing desktop files to 
 ### Spacing: Consistent Scale
 
 Based on 4pt grid:
+
 - `xxs: 2pt` (tight inline)
 - `xs: 4pt` (related elements)
 - `sm: 8pt` (component internal)
@@ -141,21 +152,25 @@ Based on 4pt grid:
 ### Key Interactions
 
 **Send Button**:
+
 - Press: Scale to 0.95
 - Release: Spring back to 1.0
 - Success: Brief pulse (1.05 → 1.0)
 
 **Approval Sheet**:
+
 - Entrance: Slide up with ease-out + backdrop fade
 - Exit: Slide down with ease-in
 - Contents delay 0.1s for polish
 
 **Status Changes**:
+
 - Fade between states (0.2s)
 - Color transitions smooth (0.3s)
 - No jarring jumps
 
 **Loading**:
+
 - Fade in spinner after 0.3s (don't show for fast ops)
 - Continuous rotation
 - Fade out with scale-down (0.9)
@@ -169,10 +184,12 @@ Based on 4pt grid:
 Following Ive's principle: most interactions should be **silent**. Sound is punctuation, not narration.
 
 **Sound serves two purposes**:
+
 1. **Voice output**: Natural for voice assistant (user chooses to enable voice)
 2. **Critical feedback**: Rare, purposeful confirmation when needed
 
 **Not for**:
+
 - UI affordance sounds (clicks, whooshes, etc.)
 - Constant audio feedback
 - Decoration or atmosphere
@@ -180,6 +197,7 @@ Following Ive's principle: most interactions should be **silent**. Sound is punc
 ### Voice Output (Primary Sound Use)
 
 **When voice mode is enabled**:
+
 - Familiar speaks responses (natural TTS)
 - This is the **primary sound experience**
 - User explicitly chose voice interaction
@@ -192,12 +210,14 @@ Following Ive's principle: most interactions should be **silent**. Sound is punc
 **Default: OFF** (silent confidence)
 
 **Optional confirmation sound** (if user enables):
+
 - One subtle tone for task completion
 - Brief (< 500ms)
 - Purposeful, not decorative
 - System sound or minimal custom sound
 
 **Examples of when NOT to use sound**:
+
 - Button presses
 - Text input
 - Window opening/closing
@@ -205,6 +225,7 @@ Following Ive's principle: most interactions should be **silent**. Sound is punc
 - Most interactions
 
 **Examples of when sound COULD be used** (opt-in):
+
 - Major task completion (organized 100 files)
 - Error that requires attention
 - Background task finished (if user left app)
@@ -229,6 +250,7 @@ enum FamiliarSound {
 ```
 
 **Settings**:
+
 - "Enable UI sounds" toggle (default: off)
 - "Voice output" toggle (default: on if using voice mode)
 - System volume controls both
@@ -251,18 +273,21 @@ Voice is not an add-on — it's the **primary interface** for Familiar.
 ### Voice UX Principles
 
 **Conversational, Not Robotic**:
+
 - "Is that ok?" not "Confirm action?"
 - Natural back-and-forth dialogue
 - Can interrupt and correct
 - Forgiving of imprecise language
 
 **Clear Feedback**:
+
 - Visual indicator when listening (pulsing icon)
 - Transcription shown ("I heard: ...")
 - Can correct misunderstandings
 - Voice output optional (text always available)
 
 **Privacy First**:
+
 - Transcription local or OpenAI Whisper (user choice)
 - Voice never stored
 - Clear when microphone is active
@@ -284,6 +309,7 @@ Voice is not an add-on — it's the **primary interface** for Familiar.
 ### Writing Guidelines
 
 **Do**:
+
 - "I can organize your desktop for you"
 - "Is that ok?"
 - "I found 47 photos from this weekend"
@@ -291,6 +317,7 @@ Voice is not an add-on — it's the **primary interface** for Familiar.
 - "Hmm, I can't access that file"
 
 **Don't**:
+
 - "Familiar wants to execute command"
 - "Approve?"
 - "Operation completed successfully"
@@ -305,6 +332,7 @@ Voice is not an add-on — it's the **primary interface** for Familiar.
 - **Clear**: Says what it means, no jargon
 
 **Never**:
+
 - Overly enthusiastic ("Wow! Amazing!")
 - Corporate speak ("Your request has been processed")
 - Technical jargon unless user is technical
@@ -322,6 +350,7 @@ Permissions exist to build trust, not satisfy legal requirements.
 ### Approval Language
 
 **Template**:
+
 ```
 I can [action] for you:
 • [Specific detail 1]
@@ -334,6 +363,7 @@ Is that ok?
 ```
 
 **Example**:
+
 ```
 I can organize your desktop for you:
 • Put your 47 images into an "Images" folder
@@ -363,7 +393,9 @@ Is that ok?
 ## Technical Abstraction Layers
 
 ### Layer 1: Human Outcomes (Default)
+
 **What median users see**:
+
 - Problems stated in natural language
 - Solutions described in terms of outcomes
 - Approvals focused on what will happen
@@ -372,7 +404,9 @@ Is that ok?
 **Example**: "Organized 47 images into folders"
 
 ### Layer 2: How It Works (Collapsed)
+
 **For curious users who expand**:
+
 - "I'll write a script to organize the files"
 - Mention of tools/approaches used
 - Still outcome-focused, slightly more detail
@@ -380,7 +414,9 @@ Is that ok?
 **Example**: "I used a Python script to sort files by type"
 
 ### Layer 3: Technical Details (Hidden)
+
 **For developers who want everything**:
+
 - Actual code blocks
 - File paths and diffs
 - Command outputs
@@ -481,6 +517,7 @@ extension Animation {
 ```
 
 **Why motion**:
+
 - Universal (everyone experiences it)
 - Ive-like (iPhone's fluid animations defined the brand)
 - No permissions required
@@ -489,6 +526,7 @@ extension Animation {
 - Testable in 1-2 week prototype
 
 **Applied consistently**:
+
 - Button presses
 - Sheet presentations
 - Status transitions
@@ -500,17 +538,20 @@ extension Animation {
 ### Secondary Considerations
 
 **Voice Personality**:
+
 - Warm, helpful tone
 - "Is that ok?" language
 - Natural conversation flow
 - This is part of the experience, not decoration
 
 **Inline Approvals**:
+
 - Everyday actions don't interrupt flow
 - Sheets reserved for consequential decisions
 - Trust through clarity, not ceremony
 
 **System Integration**:
+
 - Feels native to macOS
 - Respects system preferences
 - Nothing feels "foreign"
@@ -586,6 +627,7 @@ enum FamiliarColor {
 ```
 
 **Accent color options** (if custom):
+
 - Deep Teal: `#008B8B`
 - Warm Copper: `#B87333`
 - Soft Lavender: `#9B8DBD`
@@ -638,6 +680,7 @@ enum FamiliarMotion {
 ```
 
 **Usage**:
+
 ```swift
 // Interactive (buttons)
 .animation(.interactiveSpring, value: isPressed)
@@ -708,6 +751,7 @@ enum FamiliarStreaming {
 ```
 
 **Implementation rules**:
+
 - Fixed `lineHeight` on Text views (never let SwiftUI reflow)
 - Width-constrained container (prevent horizontal expansion)
 - Batch token reveals (5 at a time, not character-by-character)
@@ -721,34 +765,40 @@ enum FamiliarStreaming {
 Document explicit defaults to eliminate interpretation:
 
 ### User Interface
+
 - **Window style**: NSPanel, non-activating
 - **Dismiss on focus loss**: Yes (configurable in settings)
 - **Escape key behavior**: Dismisses window
 - **Multi-display**: Opens on display with cursor
 
 ### Audio
+
 - **UI sounds**: Off by default
 - **Voice output**: On if user enables voice mode, off otherwise
 - **Volume**: System controlled
 
 ### Voice
+
 - **Transcription engine**: macOS native (on-device, private)
 - **Alternative**: OpenAI Whisper (opt-in for better accuracy)
 - **Voice output**: macOS NSSpeechSynthesizer by default
 - **Alternative**: OpenAI TTS (opt-in for natural voice)
 
 ### Visual
+
 - **Progress indicator**: Breathing dot (subtle)
 - **Spinner threshold**: 600ms (rare, only for long operations)
 - **Animations**: Full motion (respects system "reduce motion")
 - **Accent color**: System default (blue) initially
 
 ### Interaction
+
 - **Approvals**: Inline for common actions, sheets for rare/consequential
 - **Keyboard shortcuts**: All standard Mac conventions
 - **Focus behavior**: Text field auto-focused on open
 
 ### Technical
+
 - **Model selection**: Sonnet 4.5 (claude.ai auth) or Haiku (API key)
 - **Zero state suggestions**: AI-generated (V2+), static (V1)
 - **Context gathering**: Minimal by default, opt-in for rich context
@@ -760,41 +810,49 @@ Document explicit defaults to eliminate interpretation:
 Before merging, verify:
 
 ### Reduction
+
 - [ ] Could anything be removed?
 - [ ] Is every element necessary?
 - [ ] Any redundant copy or UI?
 
 ### Friction
+
 - [ ] Any unnecessary steps?
 - [ ] Can user achieve goal faster?
 - [ ] Any jarring transitions?
 
 ### Alignment
+
 - [ ] Visually aligned to 8pt grid?
 - [ ] Spacing uses design tokens?
 - [ ] Radii consistent (8 or 16)?
 
 ### Latency
+
 - [ ] Feels instant? (<100ms perceived)
 - [ ] No blocking operations?
 - [ ] Async where needed?
 
 ### Jitter
+
 - [ ] Text stable during streaming?
 - [ ] Layout doesn't reflow unexpectedly?
 - [ ] Fixed line heights where needed?
 
 ### Dark Mode
+
 - [ ] Tested in dark mode?
 - [ ] Contrast sufficient?
 - [ ] System colors used (not hex)?
 
 ### Accessibility
+
 - [ ] VoiceOver tested?
 - [ ] Keyboard navigation works?
 - [ ] Reduced motion respected?
 
 ### Motion
+
 - [ ] Uses `.familiar` spring?
 - [ ] Duration matches tokens (200/250ms)?
 - [ ] Purposeful, not decorative?
@@ -804,6 +862,7 @@ Before merging, verify:
 ## Implementation Roadmap
 
 ### V1: Sophisticated Foundation (Current)
+
 - Clean, accessible interface
 - Human language throughout
 - Smooth animations
@@ -811,6 +870,7 @@ Before merging, verify:
 - Technical abstraction (Layer 1 default)
 
 ### V2-V10: Refinement & Delight
+
 - Polish micro-interactions
 - Add hidden features gradually
 - Refine signature element
@@ -818,7 +878,9 @@ Before merging, verify:
 - Subtle easter eggs
 
 ### V27: Magic Mode (Aspirational)
+
 **Stretch goal for fellow mystics**:
+
 - Hidden toggle in advanced settings
 - Overlays hermetic aesthetic
 - Sigils, archetypes, mystical language
@@ -832,24 +894,31 @@ Before merging, verify:
 ## Success Criteria
 
 ### Immediate Understanding Test
+
 Show Familiar to someone who's never seen it:
+
 - Do they understand what it does? (< 10 seconds)
 - Can they use it successfully? (< 30 seconds)
 - Do they feel confident, not anxious?
 
 ### Joy Test
+
 After using Familiar:
+
 - Did the experience bring satisfaction?
 - Would they choose to use it again?
 - Did any moment delight them?
 
 ### Accessibility Test
+
 - Can grandma use it? (voice especially)
 - Can a developer use it? (with full power)
 - Can someone with accessibility needs use it? (VoiceOver, keyboard, etc.)
 
 ### The Ive Test
+
 Would Jony Ive approve?
+
 - Is it inevitable? (feels obvious in hindsight)
 - Is it essential? (nothing superfluous)
 - Does it show care? (attention to detail perceptible)
@@ -875,7 +944,7 @@ Would Jony Ive approve?
 
 ---
 
-*This document defines Familiar's soul: sophisticated, accessible, joyful, with mystery for those who seek it.*
+_This document defines Familiar's soul: sophisticated, accessible, joyful, with mystery for those who seek it._
 
 **Last Updated**: September 30, 2025
 **Status**: Active — guides all design decisions

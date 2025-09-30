@@ -16,7 +16,7 @@ struct SettingsView: View {
 
             if let statusMessage = viewModel.statusMessage {
                 Text(statusMessage)
-                    .font(.subheadline)
+                    .font(.familiarBody)
                     .foregroundStyle(viewModel.statusColor)
             }
 
@@ -51,7 +51,7 @@ struct SettingsView: View {
     private var authenticationSection: some View {
         VStack(alignment: .leading, spacing: FamiliarSpacing.sm) {
             Text("Authentication")
-                .font(.headline)
+                .font(.familiarHeading)
 
             Picker("Authentication", selection: $viewModel.selectedAuthMode) {
                 ForEach(SettingsViewModel.AuthMode.allCases) { mode in
@@ -96,7 +96,7 @@ struct SettingsView: View {
     private var workspaceSection: some View {
         VStack(alignment: .leading, spacing: FamiliarSpacing.xs) {
             Text("Workspace")
-                .font(.headline)
+                .font(.familiarHeading)
             HStack(spacing: 8) {
                 TextField("/path/to/workspace", text: $viewModel.workspacePath)
                     .textFieldStyle(.roundedBorder)

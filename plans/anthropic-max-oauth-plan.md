@@ -4,14 +4,14 @@
 
 - Provide a first-class "Sign in with Anthropic" experience that supports Anthropic Max subscriptions.
 - Prefer Anthropic OAuth tokens over locally stored API keys, falling back automatically when tokens fail.
-- Keep the experience aligned with the Claude Code SDK guidance in `docs/claude-code-sdk.md`.
+- Keep the experience aligned with the Claude Agent SDK guidance in `docs/reference/claude-agent-sdk.md`.
 
 ## 1. Research & External Requirements
 
 - Confirm Anthropic OAuth discovery endpoints, required scopes, and PKCE usage for Max accounts.
 - Determine client registration steps (redirect URIs, client ID/secret) and document required environment variables.
 - Identify token-to-API compatibility: how OAuth access tokens map to Claude SDK authentication and expected expiration policy.
-- Review `docs/claude-code-sdk.md` for any SDK expectations around environment variables, permission hooks, or session setup that may need adjustments when tokens rotate.
+- Review `docs/reference/claude-agent-sdk.md` for any SDK expectations around environment variables, permission hooks, or session setup that may need adjustments when tokens rotate.
 
 ## 2. Configuration & Storage Design
 
@@ -31,7 +31,7 @@
   - Implement background refresh utility that renews access tokens before expiry using the refresh token; persist updates.
   - On refresh failure, clear OAuth state and allow API-key fallback.
 - **Session Integration**
-  - Update `claude_service.ClaudeSession.configure` to accept OAuth tokens and set SDK options accordingly (e.g., use `options.env` or explicit header overrides respecting `docs/claude-code-sdk.md`).
+  - Update `claude_service.ClaudeSession.configure` to accept OAuth tokens and set SDK options accordingly (e.g., use `options.env` or explicit header overrides respecting `docs/reference/claude-agent-sdk.md`).
   - When streaming, attempt OAuth authorization first; on authentication errors (401/403), trigger refresh once, then fall back to API key if the token remains invalid.
 - **Settings Payload**
   - Augment responses from `/settings` and `/settings` POST to include OAuth status fields (`hasOAuthToken`, `oauthExpiresAt`, `oauthProvider`).

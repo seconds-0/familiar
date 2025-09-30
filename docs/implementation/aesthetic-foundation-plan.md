@@ -26,6 +26,7 @@ Following the aesthetic-system.md philosophy: build the invisible foundation fir
 ### 1.1 Design Tokens System
 
 **Files to create**:
+
 - `apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarSpacing.swift`
 - `apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarRadius.swift`
 - `apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarTypography.swift`
@@ -35,6 +36,7 @@ Following the aesthetic-system.md philosophy: build the invisible foundation fir
 **Implementation**:
 
 #### Spacing (8pt Rhythm)
+
 ```swift
 enum FamiliarSpacing {
     static let xs: CGFloat = 8    // Tight inline elements
@@ -46,6 +48,7 @@ enum FamiliarSpacing {
 ```
 
 #### Corner Radius
+
 ```swift
 enum FamiliarRadius {
     static let control: CGFloat = 8   // Buttons, fields, small UI
@@ -54,6 +57,7 @@ enum FamiliarRadius {
 ```
 
 #### Typography
+
 ```swift
 extension Font {
     static let familiarTitle = Font.system(.title2, design: .default, weight: .semibold)
@@ -65,6 +69,7 @@ extension Font {
 ```
 
 #### Colors (System Semantic)
+
 ```swift
 extension Color {
     // Foundation
@@ -85,6 +90,7 @@ extension Color {
 ```
 
 #### Motion (The Familiar Spring)
+
 ```swift
 extension Animation {
     // The signature spring
@@ -105,6 +111,7 @@ extension Animation {
 ```
 
 **Checklist**:
+
 - [ ] Create Design/ directory
 - [ ] Implement FamiliarSpacing.swift
 - [ ] Implement FamiliarRadius.swift
@@ -123,6 +130,7 @@ extension Animation {
 **Goal**: Replace all corporate language with human, friendly language following "Is that ok?" philosophy.
 
 **Files to audit**:
+
 - `ApprovalSheet.swift` - "Approve?" → "Yes, do it"
 - `SettingsView.swift` - Various button labels
 - `FamiliarWindow.swift` - Status messages
@@ -132,6 +140,7 @@ extension Animation {
 **Language Guidelines**:
 
 **Do**:
+
 - "Is that ok?"
 - "Yes, do it" / "Sounds good"
 - "Not right now" / "No thanks"
@@ -140,6 +149,7 @@ extension Animation {
 - "Hmm, something went wrong"
 
 **Don't**:
+
 - "Approve?"
 - "Confirm"
 - "Deny" / "Cancel"
@@ -148,6 +158,7 @@ extension Animation {
 - "Error: [technical message]"
 
 **Checklist**:
+
 - [ ] Audit ApprovalSheet.swift button text
 - [ ] Update SettingsView.swift labels
 - [ ] Review FamiliarWindow.swift status messages
@@ -169,6 +180,7 @@ extension Animation {
 **Current state**: Gray border, generic placeholder
 
 **Changes**:
+
 - Replace border color with `Color.familiarAccent.opacity(0.35)`
 - Add subtle inner shadow for depth
 - Italicize preview text with quaternary color
@@ -176,6 +188,7 @@ extension Animation {
 - Use `FamiliarSpacing` for padding
 
 **Checklist**:
+
 - [ ] Update border styling
 - [ ] Add inner shadow
 - [ ] Style preview text
@@ -192,6 +205,7 @@ extension Animation {
 **Current state**: Icon-only buttons
 
 **Changes**:
+
 - Use `Label("Send", systemImage: "paperplane.fill")`
 - Apply `.buttonStyle(.borderedProminent)` with `.controlSize(.large)`
 - Send button: accent color
@@ -200,6 +214,7 @@ extension Animation {
 - Use `FamiliarTypography.familiarBody` for text
 
 **Checklist**:
+
 - [ ] Add text labels to buttons
 - [ ] Apply button styles
 - [ ] Set distinct colors
@@ -216,6 +231,7 @@ extension Animation {
 **Purpose**: Replace spinner with subtle progress affordance
 
 **Implementation**:
+
 ```swift
 struct BreathingDotView: View {
     @State private var opacity: Double = 0.3
@@ -240,6 +256,7 @@ struct BreathingDotView: View {
 **Integration**: Replace `ProgressView()` in FamiliarWindow.swift
 
 **Checklist**:
+
 - [ ] Create BreathingDotView.swift
 - [ ] Implement breathing animation
 - [ ] Replace spinner in FamiliarWindow
@@ -256,11 +273,13 @@ struct BreathingDotView: View {
 **Goal**: Apply 8pt grid spacing consistently across all views
 
 **Changes needed**:
+
 - Replace hardcoded padding values with `FamiliarSpacing` tokens
 - Ensure all layouts snap to 8pt grid
 - Use `.padding(FamiliarSpacing.sm)` instead of `.padding(16)`
 
 **Priority files**:
+
 1. `FamiliarWindow.swift` - Main layout
 2. `ApprovalSheet.swift` - Sheet spacing
 3. `SettingsView.swift` - Settings sections
@@ -268,6 +287,7 @@ struct BreathingDotView: View {
 5. `UsageSummaryView.swift` - Usage display
 
 **Checklist**:
+
 - [ ] Audit all padding/spacing in FamiliarWindow.swift
 - [ ] Update ApprovalSheet.swift spacing
 - [ ] Apply tokens to SettingsView.swift
@@ -285,12 +305,14 @@ struct BreathingDotView: View {
 **Goal**: Apply signature motion to all interactive elements
 
 **Files to update**:
+
 - `FamiliarWindow.swift` - Button presses, status transitions
 - `ApprovalSheet.swift` - Sheet presentation
 - `SettingsView.swift` - Setting toggles
 - Any custom button components
 
 **Pattern**:
+
 ```swift
 // Interactive elements (buttons, taps)
 .animation(.familiarInteractive, value: isPressed)
@@ -303,6 +325,7 @@ struct BreathingDotView: View {
 ```
 
 **Checklist**:
+
 - [ ] Apply to send button press feedback
 - [ ] Add to approval sheet presentation
 - [ ] Use for status transitions in main window
@@ -324,6 +347,7 @@ struct BreathingDotView: View {
 **File**: New component `ZeroStateView.swift`
 
 **Design**:
+
 ```
 ┌─────────────────────────────────────────┐
 │                                         │
@@ -356,6 +380,7 @@ struct BreathingDotView: View {
 ```
 
 **Implementation**:
+
 ```swift
 struct ZeroStateView: View {
     let onSuggestionTap: (String) -> Void
@@ -397,6 +422,7 @@ struct ZeroStateView: View {
 ```
 
 **Checklist**:
+
 - [ ] Create ZeroStateView.swift
 - [ ] Create SuggestionCard.swift component
 - [ ] Implement suggestion rotation logic
@@ -417,6 +443,7 @@ struct ZeroStateView: View {
 **Purpose**: Generate contextually relevant suggestions based on time/day
 
 **Implementation**:
+
 ```swift
 enum SuggestionGenerator {
     static func generate(timeOfDay: TimeOfDay, dayOfWeek: DayOfWeek) -> [String] {
@@ -471,6 +498,7 @@ enum SuggestionGenerator {
 ```
 
 **Checklist**:
+
 - [ ] Create SuggestionGenerator.swift
 - [ ] Implement 20+ suggestions across categories
 - [ ] Add time-based context logic
@@ -490,6 +518,7 @@ enum SuggestionGenerator {
 **Purpose**: Beautiful, tappable card for each suggestion
 
 **Implementation**:
+
 ```swift
 struct SuggestionCard: View {
     let text: String
@@ -522,6 +551,7 @@ struct SuggestionCard: View {
 ```
 
 **Checklist**:
+
 - [ ] Create SuggestionCard.swift
 - [ ] Implement hover state
 - [ ] Add subtle animation on hover
@@ -539,12 +569,14 @@ struct SuggestionCard: View {
 **File**: `FamiliarWindow.swift`
 
 **Changes**:
+
 - Show `ZeroStateView` when transcript is empty
 - Hide immediately when user starts typing
 - Clicking suggestion populates prompt field
 - Apply fade animations using `.familiar` spring
 
 **Integration pattern**:
+
 ```swift
 struct FamiliarWindowContent: View {
     @ObservedObject var viewModel: FamiliarViewModel
@@ -569,6 +601,7 @@ struct FamiliarWindowContent: View {
 ```
 
 **Checklist**:
+
 - [ ] Add ZeroStateView to FamiliarWindow
 - [ ] Implement show/hide logic
 - [ ] Wire up suggestion tap to prompt field
@@ -630,6 +663,7 @@ struct FamiliarWindowContent: View {
 ### Phase 1 Complete! ✅ (Completed: September 30, 2025)
 
 #### Phase 1.1: Design Tokens System ✅
+
 - [x] Created Design/ directory
 - [x] Implemented FamiliarSpacing.swift (8pt rhythm: xs:8, sm:16, md:24, lg:32, xl:48)
 - [x] Implemented FamiliarRadius.swift (control:8pt, card:16pt)
@@ -638,11 +672,13 @@ struct FamiliarWindowContent: View {
 - [x] Implemented FamiliarMotion.swift (The Familiar Spring)
 
 #### Phase 1.2: Language Audit ✅
+
 - [x] Updated ApprovalSheet.swift ("I can [action] for you", "Yes, do it", "Not right now")
 - [x] Updated SettingsView.swift ("Check if it works", "Looks good")
 - [x] FamiliarWindow.swift already conversational
 
 #### Phase 1.3: Quick Wins ✅
+
 - [x] Refined PromptTextEditor.swift (accent border, design tokens)
 - [x] Added text labels to Send/Stop buttons
 - [x] Created BreathingDotView.swift component
@@ -650,11 +686,13 @@ struct FamiliarWindowContent: View {
 - [x] Replaced ProgressView with BreathingDot
 
 #### Phase 1.4: The Familiar Spring ✅
+
 - [x] Integrated .familiarInteractive animations in PromptTextEditor
 
 **Build Status**: ✅ All changes compile successfully (1.95s build time)
 
 ### Week 3 Goals
+
 - [ ] ZeroStateView implemented
 - [ ] Suggestion generator working
 - [ ] Integration with FamiliarWindow complete
@@ -665,6 +703,7 @@ struct FamiliarWindowContent: View {
 ## Testing Checklist
 
 After each component:
+
 - [ ] Test in light mode
 - [ ] Test in dark mode
 - [ ] Test with reduced motion enabled
@@ -679,6 +718,7 @@ After each component:
 ## Success Criteria
 
 ### Foundation Success
+
 - All design tokens implemented and documented
 - Zero hardcoded spacing/colors remain in UI code
 - Familiar spring applied to all animations
@@ -686,6 +726,7 @@ After each component:
 - Quick wins from visual-improvements.md shipped
 
 ### Zero State Success
+
 - Beautiful welcome screen on empty transcript
 - 4 contextual suggestions show on load
 - Suggestions vary by time/day
@@ -695,6 +736,7 @@ After each component:
 - Accessible via keyboard and VoiceOver
 
 ### The Ive Test
+
 - Is it inevitable? (feels obvious in hindsight) ✓
 - Is it essential? (nothing superfluous) ✓
 - Does it show care? (attention to detail perceptible) ✓
@@ -705,12 +747,14 @@ After each component:
 ## Related Documents
 
 ### Essential Reading
+
 - **aesthetic-system.md** - Core design philosophy (READ FIRST)
 - **visual-improvements.md** - Implementation roadmap with quick wins
 - **intelligent-zero-state.md** - Zero state specification
 - **hidden-delights.md** - Easter eggs (integrate later)
 
 ### Future Work
+
 - **agent-visualization.md** - 10-week project (parallel track)
 - Zero state V2 with AI generation (after V1 ships)
 - Hidden delights integration

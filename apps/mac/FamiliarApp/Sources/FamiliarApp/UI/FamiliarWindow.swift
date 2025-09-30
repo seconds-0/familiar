@@ -52,7 +52,7 @@ struct FamiliarView: View {
                 LazyVStack(alignment: .leading, spacing: FamiliarSpacing.sm) {
                     if !viewModel.transcript.isEmpty {
                         Text(viewModel.transcript)
-                            .font(.system(.body, design: .monospaced))
+                            .font(.familiarMono)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .textSelection(.enabled)
                     }
@@ -63,7 +63,7 @@ struct FamiliarView: View {
 
                     if let error = viewModel.errorMessage {
                         Label(error, systemImage: "exclamationmark.circle")
-                            .foregroundStyle(.red)
+                            .foregroundStyle(Color.familiarError)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -79,10 +79,11 @@ struct FamiliarView: View {
                 HStack(spacing: FamiliarSpacing.xs) {
                     BreathingDotView()
                     Text(viewModel.loadingMessage ?? "Working on it…")
-                        .font(.footnote)
+                        .font(.familiarCaption)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
                 }
+                .animation(.familiar, value: viewModel.isStreaming)
             }
 
             Spacer(minLength: 0)
@@ -124,7 +125,7 @@ struct FamiliarView: View {
 
                 HStack(spacing: 0) {
                     Text("New line: Shift+Enter    Send: Enter")
-                        .font(.footnote)
+                        .font(.familiarCaption)
                         .foregroundStyle(.secondary)
                     Spacer()
                 }

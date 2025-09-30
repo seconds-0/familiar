@@ -37,8 +37,8 @@ async function main() {
       model: "claude-sonnet-4-5-20250929",
       includePartialMessages: true,
       mcpServers: {},
-      permissionMode: "default"
-    }
+      permissionMode: "default",
+    },
   })) {
     if (message.type === "assistant") {
       console.log(message.content);
@@ -108,7 +108,7 @@ const result = await query({
       if (toolName === "Bash" && input.command.includes("rm -rf")) {
         return {
           behavior: "deny",
-          message: "Dangerous command blocked"
+          message: "Dangerous command blocked",
         };
       }
 
@@ -118,8 +118,8 @@ const result = await query({
       return approved
         ? { behavior: "allow", updatedInput: input }
         : { behavior: "deny", message: "User denied permission" };
-    }
-  }
+    },
+  },
 });
 ```
 
@@ -140,32 +140,22 @@ Configure static permission policies:
 ```json
 {
   "permissions": {
-    "allow": [
-      "Read(**/*.md)",
-      "Bash(npm run lint)",
-      "Bash(git status)"
-    ],
-    "deny": [
-      "Read(./.env)",
-      "Write(./production/**)",
-      "Bash(rm -rf *)"
-    ],
-    "ask": [
-      "Bash(git push*)",
-      "WebFetch",
-      "Edit(**/*.ts)"
-    ]
+    "allow": ["Read(**/*.md)", "Bash(npm run lint)", "Bash(git status)"],
+    "deny": ["Read(./.env)", "Write(./production/**)", "Bash(rm -rf *)"],
+    "ask": ["Bash(git push*)", "WebFetch", "Edit(**/*.ts)"]
   }
 }
 ```
 
 #### Rule Syntax
+
 - **Tool-specific**: `"ToolName(pattern)"`
 - **Wildcards**: `**` for any depth, `*` for single level
 - **Exact match**: `"Bash(npm test)"`
 - **Pattern match**: `"Read(**/*.json)"`
 
 #### Permission Evaluation Order
+
 1. Pre-hook
 2. Ask rules → prompt user
 3. Deny rules → block
@@ -186,16 +176,16 @@ const mcpServers = {
     command: "npx",
     args: ["-y", "@modelcontextprotocol/server-filesystem"],
     env: {
-      ALLOWED_PATHS: "/Users/me/projects"
-    }
+      ALLOWED_PATHS: "/Users/me/projects",
+    },
   },
   github: {
     command: "python",
     args: ["-m", "mcp_server_github"],
     env: {
-      GITHUB_TOKEN: process.env.GITHUB_TOKEN
-    }
-  }
+      GITHUB_TOKEN: process.env.GITHUB_TOKEN,
+    },
+  },
 };
 ```
 
@@ -209,9 +199,9 @@ const mcpServers = {
     type: "sse",
     url: "https://api.search.brave.com/mcp/sse",
     headers: {
-      "X-API-KEY": process.env.BRAVE_API_KEY
-    }
-  }
+      "X-API-KEY": process.env.BRAVE_API_KEY,
+    },
+  },
 };
 ```
 
@@ -225,9 +215,9 @@ const mcpServers = {
     type: "http",
     url: "https://api.example.com/mcp",
     headers: {
-      "Authorization": `Bearer ${process.env.API_TOKEN}`
-    }
-  }
+      Authorization: `Bearer ${process.env.API_TOKEN}`,
+    },
+  },
 };
 ```
 
@@ -246,14 +236,14 @@ const mcpServer = createSdkMcpServer({
       name: "deploy",
       description: "Deploy the application",
       inputSchema: z.object({
-        environment: z.enum(["staging", "production"])
+        environment: z.enum(["staging", "production"]),
       }),
       handler: async ({ environment }) => {
         // Deployment logic
         return { success: true, url: `https://${environment}.example.com` };
-      }
-    })
-  ]
+      },
+    }),
+  ],
 });
 
 // Use in query
@@ -261,9 +251,9 @@ const result = await query({
   prompt: "Deploy to staging",
   options: {
     mcpServers: {
-      custom: mcpServer
-    }
-  }
+      custom: mcpServer,
+    },
+  },
 });
 ```
 
@@ -390,8 +380,8 @@ const controller = new AbortController();
 const queryPromise = query({
   prompt: "Long running task",
   options: {
-    signal: controller.signal
-  }
+    signal: controller.signal,
+  },
 });
 
 // Interrupt after timeout
@@ -447,16 +437,16 @@ const customTool = tool({
   description: "Execute a database query",
   inputSchema: z.object({
     query: z.string(),
-    database: z.enum(["users", "products", "orders"])
+    database: z.enum(["users", "products", "orders"]),
   }),
   handler: async ({ query, database }) => {
     // Execute query
     const results = await db[database].query(query);
     return {
       rowCount: results.length,
-      data: results
+      data: results,
     };
-  }
+  },
 });
 ```
 
@@ -472,7 +462,7 @@ const result = await query({
   prompt: "Help me code",
   options: {
     // Authentication handled automatically
-  }
+  },
 });
 ```
 
@@ -485,9 +475,9 @@ const result = await query({
   prompt: "Help me code",
   options: {
     env: {
-      ANTHROPIC_API_KEY: "sk-ant-..."
-    }
-  }
+      ANTHROPIC_API_KEY: "sk-ant-...",
+    },
+  },
 });
 ```
 
@@ -510,7 +500,7 @@ for await (const message of query({ prompt: "Start task" })) {
 // Resume later
 for await (const message of query({
   prompt: "Continue where we left off",
-  options: { resume: sessionId }
+  options: { resume: sessionId },
 })) {
   // Continues in same context
 }
@@ -554,10 +544,8 @@ const options = {
     const approved = await promptUser(tool, input);
     if (approved) trustLevel++;
 
-    return approved
-      ? { behavior: "allow" }
-      : { behavior: "deny" };
-  }
+    return approved ? { behavior: "allow" } : { behavior: "deny" };
+  },
 };
 ```
 
@@ -572,14 +560,14 @@ async function getAutoMcpServers(projectPath: string) {
   if (await exists(path.join(projectPath, "package.json"))) {
     servers.nodejs = {
       command: "npx",
-      args: ["-y", "@modelcontextprotocol/server-nodejs"]
+      args: ["-y", "@modelcontextprotocol/server-nodejs"],
     };
   }
 
   if (await exists(path.join(projectPath, ".git"))) {
     servers.git = {
       command: "npx",
-      args: ["-y", "@modelcontextprotocol/server-git"]
+      args: ["-y", "@modelcontextprotocol/server-git"],
     };
   }
 
@@ -615,7 +603,7 @@ const controller = new AbortController();
 try {
   for await (const message of query({
     prompt,
-    options: { signal: controller.signal }
+    options: { signal: controller.signal },
   })) {
     // Process
   }
@@ -638,7 +626,7 @@ import type {
   Options,
   PermissionResult,
   ToolInput,
-  ToolOutput
+  ToolOutput,
 } from "@anthropic-ai/claude-agent-sdk";
 ```
 
@@ -658,8 +646,8 @@ import { query } from "@anthropic-ai/claude-agent-sdk";
 for await (const message of query({
   prompt: "fix the build",
   options: {
-    systemPrompt: "You are a helpful coding assistant..." // Explicit system prompt
-  }
+    systemPrompt: "You are a helpful coding assistant...", // Explicit system prompt
+  },
 })) {
   // Handle messages
 }
@@ -675,8 +663,8 @@ import { query } from "@anthropic-ai/claude-agent-sdk";
 for await (const message of query({
   prompt: "fix the build",
   options: {
-    settingSources: ['user', 'project', 'local'] // Explicitly load settings
-  }
+    settingSources: ["user", "project", "local"], // Explicitly load settings
+  },
 })) {
   // Handle messages
 }
@@ -707,7 +695,7 @@ If you were relying on automatic settings loading:
 
 ```typescript
 const options = {
-  settingSources: ['user', 'project', 'local'],
+  settingSources: ["user", "project", "local"],
   // ... other options
 };
 ```
@@ -726,6 +714,7 @@ const options = {
 ### Migration Example
 
 **Before (Claude Code SDK)**:
+
 ```typescript
 import { query } from "@anthropic-ai/claude-code";
 
@@ -735,15 +724,16 @@ for await (const message of query({ prompt: "fix the build" })) {
 ```
 
 **After (Claude Agent SDK)**:
+
 ```typescript
 import { query } from "@anthropic-ai/claude-agent-sdk";
 
 for await (const message of query({
   prompt: "fix the build",
   options: {
-    settingSources: ['user', 'project', 'local'],
-    systemPrompt: "You are a helpful coding assistant..."
-  }
+    settingSources: ["user", "project", "local"],
+    systemPrompt: "You are a helpful coding assistant...",
+  },
 })) {
   console.log(message.content);
 }
@@ -759,7 +749,7 @@ for await (const message of query({
 import { query } from "@anthropic-ai/claude-agent-sdk";
 
 for await (const message of query({
-  prompt: "fix the build"
+  prompt: "fix the build",
 })) {
   // Handle messages
 }

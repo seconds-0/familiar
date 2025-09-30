@@ -143,7 +143,7 @@ export interface FileMultiEditInput {
        * Replace all occurences of old_string (default false).
        */
       replace_all?: boolean;
-    }[]
+    }[],
   ];
 }
 export interface FileReadInput {

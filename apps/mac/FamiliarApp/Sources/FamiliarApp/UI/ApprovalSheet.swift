@@ -33,12 +33,11 @@ struct ApprovalSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: FamiliarSpacing.sm) {
             Text("I can \(actionDescription) for you")
-                .font(.title3)
-                .bold()
+                .font(.familiarHeading)
 
             if let path = request.path, !path.isEmpty {
                 Label(path, systemImage: "doc.text")
-                    .font(.subheadline)
+                    .font(.familiarCaption)
                     .foregroundStyle(.secondary)
             }
 
@@ -47,7 +46,7 @@ struct ApprovalSheet: View {
             } else if let preview = request.preview, !preview.isEmpty {
                 VStack(alignment: .leading, spacing: FamiliarSpacing.xs) {
                     Text("Proposed content")
-                        .font(.caption)
+                        .font(.familiarCaption)
                         .foregroundStyle(.secondary)
                     ScrollView(.vertical, showsIndicators: true) {
                         Text(preview)
@@ -60,13 +59,13 @@ struct ApprovalSheet: View {
                     .background(Color(nsColor: .textBackgroundColor))
                     .clipShape(RoundedRectangle(cornerRadius: FamiliarRadius.control))
                     .overlay(
-                        RoundedRectangle(cornerRadius: 8)
+                        RoundedRectangle(cornerRadius: FamiliarRadius.control)
                             .stroke(Color(nsColor: .separatorColor).opacity(0.3), lineWidth: 1)
                     )
                 }
             } else {
                 Text("No preview available")
-                    .font(.callout)
+                    .font(.familiarBody)
                     .foregroundStyle(.secondary)
             }
 
@@ -118,14 +117,14 @@ private struct DiffPreviewView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: FamiliarSpacing.xs) {
             Text("Proposed diff")
-                .font(.caption)
+                .font(.familiarCaption)
                 .foregroundStyle(.secondary)
             ScrollView(.vertical, showsIndicators: true) {
                 VStack(alignment: .leading, spacing: 2) {
                     ForEach(Array(lines.enumerated()), id: \.offset) { pair in
                         let line = pair.element
                         Text(line)
-                            .font(.system(.callout, design: .monospaced))
+                            .font(.familiarMono)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.vertical, 1)
                             .foregroundStyle(color(for: line))
@@ -149,10 +148,10 @@ private struct DiffPreviewView: View {
             return .secondary
         }
         if line.hasPrefix("+") {
-            return .green
+            return .familiarSuccess
         }
         if line.hasPrefix("-") {
-            return .red
+            return .familiarError
         }
         return .primary
     }

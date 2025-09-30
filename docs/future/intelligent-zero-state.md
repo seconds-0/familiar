@@ -35,6 +35,7 @@ When a user opens Familiar to an empty transcript, they see:
 ### Warm Greeting
 
 **Visual-only mode**:
+
 ```
 What can I help you with today?
 
@@ -46,6 +47,7 @@ I could help you:
 ```
 
 **Voice mode**:
+
 ```
 [Familiar speaks]: "Hi! What can I help you with?"
 
@@ -57,6 +59,7 @@ I could help you:
 Claude analyzes minimal context (time of day, workspace state) and generates suggestions across categories:
 
 **Generated Examples** (weekday afternoon):
+
 1. "Organize my cluttered desktop" (problem-solving)
 2. "Help me research [trending topic]" (learning)
 3. "Create a simple document or image" (creative)
@@ -65,11 +68,13 @@ Claude analyzes minimal context (time of day, workspace state) and generates sug
 ### Interaction Modes
 
 **Visual + Mouse**:
+
 - Click suggestion → populates input field
 - User can edit before sending
 - Or ignore and type own request
 
 **Voice**:
+
 - Say any suggestion → Familiar acts
 - Say something else → Familiar adapts
 - Suggestions guide but don't constrain
@@ -77,11 +82,13 @@ Claude analyzes minimal context (time of day, workspace state) and generates sug
 ### Adaptive Behavior
 
 **First time user**:
+
 - Shows broad, inspiring suggestions
 - "Try anything" tone
 - Educational about capabilities
 
 **Returning user**:
+
 - Context-aware (noticed desktop is messy)
 - Can reference previous work
 - "Pick up where you left off" option
@@ -93,9 +100,11 @@ Claude analyzes minimal context (time of day, workspace state) and generates sug
 Suggestions must show **breadth** of Familiar's capabilities. Never coding-focused.
 
 ### 1. Creative/Generative
+
 **What it is**: Make something new
 
 **Examples**:
+
 - "Help me write a birthday invitation"
 - "Create a simple website for my hobby"
 - "Design a flyer for my yard sale"
@@ -103,9 +112,11 @@ Suggestions must show **breadth** of Familiar's capabilities. Never coding-focus
 - "Write a poem for my partner"
 
 ### 2. Organization/Management
+
 **What it is**: Bring order to chaos
 
 **Examples**:
+
 - "Organize my desktop files by type"
 - "Find and archive old documents"
 - "Sort my photos by date"
@@ -113,9 +124,11 @@ Suggestions must show **breadth** of Familiar's capabilities. Never coding-focus
 - "Clean up my downloads folder"
 
 ### 3. Research/Learning
+
 **What it is**: Understand something
 
 **Examples**:
+
 - "Explain how [something] works"
 - "Research options for [decision I'm making]"
 - "Find information about [topic I'm curious about]"
@@ -123,9 +136,11 @@ Suggestions must show **breadth** of Familiar's capabilities. Never coding-focus
 - "Teach me something new today"
 
 ### 4. Problem-Solving
+
 **What it is**: Figure something out
 
 **Examples**:
+
 - "Help me figure out my taxes"
 - "Find a solution to [problem I'm facing]"
 - "Debug why [thing isn't working]"
@@ -133,9 +148,11 @@ Suggestions must show **breadth** of Familiar's capabilities. Never coding-focus
 - "Fix [something that's broken]"
 
 ### 5. Unexpected/Magical
+
 **What it is**: Things they didn't know were possible
 
 **Examples**:
+
 - "Show me something surprising I can do"
 - "What's something useful I haven't thought of?"
 - "Automate a tedious task for me"
@@ -149,6 +166,7 @@ Suggestions must show **breadth** of Familiar's capabilities. Never coding-focus
 ## Context Gathering (Respectful & Minimal)
 
 ### V1: Bare Minimum Context
+
 - Time of day
 - Day of week
 - User has opened Familiar (that's it)
@@ -156,22 +174,27 @@ Suggestions must show **breadth** of Familiar's capabilities. Never coding-focus
 **Why minimal**: Privacy, speed, simplicity
 
 ### V2: Environmental Awareness (Optional)
+
 User can opt-in to context gathering:
 
 **Desktop state**:
+
 - File count on desktop (if > 100, might suggest organizing)
 - Recent downloads (if many, might suggest sorting)
 
 **Calendar** (with permission):
+
 - Upcoming events (might suggest preparation)
 - Date context (tax season, holidays, etc.)
 
 **Recently used apps**:
+
 - Photo editing → suggest photo organization
 - Browser → suggest research help
 - Nothing recent → suggest exploration
 
 ### V3+: Session Memory
+
 - What user worked on last time
 - Common patterns ("You often ask me to organize files")
 - Project context ("Still working on that pottery website?")
@@ -185,6 +208,7 @@ User can opt-in to context gathering:
 Voice changes everything about zero state.
 
 ### Visual-Only Zero State
+
 ```
 ┌─────────────────────────────────┐
 │  What can I help you with?      │
@@ -197,6 +221,7 @@ Voice changes everything about zero state.
 ```
 
 ### Voice-First Zero State
+
 ```
 [User presses hotkey]
 
@@ -209,6 +234,7 @@ User clicks suggestion → conversation begins
 ```
 
 ### Pure Voice Mode (No Window)
+
 ```
 User: "Hey Familiar"
 
@@ -232,6 +258,7 @@ Familiar: "Sure! I found 150 files..."
 **Approach**: Hand-crafted suggestions that rotate based on minimal context
 
 **Implementation**:
+
 ```python
 def get_suggestions(time_of_day, day_of_week):
     suggestions = []
@@ -261,6 +288,7 @@ def get_suggestions(time_of_day, day_of_week):
 **Approach**: Take static suggestions and ask Claude to generate variations
 
 **Prompt**:
+
 ```
 Generate 4 short, inspiring suggestions for what I could help with right now.
 
@@ -282,15 +310,18 @@ Example format:
 ```
 
 **Model selection**:
+
 - If user authenticated with claude.ai → Sonnet 4.5 (subsidized, high quality)
 - If user using API key → Haiku (cost-conscious, still good)
 
 **Token budget**:
+
 - Input: ~150 tokens
 - Output: ~50 tokens
 - Total: ~200 tokens per zero state view
 
 **Cost**:
+
 - Sonnet: ~$0.0006 per view
 - Haiku: ~$0.00006 per view
 
@@ -303,6 +334,7 @@ Example format:
 **Approach**: Add environmental context for truly personal suggestions
 
 **Prompt additions**:
+
 ```
 Additional context:
 - Workspace: {workspace_name}
@@ -313,6 +345,7 @@ Additional context:
 ```
 
 **This enables**:
+
 - "Continue organizing your desktop (still 150 files)"
 - "Pick up where we left off on that website"
 - "I noticed you haven't cleaned downloads in a while"
@@ -357,6 +390,7 @@ Additional context:
 ```
 
 **Design notes**:
+
 - Clean, generous spacing
 - Friendly icons (not mystical)
 - Soft colors (not loud)
@@ -366,35 +400,42 @@ Additional context:
 ### Interaction Patterns
 
 **On hover**:
+
 - Subtle highlight (accent color, low opacity)
 - No dramatic effects
 
 **On click**:
+
 - Suggestion populates text field
 - Cursor moves to end
 - User can edit or immediately send
 - Suggestion cards fade out
 
 **On typing**:
+
 - Zero state fades out immediately
 - User has full control
 
 **Empty again**:
+
 - Zero state fades back in
 - Shows fresh suggestions (regenerated)
 
 ### Animation (Purposeful, Not Flashy)
 
 **Fade in** (on open):
+
 - Greeting appears (0.2s fade)
 - Suggestions appear sequentially (0.1s delay each)
 - Feels alive, not overwhelming
 
 **Fade out** (on interaction):
+
 - Instant (no delay)
 - User action is priority
 
 **Shimmer** (while generating):
+
 - Subtle pulse on suggestion cards
 - Indicates they're being personalized
 - Only if generation takes > 0.5s
@@ -406,11 +447,13 @@ Additional context:
 ### Greeting
 
 **Do**:
+
 - "What can I help you with today?"
 - "How can I help?"
 - "What are you working on?"
 
 **Don't**:
+
 - "Welcome to Familiar" (corporate)
 - "Enter your prompt" (technical)
 - "Ask me anything" (intimidating openness)
@@ -418,12 +461,14 @@ Additional context:
 ### Suggestion Text
 
 **Do**:
+
 - "Organize cluttered desktop"
 - "Create a birthday invitation"
 - "Research anything you're curious about"
 - "Help me figure out [problem]"
 
 **Don't**:
+
 - "Execute desktop organization algorithm" (technical)
 - "Generate creative content" (vague)
 - "Perform research query" (robotic)
@@ -437,6 +482,7 @@ Additional context:
 - **Warm**: "Happy to help!"
 
 **Not**:
+
 - Overly enthusiastic ("OMG let's do this!!!")
 - Corporate ("Your request is being processed")
 - Technical ("Awaiting input")
@@ -451,6 +497,7 @@ Additional context:
 **`POST /zero-state/suggestions`** (V2+)
 
 **Request**:
+
 ```json
 {
   "context": {
@@ -463,6 +510,7 @@ Additional context:
 ```
 
 **Response**:
+
 ```json
 {
   "suggestions": [
@@ -475,6 +523,7 @@ Additional context:
 ```
 
 **Implementation** (`backend/src/palette_sidecar/zero_state.py`):
+
 ```python
 from .claude_service import session
 
@@ -495,6 +544,7 @@ async def generate_suggestions(context: dict, count: int = 4) -> list[str]:
 ### Frontend Component
 
 **`ZeroStateView.swift`**:
+
 ```swift
 struct ZeroStateView: View {
     @ObservedObject var viewModel: FamiliarViewModel
@@ -540,16 +590,19 @@ struct ZeroStateView: View {
 ### Integration
 
 **Show zero state when**:
+
 - Transcript is empty
 - User hasn't started typing
 - Not currently in a conversation
 
 **Hide zero state when**:
+
 - User starts typing (immediate)
 - Conversation begins
 - User explicitly dismisses
 
 **Regenerate when**:
+
 - User returns to empty transcript
 - > 5 minutes since last generation
 - Context has changed significantly
@@ -561,16 +614,19 @@ struct ZeroStateView: View {
 ### Privacy Considerations
 
 **What we collect**:
+
 - Time of day (approximate)
 - Day of week
 - That Familiar was opened (session count)
 
 **What we don't collect**:
+
 - File names or contents
 - Personal information
 - Suggestion click tracking (no analytics)
 
 **User control**:
+
 - Can disable suggestions in settings
 - Can opt-in to richer context (V2+)
 - Always transparent about what's used
@@ -578,17 +634,20 @@ struct ZeroStateView: View {
 ### Performance
 
 **V1 (Static)**:
+
 - Load time: < 10ms
 - Cost: $0
 - Always available offline
 
 **V2 (AI Generated)**:
+
 - Load time: 500ms-1s
 - Cost per user per day: ~$0.01-0.10 (depends on usage)
 - Requires internet
 - Fallback to V1 if offline/slow
 
 **Token budget per user per day**:
+
 - Open Familiar 10 times
 - 10 × 200 tokens = 2,000 tokens
 - ~$0.006 (Haiku) or ~$0.06 (Sonnet)
@@ -599,15 +658,18 @@ struct ZeroStateView: View {
 ## Success Metrics
 
 ### Engagement
+
 - % of sessions where suggestion clicked: Target 30%+
 - % of users who try suggestions: Target 50%+
 
 ### Quality
+
 - User satisfaction with suggestions (future survey)
 - Diversity of suggestion categories
 - Suggestions lead to successful task completion
 
 ### Performance
+
 - Latency < 1s for suggestion generation
 - Token budget < $0.10 per user per day
 - Zero state available offline (V1 fallback)
@@ -617,20 +679,24 @@ struct ZeroStateView: View {
 ## Future Enhancements
 
 ### Session Memory Integration
+
 - "Continue where you left off"
 - "You often organize files on Mondays"
 - "Still working on that project?"
 
 ### Collaborative Suggestions
+
 - "Your teammate asked about [topic]"
 - "There's a shared file you haven't reviewed"
 
 ### Learning Preferences
+
 - Notice which suggestions users prefer
 - Adapt categories to user's style
 - But never remove breadth entirely
 
 ### Multi-Modal Context
+
 - "You have 47 photos selected"
 - "You're looking at [app/website]"
 - "You just said [voice context]"
@@ -640,6 +706,7 @@ struct ZeroStateView: View {
 ## Implementation Roadmap
 
 ### Phase 1: V1 Static (Now)
+
 **Timeline**: 1 week
 
 - Create `ZeroStateView` component
@@ -651,6 +718,7 @@ struct ZeroStateView: View {
 **Outcome**: Something better than empty window, zero cost
 
 ### Phase 2: V2 AI Generation (Soon)
+
 **Timeline**: 2 weeks after V1
 
 - Backend `/zero-state/suggestions` endpoint
@@ -662,6 +730,7 @@ struct ZeroStateView: View {
 **Outcome**: Fresh, contextual suggestions
 
 ### Phase 3: Voice Integration
+
 **Timeline**: Concurrent with voice work
 
 - Voice greeting: "What can I help you with?"
@@ -672,6 +741,7 @@ struct ZeroStateView: View {
 **Outcome**: Zero state works for voice users
 
 ### Phase 4: V3 Rich Context (Later)
+
 **Timeline**: 3-4 months
 
 - Opt-in context gathering
@@ -702,7 +772,7 @@ struct ZeroStateView: View {
 
 ---
 
-*The zero state is the first impression. Make it welcoming, inspiring, and universally accessible.*
+_The zero state is the first impression. Make it welcoming, inspiring, and universally accessible._
 
 **Last Updated**: September 30, 2025
 **Status**: Draft — V1 implementation ready to begin

@@ -5,47 +5,47 @@ struct ToolSummaryView: View {
     let summary: ToolSummary
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 8) {
+        VStack(alignment: .leading, spacing: FamiliarSpacing.xs) {
+            HStack(spacing: FamiliarSpacing.xs) {
                 Image(systemName: summary.isError ? "xmark.octagon" : "checkmark.seal")
-                    .foregroundStyle(summary.isError ? Color.red : Color.green)
+                    .foregroundStyle(summary.isError ? Color.familiarError : Color.familiarSuccess)
                 Text(summary.isError ? "Tool reported an error" : "Change applied")
-                    .font(.headline)
+                    .font(.familiarHeading)
             }
 
             if let path = summary.path {
                 Text(path)
-                    .font(.subheadline)
+                    .font(.familiarCaption)
                     .foregroundStyle(.secondary)
             }
 
             if let snippet = summary.snippet, !snippet.isEmpty {
                 ScrollView(.vertical, showsIndicators: true) {
                     Text(snippet)
-                        .font(.system(.callout, design: .monospaced))
+                        .font(.familiarMono)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .textSelection(.enabled)
-                        .padding(.vertical, 4)
+                        .padding(.vertical, FamiliarSpacing.xs)
                 }
                 .frame(minHeight: 60, idealHeight: 120, maxHeight: 200)
                 .background(Color(nsColor: .textBackgroundColor))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .clipShape(RoundedRectangle(cornerRadius: FamiliarRadius.control))
                 .overlay(
-                    RoundedRectangle(cornerRadius: 8)
+                    RoundedRectangle(cornerRadius: FamiliarRadius.control)
                         .stroke(Color(nsColor: .separatorColor).opacity(0.3), lineWidth: 1)
                 )
             }
 
             if let content = summary.content, !content.isEmpty {
                 Text(content)
-                    .font(.footnote)
+                    .font(.familiarCaption)
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(12)
+        .padding(FamiliarSpacing.sm)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
-            RoundedRectangle(cornerRadius: 12)
+            RoundedRectangle(cornerRadius: FamiliarRadius.card)
                 .fill(Color(nsColor: .windowBackgroundColor))
         )
     }

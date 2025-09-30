@@ -8,14 +8,14 @@ I’m assuming macOS first for speed and fit-and-finish, with a portable backend
 
 **Non‑negotiables for UX**
 
-* Summon instantly with a global shortcut. Do not hijack ⌘C since that collides with copy. Use ⌥Space by default, and let users remap. Keep the window lightweight, focused, and always centered. Use subtle spring animations later, not in v1.
-* Latency kills trust. We stream tokens as they arrive. We never block on long tool runs: show progress and affordances to pause, cancel, or “force continue.”
-* Safety is visible. Before Claude can touch files or shell, the user must explicitly allow the specific tool or the whole MCP server. Show a one‑line, human‑readable explanation every time.
-* Claude Code is the engine. We build on the **Claude Code SDK for Python** with the same harness, tools, permissions, hooks, memory, subagents, and MCP. This is the fastest path to serious capability. ([Claude Docs][1])
+- Summon instantly with a global shortcut. Do not hijack ⌘C since that collides with copy. Use ⌥Space by default, and let users remap. Keep the window lightweight, focused, and always centered. Use subtle spring animations later, not in v1.
+- Latency kills trust. We stream tokens as they arrive. We never block on long tool runs: show progress and affordances to pause, cancel, or “force continue.”
+- Safety is visible. Before Claude can touch files or shell, the user must explicitly allow the specific tool or the whole MCP server. Show a one‑line, human‑readable explanation every time.
+- Claude is the engine. We build on the **Claude Agent SDK** with the same harness, tools, permissions, hooks, memory, subagents, and MCP. This is the fastest path to serious capability. ([Claude Docs][1])
 
 **Why this is not “just Claude Desktop”**
 
-* Claude Desktop is an excellent MCP host with one‑click extensions and an ecosystem, but it is a general chat client. It does not expose the full Claude Code harness, slash‑commands, or hook lifecycle in your own bespoke UI. Your app is a specialized command surface glued to the SDK for deep tool control and custom orchestration. Use Desktop for end user chat and connectors, your app for “do things to my computer with precise guardrails and speed.” ([Anthropic][2])
+- Claude Desktop is an excellent MCP host with one‑click extensions and an ecosystem, but it is a general chat client. It does not expose the full Claude Code harness, slash‑commands, or hook lifecycle in your own bespoke UI. Your app is a specialized command surface glued to the SDK for deep tool control and custom orchestration. Use Desktop for end user chat and connectors, your app for “do things to my computer with precise guardrails and speed.” ([Anthropic][2])
 
 ---
 
@@ -23,19 +23,19 @@ I’m assuming macOS first for speed and fit-and-finish, with a portable backend
 
 **Process model**
 
-* **macOS front end (SwiftUI)**: ultra‑fast summon window, token stream viewer, approval modals, settings, 1‑click MCP installer UI.
-* **Local sidecar (Python FastAPI)**: owns a persistent `ClaudeSDKClient` session, streams events to UI via SSE, brokers permission prompts via SDK **hooks**, manages MCP servers, stores settings, and later memory. Uses **uv** for dependency management. ([Claude Docs][3])
+- **macOS front end (SwiftUI)**: ultra‑fast summon window, token stream viewer, approval modals, settings, 1‑click MCP installer UI.
+- **Local sidecar (Python FastAPI)**: owns a persistent `ClaudeSDKClient` session, streams events to UI via SSE, brokers permission prompts via SDK **hooks**, manages MCP servers, stores settings, and later memory. Uses **uv** for dependency management. ([Claude Docs][3])
 
 **Claude Code features we rely on**
 
-* **SDK primitives**: `query()` for one‑shot, `ClaudeSDKClient` for persistent sessions and streaming input, `ClaudeCodeOptions` for tools, `PermissionMode`, and cwd.
-* **Hooks**: `PreToolUse`, `PostToolUse`, `Stop`, `UserPromptSubmit`, `SessionStart` to implement approvals, policy, “force continue,” and context injection.
-* **MCP support**: local stdio servers and remote HTTP/SSE servers; namespaced tools like `mcp__github__get_issue`.
-* **Slash commands** and **CLAUDE.md memory** compatibility. ([Claude Docs][3])
+- **SDK primitives**: `query()` for one‑shot, `ClaudeSDKClient` for persistent sessions and streaming input, `ClaudeCodeOptions` for tools, `PermissionMode`, and cwd.
+- **Hooks**: `PreToolUse`, `PostToolUse`, `Stop`, `UserPromptSubmit`, `SessionStart` to implement approvals, policy, “force continue,” and context injection.
+- **MCP support**: local stdio servers and remote HTTP/SSE servers; namespaced tools like `mcp__github__get_issue`.
+- **Slash commands** and **CLAUDE.md memory** compatibility. ([Claude Docs][3])
 
 **One‑click MCP installs**
 
-* Teach the app to install MCP servers from a manifest. Claude Desktop’s “Desktop Extensions” `.mcpb` bundles are a good model to emulate. We can start simple: a JSON manifest that declares server type, command, args, and any user config. Later, add `.mcpb` compatibility. ([Anthropic][2])
+- Teach the app to install MCP servers from a manifest. Claude Desktop’s “Desktop Extensions” `.mcpb` bundles are a good model to emulate. We can start simple: a JSON manifest that declares server type, command, args, and any user config. Later, add `.mcpb` compatibility. ([Anthropic][2])
 
 ---
 
@@ -86,11 +86,11 @@ familiar/
 
 ## 3) Tooling and environment
 
-* **Python**: uv for everything (env, deps, scripts). Add ruff and mypy.
+- **Python**: uv for everything (env, deps, scripts). Add ruff and mypy.
   `uv add fastapi uvicorn anyio pydantic sse-starlette claude-code-sdk` ([Astral Docs][4])
-* **macOS app**: Xcode 16, Swift 5.10, Swift Package **KeyboardShortcuts** for global hotkeys. ([GitHub][5])
-* **Build**: GitHub Actions macOS runner to produce notarized DMG, and backend wheel.
-* **Runtime prerequisites**: install the **Claude Code CLI** and Node once on first launch of the sidecar, or detect and guide the user. `npm i -g @anthropic-ai/claude-code`. ([GitHub][6])
+- **macOS app**: Xcode 16, Swift 5.10, Swift Package **KeyboardShortcuts** for global hotkeys. ([GitHub][5])
+- **Build**: GitHub Actions macOS runner to produce notarized DMG, and backend wheel.
+- **Runtime prerequisites**: install the **Claude Code CLI** and Node once on first launch of the sidecar, or detect and guide the user. `npm i -g @anthropic-ai/claude-code`. ([GitHub][6])
 
 ---
 
@@ -137,7 +137,7 @@ The Steel Thread is the smallest, fully polished workflow that proves the produc
 - Return `ToolResultBlock` content and render a “change applied” card with file path and snippet in the transcript.
 - Add graceful shutdown: quitting the menu-bar app stops the sidecar and releases the global shortcut.
 
-**Core backend: FastAPI + Claude Code SDK**
+**Core backend: FastAPI + Claude Agent SDK**
 
 ```python
 # backend/src/palette_sidecar/claude_service.py
@@ -150,7 +150,7 @@ class ClaudeSession:
         self.options = ClaudeCodeOptions(
             cwd=cwd,
             # start with no tools; we will gate tools later
-            allowed_tools=[], 
+            allowed_tools=[],
             permission_mode="default"   # be conservative initially
         )
         self.client: ClaudeSDKClient | None = None
@@ -262,7 +262,7 @@ struct FamiliarView: View {
 
 **API key UI**
 
-* Settings has “Anthropic API key” with “Test” button that does a dry call. SDK and docs expect `ANTHROPIC_API_KEY` or provider envs for Bedrock or Vertex. Store secrets in the Keychain. ([Claude Docs][1])
+- Settings has “Anthropic API key” with “Test” button that does a dry call. SDK and docs expect `ANTHROPIC_API_KEY` or provider envs for Bedrock or Vertex. Store secrets in the Keychain. ([Claude Docs][1])
 
 **Result**
 A Spotlight‑like window that streams responses from a persistent Claude Code session. Zero tool use, zero surprises, very fast.
@@ -273,14 +273,14 @@ A Spotlight‑like window that streams responses from a persistent Claude Code s
 
 **Goals**
 
-* Add tool power with visible guardrails.
-* Implement **PreToolUse** and **PostToolUse** hooks so the sidecar can ask the UI for permission before running Bash, Edit, MultiEdit, Write, or MCP tools.
-* Add a clean approval sheet with “allow once,” “always allow this tool,” or “deny.”
+- Add tool power with visible guardrails.
+- Implement **PreToolUse** and **PostToolUse** hooks so the sidecar can ask the UI for permission before running Bash, Edit, MultiEdit, Write, or MCP tools.
+- Add a clean approval sheet with “allow once,” “always allow this tool,” or “deny.”
 
 **Hooks design (SDK supports Python functions as hooks)**
 
-* When the SDK is about to run a tool, our PreToolUse hook fires. We enqueue a permission request, suspend until UI answers, then return `permissionDecision` `allow` or `deny`.
-* We can also immediately block specific commands or directories, and add auto‑feedback for Claude when blocked.
+- When the SDK is about to run a tool, our PreToolUse hook fires. We enqueue a permission request, suspend until UI answers, then return `permissionDecision` `allow` or `deny`.
+- We can also immediately block specific commands or directories, and add auto‑feedback for Claude when blocked.
 
 ```python
 # backend/src/palette_sidecar/permissions.py
@@ -338,8 +338,8 @@ Hook semantics and JSON shape come straight from Anthropic’s hook reference. U
 
 **UI approval sheet**
 
-* Show tool name, human‑readable summary, working directory, preview for file edits if available, and “copy command” for Bash.
-* Store “always allow” as a policy map keyed by tool or fully‑qualified MCP tool name like `mcp__github__list_prs`. ([Claude Docs][8])
+- Show tool name, human‑readable summary, working directory, preview for file edits if available, and “copy command” for Bash.
+- Store “always allow” as a policy map keyed by tool or fully‑qualified MCP tool name like `mcp__github__list_prs`. ([Claude Docs][8])
 
 ---
 
@@ -347,9 +347,9 @@ Hook semantics and JSON shape come straight from Anthropic’s hook reference. U
 
 **Goals**
 
-* Built‑in directory that lists known servers with “Install” and “Connect.”
-* Support local **stdio** servers and remote **HTTP/SSE** servers, with token storage.
-* Our manifest: keep it simple now, adopt `.mcpb` later.
+- Built‑in directory that lists known servers with “Install” and “Connect.”
+- Support local **stdio** servers and remote **HTTP/SSE** servers, with token storage.
+- Our manifest: keep it simple now, adopt `.mcpb` later.
 
 **Minimal manifest example**
 
@@ -361,7 +361,7 @@ Hook semantics and JSON shape come straight from Anthropic’s hook reference. U
   "command": "npx",
   "args": ["-y", "@modelcontextprotocol/server-github"],
   "env": { "GITHUB_TOKEN": "${secret:github_token}" },
-  "tools_whitelist": ["mcp__github"]   // approve all github tools when toggled
+  "tools_whitelist": ["mcp__github"] // approve all github tools when toggled
 }
 ```
 
@@ -394,7 +394,7 @@ Expose a toggle in Settings that appends these to `ClaudeCodeOptions.mcp_servers
 
 **.mcpb support (later in the phase)**
 
-* The Desktop Extensions spec describes `.mcpb` zip bundles with a `manifest.json`, server files, and dependencies. We can support “Install from .mcpb” by unpacking into our data dir, substituting `${__dirname}` in args, and launching with stdio. The spec is public. ([Anthropic][2])
+- The Desktop Extensions spec describes `.mcpb` zip bundles with a `manifest.json`, server files, and dependencies. We can support “Install from .mcpb” by unpacking into our data dir, substituting `${__dirname}` in args, and launching with stdio. The spec is public. ([Anthropic][2])
 
 ---
 
@@ -402,15 +402,15 @@ Expose a toggle in Settings that appends these to `ClaudeCodeOptions.mcp_servers
 
 **Goals**
 
-* Add a right‑side “canvas” panel that renders artifacts, previews diffs, and shows file trees for edits.
-* Surface **slash commands** from project and user scope to autocomplete after typing `/`.
-* Display memory files and let the user open or edit `CLAUDE.md` quickly.
+- Add a right‑side “canvas” panel that renders artifacts, previews diffs, and shows file trees for edits.
+- Surface **slash commands** from project and user scope to autocomplete after typing `/`.
+- Display memory files and let the user open or edit `CLAUDE.md` quickly.
 
 Slash commands live under `.claude/commands` and `~/.claude/commands` with frontmatter and arguments. We can list them and offer completion. ([Claude Docs][8])
 
 **Memory**
 
-* Claude Code supports multiple memory locations and import syntax. Provide toggles in Settings to display and open these files or create them if missing. ([Claude Docs][9])
+- Claude Code supports multiple memory locations and import syntax. Provide toggles in Settings to display and open these files or create them if missing. ([Claude Docs][9])
 
 ---
 
@@ -418,9 +418,9 @@ Slash commands live under `.claude/commands` and `~/.claude/commands` with front
 
 **Goals**
 
-* One Claude Code “worker” focuses on the task with tools.
-* A second “supervisor” watches for the worker to stop too early.
-* If the worker tries to stop but criteria are not met, the **Stop** hook returns a JSON decision to block stoppage and provides a reason or next step.
+- One Claude Code “worker” focuses on the task with tools.
+- A second “supervisor” watches for the worker to stop too early.
+- If the worker tries to stop but criteria are not met, the **Stop** hook returns a JSON decision to block stoppage and provides a reason or next step.
 
 **Stop hook sketch**
 
@@ -443,18 +443,18 @@ The official hook semantics let a Stop hook block termination and supply a “re
 
 **Goals**
 
-* Add a lightweight local memory store for facts and preferences that do not belong in CLAUDE.md.
-* Keep it privacy‑first: local SQLite with page‑level encryption, the key in Keychain.
-* Build a SessionStart hook to inject a synthesized context snippet assembled from recent, high‑signal memories. Show an on‑screen toggle to include or suppress it per session. ([Claude Docs][7])
+- Add a lightweight local memory store for facts and preferences that do not belong in CLAUDE.md.
+- Keep it privacy‑first: local SQLite with page‑level encryption, the key in Keychain.
+- Build a SessionStart hook to inject a synthesized context snippet assembled from recent, high‑signal memories. Show an on‑screen toggle to include or suppress it per session. ([Claude Docs][7])
 
 ---
 
 ### Phase 7 - Polishing the “instantaneous” feel
 
-* Microanimations on open/close and token stream line breaks.
-* Optimistic “typing” bubble while establishing the SSE.
-* Zero‑jank text layout using monospaced fonts, soft wrap, and preserved whitespace.
-* Keyboard‑only flow: ⌘K to focus, ⌘⇧K to clear, ↑ to edit the last query, ⌘. to cancel the current turn, ⌘↩ to force continue.
+- Microanimations on open/close and token stream line breaks.
+- Optimistic “typing” bubble while establishing the SSE.
+- Zero‑jank text layout using monospaced fonts, soft wrap, and preserved whitespace.
+- Keyboard‑only flow: ⌘K to focus, ⌘⇧K to clear, ↑ to edit the last query, ⌘. to cancel the current turn, ⌘↩ to force continue.
 
 ---
 
@@ -490,69 +490,69 @@ Use `uv run uvicorn palette_sidecar.api:app --host 127.0.0.1 --port 8765 --reloa
 
 ### Sidecar REST surface
 
-* `POST /query {prompt, sessionId?}` -> SSE stream of events
-* `POST /approve {requestId, decision}` -> resolves a pending PreToolUse
-* `GET /health`
-* `GET /mcp` list configured servers
-* `POST /mcp/install` with manifest or `.mcpb`
-* `POST /settings` set cwd, model, permission defaults, API key
+- `POST /query {prompt, sessionId?}` -> SSE stream of events
+- `POST /approve {requestId, decision}` -> resolves a pending PreToolUse
+- `GET /health`
+- `GET /mcp` list configured servers
+- `POST /mcp/install` with manifest or `.mcpb`
+- `POST /settings` set cwd, model, permission defaults, API key
 
 ### Mapping SDK messages to UI
 
-* `AssistantMessage` with `TextBlock` -> stream tokens.
-* `ToolUseBlock` -> show “Claude wants to run ….”
-* `ToolResultBlock` -> append “Result” sections, attach file diffs or bash output.
+- `AssistantMessage` with `TextBlock` -> stream tokens.
+- `ToolUseBlock` -> show “Claude wants to run ….”
+- `ToolResultBlock` -> append “Result” sections, attach file diffs or bash output.
   The Python SDK types enumerate these blocks. ([Claude Docs][3])
 
 ### macOS pieces
 
-* **Global hotkey**: Sindre Sorhus’s `KeyboardShortcuts` supports user‑customizable global shortcuts, App Store compatible. ([GitHub][5])
-* **UI**: use `NSPanel` non‑activating floating panel for the summon window to avoid stealing focus too aggressively.
-* **SSE**: simple `URLSessionStreamTask` or a lightweight EventSource client to parse `data:` lines.
-* **Keychain**: store tokens with `SecItemAdd`/`SecItemCopyMatching`.
+- **Global hotkey**: Sindre Sorhus’s `KeyboardShortcuts` supports user‑customizable global shortcuts, App Store compatible. ([GitHub][5])
+- **UI**: use `NSPanel` non‑activating floating panel for the summon window to avoid stealing focus too aggressively.
+- **SSE**: simple `URLSessionStreamTask` or a lightweight EventSource client to parse `data:` lines.
+- **Keychain**: store tokens with `SecItemAdd`/`SecItemCopyMatching`.
 
 ---
 
 ## 6) Security and safety model
 
-* Default to **no tools allowed**. The first time a tool is invoked, ask. Persist user policies by tool or MCP namespace. Slash command invocations inherit the same policy. ([Claude Docs][8])
-* Restrict Bash to a working directory unless explicitly expanded. Deny dangerous patterns in PreToolUse (rm -rf without path safeguards, curl|bash, etc.) with automatic feedback. ([Claude Docs][7])
-* Show a clear “who pays” indicator and token/cost meters. If you ever use headless JSON output or Result messages with costs, surface those numbers. ([Claude Docs][10])
-* All secrets in Keychain. No cloud storage by default.
+- Default to **no tools allowed**. The first time a tool is invoked, ask. Persist user policies by tool or MCP namespace. Slash command invocations inherit the same policy. ([Claude Docs][8])
+- Restrict Bash to a working directory unless explicitly expanded. Deny dangerous patterns in PreToolUse (rm -rf without path safeguards, curl|bash, etc.) with automatic feedback. ([Claude Docs][7])
+- Show a clear “who pays” indicator and token/cost meters. If you ever use headless JSON output or Result messages with costs, surface those numbers. ([Claude Docs][10])
+- All secrets in Keychain. No cloud storage by default.
 
 ---
 
 ## 7) Comparison with Claude Desktop, explicitly
 
-* **Desktop strengths**: one‑click `.mcpb` extensions, an official directory, OS keychain integration, and a huge and growing connectors ecosystem. It is a great MCP host for general users. The engineering post details the extension format and secure secrets handling. ([Anthropic][2])
-* **Your app strengths**: a purpose‑built command surface married to **Claude Code**. You use SDK‑level **hooks**, **slash commands**, **subagents**, and **memory** in your own UX, plus aggressive streaming and custom approval logic. The SDK is designed to expose exactly these knobs. ([Claude Docs][1])
-* **Overlap**: both can connect to local and remote MCP servers. Desktop’s one‑click is deeper today; you can interoperate by supporting `.mcpb`. ([Model Context Protocol][11])
-* **Conclusion**: you are not reinventing Desktop. You are shipping a Claude Code‑first, low‑latency “do‑things” palette with strong approvals and IDE‑adjacent ergonomics.
+- **Desktop strengths**: one‑click `.mcpb` extensions, an official directory, OS keychain integration, and a huge and growing connectors ecosystem. It is a great MCP host for general users. The engineering post details the extension format and secure secrets handling. ([Anthropic][2])
+- **Your app strengths**: a purpose‑built command surface married to **Claude Code**. You use SDK‑level **hooks**, **slash commands**, **subagents**, and **memory** in your own UX, plus aggressive streaming and custom approval logic. The SDK is designed to expose exactly these knobs. ([Claude Docs][1])
+- **Overlap**: both can connect to local and remote MCP servers. Desktop’s one‑click is deeper today; you can interoperate by supporting `.mcpb`. ([Model Context Protocol][11])
+- **Conclusion**: you are not reinventing Desktop. You are shipping a Claude Code‑first, low‑latency “do‑things” palette with strong approvals and IDE‑adjacent ergonomics.
 
 ---
 
 ## 8) What to build next for v2 and beyond
 
-* **Canvas panel** for artifacts, images, preview of edits, and file browsing.
-* **Accumulating memory** summarized into CLAUDE.md at SessionStart. ([Claude Docs][9])
-* **Agent harness** with a dedicated supervisor via `Stop` hook and policies. ([Claude Docs][7])
-* **.mcpb** install flow and registry integration. ([Anthropic][2])
-* **Optional cross‑platform UI** with Tauri once macOS is stellar.
+- **Canvas panel** for artifacts, images, preview of edits, and file browsing.
+- **Accumulating memory** summarized into CLAUDE.md at SessionStart. ([Claude Docs][9])
+- **Agent harness** with a dedicated supervisor via `Stop` hook and policies. ([Claude Docs][7])
+- **.mcpb** install flow and registry integration. ([Anthropic][2])
+- **Optional cross‑platform UI** with Tauri once macOS is stellar.
 
 ---
 
 ## 9) References to wire into issues and code comments
 
-* Claude Code SDK overview and options, including permissions, memory, and MCP: Anthropic docs. ([Claude Docs][1])
-* Python SDK reference: functions, types, `ClaudeSDKClient`, tool decorators, and MCP configs. ([Claude Docs][3])
-* Hooks reference: JSON contracts for PreToolUse, PostToolUse, Stop, and exit code semantics. ([Claude Docs][7])
-* Slash commands reference: locations, frontmatter, MCP slash commands, and permissions. ([Claude Docs][8])
-* Headless mode JSON and streaming formats (useful for cost display patterns, not required for SDK path). ([Claude Docs][10])
-* GitHub repo for the Python SDK and prerequisites (Python 3.10+, Node, and the Claude Code CLI). ([GitHub][6])
-* Model Context Protocol concepts for local stdio vs remote SSE/HTTP servers. ([Model Context Protocol][11])
-* Desktop Extensions architecture and `.mcpb` manifest example. ([Anthropic][2])
-* Swift global hotkeys library. ([GitHub][5])
-* uv package manager docs. ([Astral Docs][4])
+- Claude Agent SDK overview and options, including permissions, memory, and MCP: Anthropic docs. ([Claude Docs][1])
+- Python SDK reference: functions, types, `ClaudeSDKClient`, tool decorators, and MCP configs. ([Claude Docs][3])
+- Hooks reference: JSON contracts for PreToolUse, PostToolUse, Stop, and exit code semantics. ([Claude Docs][7])
+- Slash commands reference: locations, frontmatter, MCP slash commands, and permissions. ([Claude Docs][8])
+- Headless mode JSON and streaming formats (useful for cost display patterns, not required for SDK path). ([Claude Docs][10])
+- GitHub repo for the Python SDK and prerequisites (Python 3.10+, Node, and the Claude Code CLI). ([GitHub][6])
+- Model Context Protocol concepts for local stdio vs remote SSE/HTTP servers. ([Model Context Protocol][11])
+- Desktop Extensions architecture and `.mcpb` manifest example. ([Anthropic][2])
+- Swift global hotkeys library. ([GitHub][5])
+- uv package manager docs. ([Astral Docs][4])
 
 ---
 
@@ -572,7 +572,7 @@ When you want to stretch into “self‑constructing tools,” take advantage of
 If you want, I can translate this into a set of GitHub issues with dependency ordering, copy‑pasteable commands, and the first unit tests for the sidecar.
 
 [1]: https://docs.anthropic.com/en/docs/claude-code/sdk "Overview - Claude Docs"
-[2]: https://www.anthropic.com/engineering/desktop-extensions "Claude Desktop Extensions: One-click MCP server installation for Claude Desktop \ Anthropic"
+[2]: https://www.anthropic.com/engineering/desktop-extensions "Claude Desktop Extensions: One-click MCP server installation for Claude Desktop \\ Anthropic"
 [3]: https://docs.claude.com/en/docs/claude-code/sdk/sdk-python "Python SDK reference - Claude Docs"
 [4]: https://docs.astral.sh/uv/?utm_source=chatgpt.com "uv - Astral Docs"
 [5]: https://github.com/sindresorhus/KeyboardShortcuts?utm_source=chatgpt.com "sindresorhus/KeyboardShortcuts"

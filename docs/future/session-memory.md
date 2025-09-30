@@ -60,12 +60,14 @@ All endpoints are local; no external services.
 
 Two complementary paths so the model can leverage memory safely:
 
-1) Automatic Context Injection (zero‑shot overhead)
+1. Automatic Context Injection (zero‑shot overhead)
+
 - Hook: `UserPromptSubmit` in sidecar.
 - Flow: extract top keywords from the prompt → `FTS` search (records + facts) → select top‑K (e.g., 5 facts + 3 episodic snippets, ≤ 800 tokens total) → inject as a short System preamble: “Relevant prior context…”.
 - Guardrails: scope by `workspace` and recency; never inject secrets (redaction rules below).
 
-2) Explicit Tool (model‑pull)
+2. Explicit Tool (model‑pull)
+
 - Define `MemorySearch` tool in SDK: `{query: string, top_k?: number, type?: 'facts'|'records'}` → returns small JSON of hits.
 - Allowed by default (read‑only); respects same scoping and redaction.
 
@@ -116,17 +118,20 @@ Fallback (offline): skip extraction (facts table remains empty) — retrieval st
 ## Roadmap
 
 V1 (1–2 weeks)
+
 - SQLite + FTS5 store; episodic logging wired from sidecar events.
 - `GET /memory/search` (records+facts); `POST /memory/record` internal.
 - Automatic context injection (top‑K) on `UserPromptSubmit` hook.
 - UI: basic Memory Search Panel; toggle to disable injection.
 
 V2 (1–2 weeks)
+
 - Haiku fact extraction endpoint + background job; `facts` table and search.
 - MemorySearch tool for the model; safety redaction pass.
 - Pins and bulk delete/export.
 
 V3 (2 weeks)
+
 - At‑rest encryption option; sensitive tagging UI; per‑workspace retention policies.
 - Session Timeline view; SSE `memory_update` events for live facts.
 - Advanced ranking: blend BM25 + recency + pin boost + “workspace affinity”.
@@ -136,6 +141,7 @@ V3 (2 weeks)
 ## Data Shapes
 
 Record (JSON):
+
 ```
 {
   "id": "uuid",
@@ -152,11 +158,13 @@ Record (JSON):
 ```
 
 Fact (JSON):
+
 ```
 { "id": "uuid", "ts": 1738112345123, "session_id": "default", "workspace": "…", "content": "Prefers mystical tone, low motion.", "tags": ["preference","tone"] }
 ```
 
 Search response:
+
 ```
 { "hits": [ {"id":"…","type":"fact","score":12.3,"snippet":"…"} ], "took_ms": 18 }
 ```
@@ -186,4 +194,3 @@ Search response:
 - Top‑K memory is injected automatically on prompt submit; added latency ≤ 50 ms.
 - Users can search memory from the app and disable injection at any time.
 - No secrets persist; redaction and path scoping enforced.
-

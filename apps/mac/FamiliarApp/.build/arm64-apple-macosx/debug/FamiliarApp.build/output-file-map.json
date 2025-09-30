@@ -9,6 +9,41 @@
     "swift-dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/App.swiftdeps",
     "diagnostics": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/App.dia"
   },
+  "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarColor.swift": {
+    "dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarColor.d",
+    "object": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarColor.swift.o",
+    "swiftmodule": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarColor~partial.swiftmodule",
+    "swift-dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarColor.swiftdeps",
+    "diagnostics": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarColor.dia"
+  },
+  "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarMotion.swift": {
+    "dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarMotion.d",
+    "object": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarMotion.swift.o",
+    "swiftmodule": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarMotion~partial.swiftmodule",
+    "swift-dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarMotion.swiftdeps",
+    "diagnostics": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarMotion.dia"
+  },
+  "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarRadius.swift": {
+    "dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarRadius.d",
+    "object": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarRadius.swift.o",
+    "swiftmodule": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarRadius~partial.swiftmodule",
+    "swift-dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarRadius.swiftdeps",
+    "diagnostics": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarRadius.dia"
+  },
+  "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarSpacing.swift": {
+    "dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarSpacing.d",
+    "object": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarSpacing.swift.o",
+    "swiftmodule": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarSpacing~partial.swiftmodule",
+    "swift-dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarSpacing.swiftdeps",
+    "diagnostics": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarSpacing.dia"
+  },
+  "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Design/FamiliarTypography.swift": {
+    "dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarTypography.d",
+    "object": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarTypography.swift.o",
+    "swiftmodule": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarTypography~partial.swiftmodule",
+    "swift-dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarTypography.swiftdeps",
+    "diagnostics": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarTypography.dia"
+  },
   "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/ClaudeAuthState.swift": {
     "dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ClaudeAuthState.d",
     "object": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ClaudeAuthState.swift.o",
@@ -43,6 +78,20 @@
     "swiftmodule": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ToolSummary~partial.swiftmodule",
     "swift-dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ToolSummary.swiftdeps",
     "diagnostics": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ToolSummary.dia"
+  },
+  "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Models/UsageTotals.swift": {
+    "dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/UsageTotals.d",
+    "object": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/UsageTotals.swift.o",
+    "swiftmodule": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/UsageTotals~partial.swiftmodule",
+    "swift-dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/UsageTotals.swiftdeps",
+    "diagnostics": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/UsageTotals.dia"
+  },
+  "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Services/AuthenticationCoordinator.swift": {
+    "dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/AuthenticationCoordinator.d",
+    "object": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/AuthenticationCoordinator.swift.o",
+    "swiftmodule": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/AuthenticationCoordinator~partial.swiftmodule",
+    "swift-dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/AuthenticationCoordinator.swiftdeps",
+    "diagnostics": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/AuthenticationCoordinator.dia"
   },
   "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Services/EventSource.swift": {
     "dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/EventSource.d",
@@ -79,6 +128,20 @@
     "swift-dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/Keychain.swiftdeps",
     "diagnostics": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/Keychain.dia"
   },
+  "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/LoadingMessageController.swift": {
+    "dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/LoadingMessageController.d",
+    "object": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/LoadingMessageController.swift.o",
+    "swiftmodule": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/LoadingMessageController~partial.swiftmodule",
+    "swift-dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/LoadingMessageController.swiftdeps",
+    "diagnostics": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/LoadingMessageController.dia"
+  },
+  "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/PromptNSTextView.swift": {
+    "dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/PromptNSTextView.d",
+    "object": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/PromptNSTextView.swift.o",
+    "swiftmodule": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/PromptNSTextView~partial.swiftmodule",
+    "swift-dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/PromptNSTextView.swiftdeps",
+    "diagnostics": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/PromptNSTextView.dia"
+  },
   "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/Support/SettingsWindowController.swift": {
     "dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SettingsWindowController.d",
     "object": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SettingsWindowController.swift.o",
@@ -86,12 +149,33 @@
     "swift-dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SettingsWindowController.swiftdeps",
     "diagnostics": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SettingsWindowController.dia"
   },
+  "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/APIKeySection.swift": {
+    "dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/APIKeySection.d",
+    "object": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/APIKeySection.swift.o",
+    "swiftmodule": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/APIKeySection~partial.swiftmodule",
+    "swift-dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/APIKeySection.swiftdeps",
+    "diagnostics": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/APIKeySection.dia"
+  },
   "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/ApprovalSheet.swift": {
     "dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ApprovalSheet.d",
     "object": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ApprovalSheet.swift.o",
     "swiftmodule": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ApprovalSheet~partial.swiftmodule",
     "swift-dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ApprovalSheet.swiftdeps",
     "diagnostics": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ApprovalSheet.dia"
+  },
+  "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/BreathingDotView.swift": {
+    "dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/BreathingDotView.d",
+    "object": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/BreathingDotView.swift.o",
+    "swiftmodule": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/BreathingDotView~partial.swiftmodule",
+    "swift-dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/BreathingDotView.swiftdeps",
+    "diagnostics": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/BreathingDotView.dia"
+  },
+  "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/ClaudeLoginSection.swift": {
+    "dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ClaudeLoginSection.d",
+    "object": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ClaudeLoginSection.swift.o",
+    "swiftmodule": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ClaudeLoginSection~partial.swiftmodule",
+    "swift-dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ClaudeLoginSection.swiftdeps",
+    "diagnostics": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/ClaudeLoginSection.dia"
   },
   "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/UI/FamiliarViewModel.swift": {
     "dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/FamiliarViewModel.d",
@@ -134,5 +218,12 @@
     "swiftmodule": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/UsageSummaryView~partial.swiftmodule",
     "swift-dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/UsageSummaryView.swiftdeps",
     "diagnostics": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/UsageSummaryView.dia"
+  },
+  "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/Sources/FamiliarApp/ViewModels/SettingsViewModel.swift": {
+    "dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SettingsViewModel.d",
+    "object": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SettingsViewModel.swift.o",
+    "swiftmodule": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SettingsViewModel~partial.swiftmodule",
+    "swift-dependencies": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SettingsViewModel.swiftdeps",
+    "diagnostics": "/Users/alexanderhuth/familiar/apps/mac/FamiliarApp/.build/arm64-apple-macosx/debug/FamiliarApp.build/SettingsViewModel.dia"
   }
 }

@@ -85,11 +85,11 @@ Default model: `claude-3.5-haiku-latest`. If unavailable, fall back to terse tem
 
 Phases cover most tasks (extendable):
 
-1) Prepare — “gather tools”, “survey context”
-2) Delegate — “summon a minion/subagent”
-3) Execute — “perform the rite / transmute”
-4) Verify — “check the result / seal it”
-5) Deliver — “present the artifact / next steps”
+1. Prepare — “gather tools”, “survey context”
+2. Delegate — “summon a minion/subagent”
+3. Execute — “perform the rite / transmute”
+4. Verify — “check the result / seal it”
+5. Deliver — “present the artifact / next steps”
 
 Event mapping:
 
@@ -240,7 +240,7 @@ UI models:
 
 ## Examples
 
-1) “Download a specific video” (rights‑respecting path)
+1. “Download a specific video” (rights‑respecting path)
 
 - Prepare: “I can do that. Surveying the source.”
 - Delegate: “Summoning a helper to fetch the media.”
@@ -250,7 +250,7 @@ UI models:
 - Deliver: “All set. The video is saved in Media/.”
 - Boundary note (if applicable): “This may violate the site’s terms. I can use the official share/save instead.”
 
-2) “Rename all PNGs to kebab‑case”
+2. “Rename all PNGs to kebab‑case”
 
 - Prepare: “I can do that. Scanning your images.”
 - Oath: “I’ll update 24 filenames in ‘Screenshots/’. Approve to proceed.”

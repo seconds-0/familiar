@@ -59,7 +59,7 @@ struct PromptTextEditor: View {
         .overlay(alignment: .topLeading) {
             if text.isEmpty && !isEditing {
                 Text(placeholder)
-                    .font(.body)
+                    .font(.familiarBody)
                     .foregroundStyle(.secondary)
                     .padding(.top, textInsets.height)
                     .padding(.leading, textInsets.width)

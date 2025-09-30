@@ -14,12 +14,13 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __toESM = (mod, isNodeMode, target) => {
   target = mod != null ? __create(__getProtoOf(mod)) : {};
-  const to = isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target;
+  const to =
+    isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target;
   for (let key of __getOwnPropNames(mod))
     if (!__hasOwnProp.call(to, key))
       __defProp(to, key, {
         get: () => mod[key],
-        enumerable: true
+        enumerable: true,
       });
   return to;
 };
@@ -30,23 +31,27 @@ var __export = (target, all) => {
       get: all[name],
       enumerable: true,
       configurable: true,
-      set: (newValue) => all[name] = () => newValue
+      set: (newValue) => (all[name] = () => newValue),
     });
 };
 
 // node_modules/uri-js/dist/es5/uri.all.js
 var require_uri_all = __commonJS((exports, module) => {
-  (function(global, factory) {
-    typeof exports === "object" && typeof module !== "undefined" ? factory(exports) : typeof define === "function" && define.amd ? define(["exports"], factory) : factory(global.URI = global.URI || {});
-  })(exports, function(exports2) {
+  (function (global, factory) {
+    typeof exports === "object" && typeof module !== "undefined"
+      ? factory(exports)
+      : typeof define === "function" && define.amd
+        ? define(["exports"], factory)
+        : factory((global.URI = global.URI || {}));
+  })(exports, function (exports2) {
     function merge() {
-      for (var _len = arguments.length, sets = Array(_len), _key = 0;_key < _len; _key++) {
+      for (var _len = arguments.length, sets = Array(_len), _key = 0; _key < _len; _key++) {
         sets[_key] = arguments[_key];
       }
       if (sets.length > 1) {
         sets[0] = sets[0].slice(0, -1);
         var xl = sets.length - 1;
-        for (var x = 1;x < xl; ++x) {
+        for (var x = 1; x < xl; ++x) {
           sets[x] = sets[x].slice(1, -1);
         }
         sets[xl] = sets[xl].slice(1);
@@ -59,13 +64,23 @@ var require_uri_all = __commonJS((exports, module) => {
       return "(?:" + str + ")";
     }
     function typeOf(o) {
-      return o === undefined ? "undefined" : o === null ? "null" : Object.prototype.toString.call(o).split(" ").pop().split("]").shift().toLowerCase();
+      return o === undefined
+        ? "undefined"
+        : o === null
+          ? "null"
+          : Object.prototype.toString.call(o).split(" ").pop().split("]").shift().toLowerCase();
     }
     function toUpperCase(str) {
       return str.toUpperCase();
     }
     function toArray(obj) {
-      return obj !== undefined && obj !== null ? obj instanceof Array ? obj : typeof obj.length !== "number" || obj.split || obj.setInterval || obj.call ? [obj] : Array.prototype.slice.call(obj) : [];
+      return obj !== undefined && obj !== null
+        ? obj instanceof Array
+          ? obj
+          : typeof obj.length !== "number" || obj.split || obj.setInterval || obj.call
+            ? [obj]
+            : Array.prototype.slice.call(obj)
+        : [];
     }
     function assign(target, source) {
       var obj = target;
@@ -77,7 +92,191 @@ var require_uri_all = __commonJS((exports, module) => {
       return obj;
     }
     function buildExps(isIRI2) {
-      var ALPHA$$ = "[A-Za-z]", CR$ = "[\\x0D]", DIGIT$$ = "[0-9]", DQUOTE$$ = "[\\x22]", HEXDIG$$2 = merge(DIGIT$$, "[A-Fa-f]"), LF$$ = "[\\x0A]", SP$$ = "[\\x20]", PCT_ENCODED$2 = subexp(subexp("%[EFef]" + HEXDIG$$2 + "%" + HEXDIG$$2 + HEXDIG$$2 + "%" + HEXDIG$$2 + HEXDIG$$2) + "|" + subexp("%[89A-Fa-f]" + HEXDIG$$2 + "%" + HEXDIG$$2 + HEXDIG$$2) + "|" + subexp("%" + HEXDIG$$2 + HEXDIG$$2)), GEN_DELIMS$$ = "[\\:\\/\\?\\#\\[\\]\\@]", SUB_DELIMS$$ = "[\\!\\$\\&\\'\\(\\)\\*\\+\\,\\;\\=]", RESERVED$$ = merge(GEN_DELIMS$$, SUB_DELIMS$$), UCSCHAR$$ = isIRI2 ? "[\\xA0-\\u200D\\u2010-\\u2029\\u202F-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF]" : "[]", IPRIVATE$$ = isIRI2 ? "[\\uE000-\\uF8FF]" : "[]", UNRESERVED$$2 = merge(ALPHA$$, DIGIT$$, "[\\-\\.\\_\\~]", UCSCHAR$$), SCHEME$ = subexp(ALPHA$$ + merge(ALPHA$$, DIGIT$$, "[\\+\\-\\.]") + "*"), USERINFO$ = subexp(subexp(PCT_ENCODED$2 + "|" + merge(UNRESERVED$$2, SUB_DELIMS$$, "[\\:]")) + "*"), DEC_OCTET$ = subexp(subexp("25[0-5]") + "|" + subexp("2[0-4]" + DIGIT$$) + "|" + subexp("1" + DIGIT$$ + DIGIT$$) + "|" + subexp("[1-9]" + DIGIT$$) + "|" + DIGIT$$), DEC_OCTET_RELAXED$ = subexp(subexp("25[0-5]") + "|" + subexp("2[0-4]" + DIGIT$$) + "|" + subexp("1" + DIGIT$$ + DIGIT$$) + "|" + subexp("0?[1-9]" + DIGIT$$) + "|0?0?" + DIGIT$$), IPV4ADDRESS$ = subexp(DEC_OCTET_RELAXED$ + "\\." + DEC_OCTET_RELAXED$ + "\\." + DEC_OCTET_RELAXED$ + "\\." + DEC_OCTET_RELAXED$), H16$ = subexp(HEXDIG$$2 + "{1,4}"), LS32$ = subexp(subexp(H16$ + "\\:" + H16$) + "|" + IPV4ADDRESS$), IPV6ADDRESS1$ = subexp(subexp(H16$ + "\\:") + "{6}" + LS32$), IPV6ADDRESS2$ = subexp("\\:\\:" + subexp(H16$ + "\\:") + "{5}" + LS32$), IPV6ADDRESS3$ = subexp(subexp(H16$) + "?\\:\\:" + subexp(H16$ + "\\:") + "{4}" + LS32$), IPV6ADDRESS4$ = subexp(subexp(subexp(H16$ + "\\:") + "{0,1}" + H16$) + "?\\:\\:" + subexp(H16$ + "\\:") + "{3}" + LS32$), IPV6ADDRESS5$ = subexp(subexp(subexp(H16$ + "\\:") + "{0,2}" + H16$) + "?\\:\\:" + subexp(H16$ + "\\:") + "{2}" + LS32$), IPV6ADDRESS6$ = subexp(subexp(subexp(H16$ + "\\:") + "{0,3}" + H16$) + "?\\:\\:" + H16$ + "\\:" + LS32$), IPV6ADDRESS7$ = subexp(subexp(subexp(H16$ + "\\:") + "{0,4}" + H16$) + "?\\:\\:" + LS32$), IPV6ADDRESS8$ = subexp(subexp(subexp(H16$ + "\\:") + "{0,5}" + H16$) + "?\\:\\:" + H16$), IPV6ADDRESS9$ = subexp(subexp(subexp(H16$ + "\\:") + "{0,6}" + H16$) + "?\\:\\:"), IPV6ADDRESS$ = subexp([IPV6ADDRESS1$, IPV6ADDRESS2$, IPV6ADDRESS3$, IPV6ADDRESS4$, IPV6ADDRESS5$, IPV6ADDRESS6$, IPV6ADDRESS7$, IPV6ADDRESS8$, IPV6ADDRESS9$].join("|")), ZONEID$ = subexp(subexp(UNRESERVED$$2 + "|" + PCT_ENCODED$2) + "+"), IPV6ADDRZ$ = subexp(IPV6ADDRESS$ + "\\%25" + ZONEID$), IPV6ADDRZ_RELAXED$ = subexp(IPV6ADDRESS$ + subexp("\\%25|\\%(?!" + HEXDIG$$2 + "{2})") + ZONEID$), IPVFUTURE$ = subexp("[vV]" + HEXDIG$$2 + "+\\." + merge(UNRESERVED$$2, SUB_DELIMS$$, "[\\:]") + "+"), IP_LITERAL$ = subexp("\\[" + subexp(IPV6ADDRZ_RELAXED$ + "|" + IPV6ADDRESS$ + "|" + IPVFUTURE$) + "\\]"), REG_NAME$ = subexp(subexp(PCT_ENCODED$2 + "|" + merge(UNRESERVED$$2, SUB_DELIMS$$)) + "*"), HOST$ = subexp(IP_LITERAL$ + "|" + IPV4ADDRESS$ + "(?!" + REG_NAME$ + ")" + "|" + REG_NAME$), PORT$ = subexp(DIGIT$$ + "*"), AUTHORITY$ = subexp(subexp(USERINFO$ + "@") + "?" + HOST$ + subexp("\\:" + PORT$) + "?"), PCHAR$ = subexp(PCT_ENCODED$2 + "|" + merge(UNRESERVED$$2, SUB_DELIMS$$, "[\\:\\@]")), SEGMENT$ = subexp(PCHAR$ + "*"), SEGMENT_NZ$ = subexp(PCHAR$ + "+"), SEGMENT_NZ_NC$ = subexp(subexp(PCT_ENCODED$2 + "|" + merge(UNRESERVED$$2, SUB_DELIMS$$, "[\\@]")) + "+"), PATH_ABEMPTY$ = subexp(subexp("\\/" + SEGMENT$) + "*"), PATH_ABSOLUTE$ = subexp("\\/" + subexp(SEGMENT_NZ$ + PATH_ABEMPTY$) + "?"), PATH_NOSCHEME$ = subexp(SEGMENT_NZ_NC$ + PATH_ABEMPTY$), PATH_ROOTLESS$ = subexp(SEGMENT_NZ$ + PATH_ABEMPTY$), PATH_EMPTY$ = "(?!" + PCHAR$ + ")", PATH$ = subexp(PATH_ABEMPTY$ + "|" + PATH_ABSOLUTE$ + "|" + PATH_NOSCHEME$ + "|" + PATH_ROOTLESS$ + "|" + PATH_EMPTY$), QUERY$ = subexp(subexp(PCHAR$ + "|" + merge("[\\/\\?]", IPRIVATE$$)) + "*"), FRAGMENT$ = subexp(subexp(PCHAR$ + "|[\\/\\?]") + "*"), HIER_PART$ = subexp(subexp("\\/\\/" + AUTHORITY$ + PATH_ABEMPTY$) + "|" + PATH_ABSOLUTE$ + "|" + PATH_ROOTLESS$ + "|" + PATH_EMPTY$), URI$ = subexp(SCHEME$ + "\\:" + HIER_PART$ + subexp("\\?" + QUERY$) + "?" + subexp("\\#" + FRAGMENT$) + "?"), RELATIVE_PART$ = subexp(subexp("\\/\\/" + AUTHORITY$ + PATH_ABEMPTY$) + "|" + PATH_ABSOLUTE$ + "|" + PATH_NOSCHEME$ + "|" + PATH_EMPTY$), RELATIVE$ = subexp(RELATIVE_PART$ + subexp("\\?" + QUERY$) + "?" + subexp("\\#" + FRAGMENT$) + "?"), URI_REFERENCE$ = subexp(URI$ + "|" + RELATIVE$), ABSOLUTE_URI$ = subexp(SCHEME$ + "\\:" + HIER_PART$ + subexp("\\?" + QUERY$) + "?"), GENERIC_REF$ = "^(" + SCHEME$ + ")\\:" + subexp(subexp("\\/\\/(" + subexp("(" + USERINFO$ + ")@") + "?(" + HOST$ + ")" + subexp("\\:(" + PORT$ + ")") + "?)") + "?(" + PATH_ABEMPTY$ + "|" + PATH_ABSOLUTE$ + "|" + PATH_ROOTLESS$ + "|" + PATH_EMPTY$ + ")") + subexp("\\?(" + QUERY$ + ")") + "?" + subexp("\\#(" + FRAGMENT$ + ")") + "?$", RELATIVE_REF$ = "^(){0}" + subexp(subexp("\\/\\/(" + subexp("(" + USERINFO$ + ")@") + "?(" + HOST$ + ")" + subexp("\\:(" + PORT$ + ")") + "?)") + "?(" + PATH_ABEMPTY$ + "|" + PATH_ABSOLUTE$ + "|" + PATH_NOSCHEME$ + "|" + PATH_EMPTY$ + ")") + subexp("\\?(" + QUERY$ + ")") + "?" + subexp("\\#(" + FRAGMENT$ + ")") + "?$", ABSOLUTE_REF$ = "^(" + SCHEME$ + ")\\:" + subexp(subexp("\\/\\/(" + subexp("(" + USERINFO$ + ")@") + "?(" + HOST$ + ")" + subexp("\\:(" + PORT$ + ")") + "?)") + "?(" + PATH_ABEMPTY$ + "|" + PATH_ABSOLUTE$ + "|" + PATH_ROOTLESS$ + "|" + PATH_EMPTY$ + ")") + subexp("\\?(" + QUERY$ + ")") + "?$", SAMEDOC_REF$ = "^" + subexp("\\#(" + FRAGMENT$ + ")") + "?$", AUTHORITY_REF$ = "^" + subexp("(" + USERINFO$ + ")@") + "?(" + HOST$ + ")" + subexp("\\:(" + PORT$ + ")") + "?$";
+      var ALPHA$$ = "[A-Za-z]",
+        CR$ = "[\\x0D]",
+        DIGIT$$ = "[0-9]",
+        DQUOTE$$ = "[\\x22]",
+        HEXDIG$$2 = merge(DIGIT$$, "[A-Fa-f]"),
+        LF$$ = "[\\x0A]",
+        SP$$ = "[\\x20]",
+        PCT_ENCODED$2 = subexp(
+          subexp("%[EFef]" + HEXDIG$$2 + "%" + HEXDIG$$2 + HEXDIG$$2 + "%" + HEXDIG$$2 + HEXDIG$$2) +
+            "|" +
+            subexp("%[89A-Fa-f]" + HEXDIG$$2 + "%" + HEXDIG$$2 + HEXDIG$$2) +
+            "|" +
+            subexp("%" + HEXDIG$$2 + HEXDIG$$2)
+        ),
+        GEN_DELIMS$$ = "[\\:\\/\\?\\#\\[\\]\\@]",
+        SUB_DELIMS$$ = "[\\!\\$\\&\\'\\(\\)\\*\\+\\,\\;\\=]",
+        RESERVED$$ = merge(GEN_DELIMS$$, SUB_DELIMS$$),
+        UCSCHAR$$ = isIRI2 ? "[\\xA0-\\u200D\\u2010-\\u2029\\u202F-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF]" : "[]",
+        IPRIVATE$$ = isIRI2 ? "[\\uE000-\\uF8FF]" : "[]",
+        UNRESERVED$$2 = merge(ALPHA$$, DIGIT$$, "[\\-\\.\\_\\~]", UCSCHAR$$),
+        SCHEME$ = subexp(ALPHA$$ + merge(ALPHA$$, DIGIT$$, "[\\+\\-\\.]") + "*"),
+        USERINFO$ = subexp(subexp(PCT_ENCODED$2 + "|" + merge(UNRESERVED$$2, SUB_DELIMS$$, "[\\:]")) + "*"),
+        DEC_OCTET$ = subexp(
+          subexp("25[0-5]") +
+            "|" +
+            subexp("2[0-4]" + DIGIT$$) +
+            "|" +
+            subexp("1" + DIGIT$$ + DIGIT$$) +
+            "|" +
+            subexp("[1-9]" + DIGIT$$) +
+            "|" +
+            DIGIT$$
+        ),
+        DEC_OCTET_RELAXED$ = subexp(
+          subexp("25[0-5]") +
+            "|" +
+            subexp("2[0-4]" + DIGIT$$) +
+            "|" +
+            subexp("1" + DIGIT$$ + DIGIT$$) +
+            "|" +
+            subexp("0?[1-9]" + DIGIT$$) +
+            "|0?0?" +
+            DIGIT$$
+        ),
+        IPV4ADDRESS$ = subexp(
+          DEC_OCTET_RELAXED$ + "\\." + DEC_OCTET_RELAXED$ + "\\." + DEC_OCTET_RELAXED$ + "\\." + DEC_OCTET_RELAXED$
+        ),
+        H16$ = subexp(HEXDIG$$2 + "{1,4}"),
+        LS32$ = subexp(subexp(H16$ + "\\:" + H16$) + "|" + IPV4ADDRESS$),
+        IPV6ADDRESS1$ = subexp(subexp(H16$ + "\\:") + "{6}" + LS32$),
+        IPV6ADDRESS2$ = subexp("\\:\\:" + subexp(H16$ + "\\:") + "{5}" + LS32$),
+        IPV6ADDRESS3$ = subexp(subexp(H16$) + "?\\:\\:" + subexp(H16$ + "\\:") + "{4}" + LS32$),
+        IPV6ADDRESS4$ = subexp(
+          subexp(subexp(H16$ + "\\:") + "{0,1}" + H16$) + "?\\:\\:" + subexp(H16$ + "\\:") + "{3}" + LS32$
+        ),
+        IPV6ADDRESS5$ = subexp(
+          subexp(subexp(H16$ + "\\:") + "{0,2}" + H16$) + "?\\:\\:" + subexp(H16$ + "\\:") + "{2}" + LS32$
+        ),
+        IPV6ADDRESS6$ = subexp(subexp(subexp(H16$ + "\\:") + "{0,3}" + H16$) + "?\\:\\:" + H16$ + "\\:" + LS32$),
+        IPV6ADDRESS7$ = subexp(subexp(subexp(H16$ + "\\:") + "{0,4}" + H16$) + "?\\:\\:" + LS32$),
+        IPV6ADDRESS8$ = subexp(subexp(subexp(H16$ + "\\:") + "{0,5}" + H16$) + "?\\:\\:" + H16$),
+        IPV6ADDRESS9$ = subexp(subexp(subexp(H16$ + "\\:") + "{0,6}" + H16$) + "?\\:\\:"),
+        IPV6ADDRESS$ = subexp(
+          [
+            IPV6ADDRESS1$,
+            IPV6ADDRESS2$,
+            IPV6ADDRESS3$,
+            IPV6ADDRESS4$,
+            IPV6ADDRESS5$,
+            IPV6ADDRESS6$,
+            IPV6ADDRESS7$,
+            IPV6ADDRESS8$,
+            IPV6ADDRESS9$,
+          ].join("|")
+        ),
+        ZONEID$ = subexp(subexp(UNRESERVED$$2 + "|" + PCT_ENCODED$2) + "+"),
+        IPV6ADDRZ$ = subexp(IPV6ADDRESS$ + "\\%25" + ZONEID$),
+        IPV6ADDRZ_RELAXED$ = subexp(IPV6ADDRESS$ + subexp("\\%25|\\%(?!" + HEXDIG$$2 + "{2})") + ZONEID$),
+        IPVFUTURE$ = subexp("[vV]" + HEXDIG$$2 + "+\\." + merge(UNRESERVED$$2, SUB_DELIMS$$, "[\\:]") + "+"),
+        IP_LITERAL$ = subexp("\\[" + subexp(IPV6ADDRZ_RELAXED$ + "|" + IPV6ADDRESS$ + "|" + IPVFUTURE$) + "\\]"),
+        REG_NAME$ = subexp(subexp(PCT_ENCODED$2 + "|" + merge(UNRESERVED$$2, SUB_DELIMS$$)) + "*"),
+        HOST$ = subexp(IP_LITERAL$ + "|" + IPV4ADDRESS$ + "(?!" + REG_NAME$ + ")" + "|" + REG_NAME$),
+        PORT$ = subexp(DIGIT$$ + "*"),
+        AUTHORITY$ = subexp(subexp(USERINFO$ + "@") + "?" + HOST$ + subexp("\\:" + PORT$) + "?"),
+        PCHAR$ = subexp(PCT_ENCODED$2 + "|" + merge(UNRESERVED$$2, SUB_DELIMS$$, "[\\:\\@]")),
+        SEGMENT$ = subexp(PCHAR$ + "*"),
+        SEGMENT_NZ$ = subexp(PCHAR$ + "+"),
+        SEGMENT_NZ_NC$ = subexp(subexp(PCT_ENCODED$2 + "|" + merge(UNRESERVED$$2, SUB_DELIMS$$, "[\\@]")) + "+"),
+        PATH_ABEMPTY$ = subexp(subexp("\\/" + SEGMENT$) + "*"),
+        PATH_ABSOLUTE$ = subexp("\\/" + subexp(SEGMENT_NZ$ + PATH_ABEMPTY$) + "?"),
+        PATH_NOSCHEME$ = subexp(SEGMENT_NZ_NC$ + PATH_ABEMPTY$),
+        PATH_ROOTLESS$ = subexp(SEGMENT_NZ$ + PATH_ABEMPTY$),
+        PATH_EMPTY$ = "(?!" + PCHAR$ + ")",
+        PATH$ = subexp(
+          PATH_ABEMPTY$ + "|" + PATH_ABSOLUTE$ + "|" + PATH_NOSCHEME$ + "|" + PATH_ROOTLESS$ + "|" + PATH_EMPTY$
+        ),
+        QUERY$ = subexp(subexp(PCHAR$ + "|" + merge("[\\/\\?]", IPRIVATE$$)) + "*"),
+        FRAGMENT$ = subexp(subexp(PCHAR$ + "|[\\/\\?]") + "*"),
+        HIER_PART$ = subexp(
+          subexp("\\/\\/" + AUTHORITY$ + PATH_ABEMPTY$) +
+            "|" +
+            PATH_ABSOLUTE$ +
+            "|" +
+            PATH_ROOTLESS$ +
+            "|" +
+            PATH_EMPTY$
+        ),
+        URI$ = subexp(SCHEME$ + "\\:" + HIER_PART$ + subexp("\\?" + QUERY$) + "?" + subexp("\\#" + FRAGMENT$) + "?"),
+        RELATIVE_PART$ = subexp(
+          subexp("\\/\\/" + AUTHORITY$ + PATH_ABEMPTY$) +
+            "|" +
+            PATH_ABSOLUTE$ +
+            "|" +
+            PATH_NOSCHEME$ +
+            "|" +
+            PATH_EMPTY$
+        ),
+        RELATIVE$ = subexp(RELATIVE_PART$ + subexp("\\?" + QUERY$) + "?" + subexp("\\#" + FRAGMENT$) + "?"),
+        URI_REFERENCE$ = subexp(URI$ + "|" + RELATIVE$),
+        ABSOLUTE_URI$ = subexp(SCHEME$ + "\\:" + HIER_PART$ + subexp("\\?" + QUERY$) + "?"),
+        GENERIC_REF$ =
+          "^(" +
+          SCHEME$ +
+          ")\\:" +
+          subexp(
+            subexp(
+              "\\/\\/(" + subexp("(" + USERINFO$ + ")@") + "?(" + HOST$ + ")" + subexp("\\:(" + PORT$ + ")") + "?)"
+            ) +
+              "?(" +
+              PATH_ABEMPTY$ +
+              "|" +
+              PATH_ABSOLUTE$ +
+              "|" +
+              PATH_ROOTLESS$ +
+              "|" +
+              PATH_EMPTY$ +
+              ")"
+          ) +
+          subexp("\\?(" + QUERY$ + ")") +
+          "?" +
+          subexp("\\#(" + FRAGMENT$ + ")") +
+          "?$",
+        RELATIVE_REF$ =
+          "^(){0}" +
+          subexp(
+            subexp(
+              "\\/\\/(" + subexp("(" + USERINFO$ + ")@") + "?(" + HOST$ + ")" + subexp("\\:(" + PORT$ + ")") + "?)"
+            ) +
+              "?(" +
+              PATH_ABEMPTY$ +
+              "|" +
+              PATH_ABSOLUTE$ +
+              "|" +
+              PATH_NOSCHEME$ +
+              "|" +
+              PATH_EMPTY$ +
+              ")"
+          ) +
+          subexp("\\?(" + QUERY$ + ")") +
+          "?" +
+          subexp("\\#(" + FRAGMENT$ + ")") +
+          "?$",
+        ABSOLUTE_REF$ =
+          "^(" +
+          SCHEME$ +
+          ")\\:" +
+          subexp(
+            subexp(
+              "\\/\\/(" + subexp("(" + USERINFO$ + ")@") + "?(" + HOST$ + ")" + subexp("\\:(" + PORT$ + ")") + "?)"
+            ) +
+              "?(" +
+              PATH_ABEMPTY$ +
+              "|" +
+              PATH_ABSOLUTE$ +
+              "|" +
+              PATH_ROOTLESS$ +
+              "|" +
+              PATH_EMPTY$ +
+              ")"
+          ) +
+          subexp("\\?(" + QUERY$ + ")") +
+          "?$",
+        SAMEDOC_REF$ = "^" + subexp("\\#(" + FRAGMENT$ + ")") + "?$",
+        AUTHORITY_REF$ =
+          "^" + subexp("(" + USERINFO$ + ")@") + "?(" + HOST$ + ")" + subexp("\\:(" + PORT$ + ")") + "?$";
       return {
         NOT_SCHEME: new RegExp(merge("[^]", ALPHA$$, DIGIT$$, "[\\+\\-\\.]"), "g"),
         NOT_USERINFO: new RegExp(merge("[^\\%\\:]", UNRESERVED$$2, SUB_DELIMS$$), "g"),
@@ -91,38 +290,41 @@ var require_uri_all = __commonJS((exports, module) => {
         OTHER_CHARS: new RegExp(merge("[^\\%]", UNRESERVED$$2, RESERVED$$), "g"),
         PCT_ENCODED: new RegExp(PCT_ENCODED$2, "g"),
         IPV4ADDRESS: new RegExp("^(" + IPV4ADDRESS$ + ")$"),
-        IPV6ADDRESS: new RegExp("^\\[?(" + IPV6ADDRESS$ + ")" + subexp(subexp("\\%25|\\%(?!" + HEXDIG$$2 + "{2})") + "(" + ZONEID$ + ")") + "?\\]?$")
+        IPV6ADDRESS: new RegExp(
+          "^\\[?(" +
+            IPV6ADDRESS$ +
+            ")" +
+            subexp(subexp("\\%25|\\%(?!" + HEXDIG$$2 + "{2})") + "(" + ZONEID$ + ")") +
+            "?\\]?$"
+        ),
       };
     }
     var URI_PROTOCOL = buildExps(false);
     var IRI_PROTOCOL = buildExps(true);
-    var slicedToArray = function() {
+    var slicedToArray = (function () {
       function sliceIterator(arr, i) {
         var _arr = [];
         var _n = true;
         var _d = false;
         var _e = undefined;
         try {
-          for (var _i = arr[Symbol.iterator](), _s;!(_n = (_s = _i.next()).done); _n = true) {
+          for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
             _arr.push(_s.value);
-            if (i && _arr.length === i)
-              break;
+            if (i && _arr.length === i) break;
           }
         } catch (err) {
           _d = true;
           _e = err;
         } finally {
           try {
-            if (!_n && _i["return"])
-              _i["return"]();
+            if (!_n && _i["return"]) _i["return"]();
           } finally {
-            if (_d)
-              throw _e;
+            if (_d) throw _e;
           }
         }
         return _arr;
       }
-      return function(arr, i) {
+      return function (arr, i) {
         if (Array.isArray(arr)) {
           return arr;
         } else if (Symbol.iterator in Object(arr)) {
@@ -131,11 +333,10 @@ var require_uri_all = __commonJS((exports, module) => {
           throw new TypeError("Invalid attempt to destructure non-iterable instance");
         }
       };
-    }();
-    var toConsumableArray = function(arr) {
+    })();
+    var toConsumableArray = function (arr) {
       if (Array.isArray(arr)) {
-        for (var i = 0, arr2 = Array(arr.length);i < arr.length; i++)
-          arr2[i] = arr[i];
+        for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
         return arr2;
       } else {
         return Array.from(arr);
@@ -156,7 +357,7 @@ var require_uri_all = __commonJS((exports, module) => {
     var errors2 = {
       overflow: "Overflow: input needs wider integers to process",
       "not-basic": "Illegal input >= 0x80 (not a basic code point)",
-      "invalid-input": "Invalid input"
+      "invalid-input": "Invalid input",
     };
     var baseMinusTMin = base - tMin;
     var floor = Math.floor;
@@ -226,10 +427,10 @@ var require_uri_all = __commonJS((exports, module) => {
       var k = 0;
       delta = firstTime ? floor(delta / damp) : delta >> 1;
       delta += floor(delta / numPoints);
-      for (;delta > baseMinusTMin * tMax >> 1; k += base) {
+      for (; delta > (baseMinusTMin * tMax) >> 1; k += base) {
         delta = floor(delta / baseMinusTMin);
       }
-      return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
+      return floor(k + ((baseMinusTMin + 1) * delta) / (delta + skew));
     };
     var decode = function decode(input) {
       var output = [];
@@ -241,15 +442,15 @@ var require_uri_all = __commonJS((exports, module) => {
       if (basic < 0) {
         basic = 0;
       }
-      for (var j = 0;j < basic; ++j) {
+      for (var j = 0; j < basic; ++j) {
         if (input.charCodeAt(j) >= 128) {
           error$1("not-basic");
         }
         output.push(input.charCodeAt(j));
       }
-      for (var index = basic > 0 ? basic + 1 : 0;index < inputLength; ) {
+      for (var index = basic > 0 ? basic + 1 : 0; index < inputLength; ) {
         var oldi = i;
-        for (var w = 1, k = base;; k += base) {
+        for (var w = 1, k = base; ; k += base) {
           if (index >= inputLength) {
             error$1("invalid-input");
           }
@@ -290,7 +491,11 @@ var require_uri_all = __commonJS((exports, module) => {
       var _didIteratorError = false;
       var _iteratorError = undefined;
       try {
-        for (var _iterator = input[Symbol.iterator](), _step;!(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        for (
+          var _iterator = input[Symbol.iterator](), _step;
+          !(_iteratorNormalCompletion = (_step = _iterator.next()).done);
+          _iteratorNormalCompletion = true
+        ) {
           var _currentValue2 = _step.value;
           if (_currentValue2 < 128) {
             output.push(stringFromCharCode(_currentValue2));
@@ -321,7 +526,11 @@ var require_uri_all = __commonJS((exports, module) => {
         var _didIteratorError2 = false;
         var _iteratorError2 = undefined;
         try {
-          for (var _iterator2 = input[Symbol.iterator](), _step2;!(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          for (
+            var _iterator2 = input[Symbol.iterator](), _step2;
+            !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done);
+            _iteratorNormalCompletion2 = true
+          ) {
             var currentValue = _step2.value;
             if (currentValue >= n && currentValue < m) {
               m = currentValue;
@@ -351,21 +560,25 @@ var require_uri_all = __commonJS((exports, module) => {
         var _didIteratorError3 = false;
         var _iteratorError3 = undefined;
         try {
-          for (var _iterator3 = input[Symbol.iterator](), _step3;!(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          for (
+            var _iterator3 = input[Symbol.iterator](), _step3;
+            !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done);
+            _iteratorNormalCompletion3 = true
+          ) {
             var _currentValue = _step3.value;
             if (_currentValue < n && ++delta > maxInt) {
               error$1("overflow");
             }
             if (_currentValue == n) {
               var q = delta;
-              for (var k = base;; k += base) {
+              for (var k = base; ; k += base) {
                 var t = k <= bias ? tMin : k >= bias + tMax ? tMax : k - bias;
                 if (q < t) {
                   break;
                 }
                 var qMinusT = q - t;
                 var baseMinusT = base - t;
-                output.push(stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0)));
+                output.push(stringFromCharCode(digitToBasic(t + (qMinusT % baseMinusT), 0)));
                 q = floor(qMinusT / baseMinusT);
               }
               output.push(stringFromCharCode(digitToBasic(q, 0)));
@@ -394,12 +607,12 @@ var require_uri_all = __commonJS((exports, module) => {
       return output.join("");
     };
     var toUnicode = function toUnicode(input) {
-      return mapDomain(input, function(string) {
+      return mapDomain(input, function (string) {
         return regexPunycode.test(string) ? decode(string.slice(4).toLowerCase()) : string;
       });
     };
     var toASCII = function toASCII(input) {
-      return mapDomain(input, function(string) {
+      return mapDomain(input, function (string) {
         return regexNonASCII.test(string) ? "xn--" + encode(string) : string;
       });
     };
@@ -407,25 +620,29 @@ var require_uri_all = __commonJS((exports, module) => {
       version: "2.1.0",
       ucs2: {
         decode: ucs2decode,
-        encode: ucs2encode
+        encode: ucs2encode,
       },
       decode,
       encode,
       toASCII,
-      toUnicode
+      toUnicode,
     };
     var SCHEMES = {};
     function pctEncChar(chr) {
       var c = chr.charCodeAt(0);
       var e = undefined;
-      if (c < 16)
-        e = "%0" + c.toString(16).toUpperCase();
-      else if (c < 128)
-        e = "%" + c.toString(16).toUpperCase();
+      if (c < 16) e = "%0" + c.toString(16).toUpperCase();
+      else if (c < 128) e = "%" + c.toString(16).toUpperCase();
       else if (c < 2048)
-        e = "%" + (c >> 6 | 192).toString(16).toUpperCase() + "%" + (c & 63 | 128).toString(16).toUpperCase();
+        e = "%" + ((c >> 6) | 192).toString(16).toUpperCase() + "%" + ((c & 63) | 128).toString(16).toUpperCase();
       else
-        e = "%" + (c >> 12 | 224).toString(16).toUpperCase() + "%" + (c >> 6 & 63 | 128).toString(16).toUpperCase() + "%" + (c & 63 | 128).toString(16).toUpperCase();
+        e =
+          "%" +
+          ((c >> 12) | 224).toString(16).toUpperCase() +
+          "%" +
+          (((c >> 6) & 63) | 128).toString(16).toUpperCase() +
+          "%" +
+          ((c & 63) | 128).toString(16).toUpperCase();
       return e;
     }
     function pctDecChars(str) {
@@ -440,7 +657,7 @@ var require_uri_all = __commonJS((exports, module) => {
         } else if (c >= 194 && c < 224) {
           if (il - i >= 6) {
             var c2 = parseInt(str.substr(i + 4, 2), 16);
-            newStr += String.fromCharCode((c & 31) << 6 | c2 & 63);
+            newStr += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
           } else {
             newStr += str.substr(i, 6);
           }
@@ -449,7 +666,7 @@ var require_uri_all = __commonJS((exports, module) => {
           if (il - i >= 9) {
             var _c = parseInt(str.substr(i + 4, 2), 16);
             var c3 = parseInt(str.substr(i + 7, 2), 16);
-            newStr += String.fromCharCode((c & 15) << 12 | (_c & 63) << 6 | c3 & 63);
+            newStr += String.fromCharCode(((c & 15) << 12) | ((_c & 63) << 6) | (c3 & 63));
           } else {
             newStr += str.substr(i, 9);
           }
@@ -467,17 +684,36 @@ var require_uri_all = __commonJS((exports, module) => {
         return !decStr.match(protocol.UNRESERVED) ? str : decStr;
       }
       if (components.scheme)
-        components.scheme = String(components.scheme).replace(protocol.PCT_ENCODED, decodeUnreserved2).toLowerCase().replace(protocol.NOT_SCHEME, "");
+        components.scheme = String(components.scheme)
+          .replace(protocol.PCT_ENCODED, decodeUnreserved2)
+          .toLowerCase()
+          .replace(protocol.NOT_SCHEME, "");
       if (components.userinfo !== undefined)
-        components.userinfo = String(components.userinfo).replace(protocol.PCT_ENCODED, decodeUnreserved2).replace(protocol.NOT_USERINFO, pctEncChar).replace(protocol.PCT_ENCODED, toUpperCase);
+        components.userinfo = String(components.userinfo)
+          .replace(protocol.PCT_ENCODED, decodeUnreserved2)
+          .replace(protocol.NOT_USERINFO, pctEncChar)
+          .replace(protocol.PCT_ENCODED, toUpperCase);
       if (components.host !== undefined)
-        components.host = String(components.host).replace(protocol.PCT_ENCODED, decodeUnreserved2).toLowerCase().replace(protocol.NOT_HOST, pctEncChar).replace(protocol.PCT_ENCODED, toUpperCase);
+        components.host = String(components.host)
+          .replace(protocol.PCT_ENCODED, decodeUnreserved2)
+          .toLowerCase()
+          .replace(protocol.NOT_HOST, pctEncChar)
+          .replace(protocol.PCT_ENCODED, toUpperCase);
       if (components.path !== undefined)
-        components.path = String(components.path).replace(protocol.PCT_ENCODED, decodeUnreserved2).replace(components.scheme ? protocol.NOT_PATH : protocol.NOT_PATH_NOSCHEME, pctEncChar).replace(protocol.PCT_ENCODED, toUpperCase);
+        components.path = String(components.path)
+          .replace(protocol.PCT_ENCODED, decodeUnreserved2)
+          .replace(components.scheme ? protocol.NOT_PATH : protocol.NOT_PATH_NOSCHEME, pctEncChar)
+          .replace(protocol.PCT_ENCODED, toUpperCase);
       if (components.query !== undefined)
-        components.query = String(components.query).replace(protocol.PCT_ENCODED, decodeUnreserved2).replace(protocol.NOT_QUERY, pctEncChar).replace(protocol.PCT_ENCODED, toUpperCase);
+        components.query = String(components.query)
+          .replace(protocol.PCT_ENCODED, decodeUnreserved2)
+          .replace(protocol.NOT_QUERY, pctEncChar)
+          .replace(protocol.PCT_ENCODED, toUpperCase);
       if (components.fragment !== undefined)
-        components.fragment = String(components.fragment).replace(protocol.PCT_ENCODED, decodeUnreserved2).replace(protocol.NOT_FRAGMENT, pctEncChar).replace(protocol.PCT_ENCODED, toUpperCase);
+        components.fragment = String(components.fragment)
+          .replace(protocol.PCT_ENCODED, decodeUnreserved2)
+          .replace(protocol.NOT_FRAGMENT, pctEncChar)
+          .replace(protocol.PCT_ENCODED, toUpperCase);
       return components;
     }
     function _stripLeadingZeros(str) {
@@ -485,7 +721,8 @@ var require_uri_all = __commonJS((exports, module) => {
     }
     function _normalizeIPv4(host, protocol) {
       var matches = host.match(protocol.IPV4ADDRESS) || [];
-      var _matches = slicedToArray(matches, 2), address = _matches[1];
+      var _matches = slicedToArray(matches, 2),
+        address = _matches[1];
       if (address) {
         return address.split(".").map(_stripLeadingZeros).join(".");
       } else {
@@ -494,22 +731,27 @@ var require_uri_all = __commonJS((exports, module) => {
     }
     function _normalizeIPv6(host, protocol) {
       var matches = host.match(protocol.IPV6ADDRESS) || [];
-      var _matches2 = slicedToArray(matches, 3), address = _matches2[1], zone = _matches2[2];
+      var _matches2 = slicedToArray(matches, 3),
+        address = _matches2[1],
+        zone = _matches2[2];
       if (address) {
-        var _address$toLowerCase$ = address.toLowerCase().split("::").reverse(), _address$toLowerCase$2 = slicedToArray(_address$toLowerCase$, 2), last = _address$toLowerCase$2[0], first = _address$toLowerCase$2[1];
+        var _address$toLowerCase$ = address.toLowerCase().split("::").reverse(),
+          _address$toLowerCase$2 = slicedToArray(_address$toLowerCase$, 2),
+          last = _address$toLowerCase$2[0],
+          first = _address$toLowerCase$2[1];
         var firstFields = first ? first.split(":").map(_stripLeadingZeros) : [];
         var lastFields = last.split(":").map(_stripLeadingZeros);
         var isLastFieldIPv4Address = protocol.IPV4ADDRESS.test(lastFields[lastFields.length - 1]);
         var fieldCount = isLastFieldIPv4Address ? 7 : 8;
         var lastFieldsStart = lastFields.length - fieldCount;
         var fields = Array(fieldCount);
-        for (var x = 0;x < fieldCount; ++x) {
+        for (var x = 0; x < fieldCount; ++x) {
           fields[x] = firstFields[x] || lastFields[lastFieldsStart + x] || "";
         }
         if (isLastFieldIPv4Address) {
           fields[fieldCount - 1] = _normalizeIPv4(fields[fieldCount - 1], protocol);
         }
-        var allZeroFields = fields.reduce(function(acc, field, index) {
+        var allZeroFields = fields.reduce(function (acc, field, index) {
           if (!field || field === "0") {
             var lastLongest = acc[acc.length - 1];
             if (lastLongest && lastLongest.index + lastLongest.length === index) {
@@ -520,7 +762,7 @@ var require_uri_all = __commonJS((exports, module) => {
           }
           return acc;
         }, []);
-        var longestZeroFields = allZeroFields.sort(function(a, b) {
+        var longestZeroFields = allZeroFields.sort(function (a, b) {
           return b.length - a.length;
         })[0];
         var newHost = undefined;
@@ -539,14 +781,14 @@ var require_uri_all = __commonJS((exports, module) => {
         return host;
       }
     }
-    var URI_PARSE = /^(?:([^:\/?#]+):)?(?:\/\/((?:([^\/?#@]*)@)?(\[[^\/?#\]]+\]|[^\/?#:]*)(?:\:(\d*))?))?([^?#]*)(?:\?([^#]*))?(?:#((?:.|\n|\r)*))?/i;
+    var URI_PARSE =
+      /^(?:([^:\/?#]+):)?(?:\/\/((?:([^\/?#@]*)@)?(\[[^\/?#\]]+\]|[^\/?#:]*)(?:\:(\d*))?))?([^?#]*)(?:\?([^#]*))?(?:#((?:.|\n|\r)*))?/i;
     var NO_MATCH_IS_UNDEFINED = "".match(/(){0}/)[1] === undefined;
     function parse(uriString) {
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       var components = {};
       var protocol = options.iri !== false ? IRI_PROTOCOL : URI_PROTOCOL;
-      if (options.reference === "suffix")
-        uriString = (options.scheme ? options.scheme + ":" : "") + "//" + uriString;
+      if (options.reference === "suffix") uriString = (options.scheme ? options.scheme + ":" : "") + "//" + uriString;
       var matches = uriString.match(URI_PARSE);
       if (matches) {
         if (NO_MATCH_IS_UNDEFINED) {
@@ -575,7 +817,14 @@ var require_uri_all = __commonJS((exports, module) => {
         if (components.host) {
           components.host = _normalizeIPv6(_normalizeIPv4(components.host, protocol), protocol);
         }
-        if (components.scheme === undefined && components.userinfo === undefined && components.host === undefined && components.port === undefined && !components.path && components.query === undefined) {
+        if (
+          components.scheme === undefined &&
+          components.userinfo === undefined &&
+          components.host === undefined &&
+          components.port === undefined &&
+          !components.path &&
+          components.query === undefined
+        ) {
           components.reference = "same-document";
         } else if (components.scheme === undefined) {
           components.reference = "relative";
@@ -589,11 +838,14 @@ var require_uri_all = __commonJS((exports, module) => {
         }
         var schemeHandler = SCHEMES[(options.scheme || components.scheme || "").toLowerCase()];
         if (!options.unicodeSupport && (!schemeHandler || !schemeHandler.unicodeSupport)) {
-          if (components.host && (options.domainHost || schemeHandler && schemeHandler.domainHost)) {
+          if (components.host && (options.domainHost || (schemeHandler && schemeHandler.domainHost))) {
             try {
-              components.host = punycode.toASCII(components.host.replace(protocol.PCT_ENCODED, pctDecChars).toLowerCase());
+              components.host = punycode.toASCII(
+                components.host.replace(protocol.PCT_ENCODED, pctDecChars).toLowerCase()
+              );
             } catch (e) {
-              components.error = components.error || "Host's domain name can not be converted to ASCII via punycode: " + e;
+              components.error =
+                components.error || "Host's domain name can not be converted to ASCII via punycode: " + e;
             }
           }
           _normalizeComponentEncoding(components, URI_PROTOCOL);
@@ -616,9 +868,14 @@ var require_uri_all = __commonJS((exports, module) => {
         uriTokens.push("@");
       }
       if (components.host !== undefined) {
-        uriTokens.push(_normalizeIPv6(_normalizeIPv4(String(components.host), protocol), protocol).replace(protocol.IPV6ADDRESS, function(_, $1, $2) {
-          return "[" + $1 + ($2 ? "%25" + $2 : "") + "]";
-        }));
+        uriTokens.push(
+          _normalizeIPv6(_normalizeIPv4(String(components.host), protocol), protocol).replace(
+            protocol.IPV6ADDRESS,
+            function (_, $1, $2) {
+              return "[" + $1 + ($2 ? "%25" + $2 : "") + "]";
+            }
+          )
+        );
       }
       if (typeof components.port === "number" || typeof components.port === "string") {
         uriTokens.push(":");
@@ -660,14 +917,21 @@ var require_uri_all = __commonJS((exports, module) => {
       var protocol = options.iri ? IRI_PROTOCOL : URI_PROTOCOL;
       var uriTokens = [];
       var schemeHandler = SCHEMES[(options.scheme || components.scheme || "").toLowerCase()];
-      if (schemeHandler && schemeHandler.serialize)
-        schemeHandler.serialize(components, options);
+      if (schemeHandler && schemeHandler.serialize) schemeHandler.serialize(components, options);
       if (components.host) {
-        if (protocol.IPV6ADDRESS.test(components.host)) {} else if (options.domainHost || schemeHandler && schemeHandler.domainHost) {
+        if (protocol.IPV6ADDRESS.test(components.host)) {
+        } else if (options.domainHost || (schemeHandler && schemeHandler.domainHost)) {
           try {
-            components.host = !options.iri ? punycode.toASCII(components.host.replace(protocol.PCT_ENCODED, pctDecChars).toLowerCase()) : punycode.toUnicode(components.host);
+            components.host = !options.iri
+              ? punycode.toASCII(components.host.replace(protocol.PCT_ENCODED, pctDecChars).toLowerCase())
+              : punycode.toUnicode(components.host);
           } catch (e) {
-            components.error = components.error || "Host's domain name can not be converted to " + (!options.iri ? "ASCII" : "Unicode") + " via punycode: " + e;
+            components.error =
+              components.error ||
+              "Host's domain name can not be converted to " +
+                (!options.iri ? "ASCII" : "Unicode") +
+                " via punycode: " +
+                e;
           }
         }
       }
@@ -741,7 +1005,10 @@ var require_uri_all = __commonJS((exports, module) => {
             if (relative.path.charAt(0) === "/") {
               target.path = removeDotSegments(relative.path);
             } else {
-              if ((base2.userinfo !== undefined || base2.host !== undefined || base2.port !== undefined) && !base2.path) {
+              if (
+                (base2.userinfo !== undefined || base2.host !== undefined || base2.port !== undefined) &&
+                !base2.path
+              ) {
                 target.path = "/" + relative.path;
               } else if (!base2.path) {
                 target.path = relative.path;
@@ -763,7 +1030,15 @@ var require_uri_all = __commonJS((exports, module) => {
     }
     function resolve(baseURI, relativeURI, options) {
       var schemelessOptions = assign({ scheme: "null" }, options);
-      return serialize(resolveComponents(parse(baseURI, schemelessOptions), parse(relativeURI, schemelessOptions), schemelessOptions, true), schemelessOptions);
+      return serialize(
+        resolveComponents(
+          parse(baseURI, schemelessOptions),
+          parse(relativeURI, schemelessOptions),
+          schemelessOptions,
+          true
+        ),
+        schemelessOptions
+      );
     }
     function normalize(uri, options) {
       if (typeof uri === "string") {
@@ -787,10 +1062,17 @@ var require_uri_all = __commonJS((exports, module) => {
       return uriA === uriB;
     }
     function escapeComponent(str, options) {
-      return str && str.toString().replace(!options || !options.iri ? URI_PROTOCOL.ESCAPE : IRI_PROTOCOL.ESCAPE, pctEncChar);
+      return (
+        str && str.toString().replace(!options || !options.iri ? URI_PROTOCOL.ESCAPE : IRI_PROTOCOL.ESCAPE, pctEncChar)
+      );
     }
     function unescapeComponent(str, options) {
-      return str && str.toString().replace(!options || !options.iri ? URI_PROTOCOL.PCT_ENCODED : IRI_PROTOCOL.PCT_ENCODED, pctDecChars);
+      return (
+        str &&
+        str
+          .toString()
+          .replace(!options || !options.iri ? URI_PROTOCOL.PCT_ENCODED : IRI_PROTOCOL.PCT_ENCODED, pctDecChars)
+      );
     }
     var handler = {
       scheme: "http",
@@ -810,16 +1092,18 @@ var require_uri_all = __commonJS((exports, module) => {
           components.path = "/";
         }
         return components;
-      }
+      },
     };
     var handler$1 = {
       scheme: "https",
       domainHost: handler.domainHost,
       parse: handler.parse,
-      serialize: handler.serialize
+      serialize: handler.serialize,
     };
     function isSecure(wsComponents) {
-      return typeof wsComponents.secure === "boolean" ? wsComponents.secure : String(wsComponents.scheme).toLowerCase() === "wss";
+      return typeof wsComponents.secure === "boolean"
+        ? wsComponents.secure
+        : String(wsComponents.scheme).toLowerCase() === "wss";
     }
     var handler$2 = {
       scheme: "ws",
@@ -841,33 +1125,45 @@ var require_uri_all = __commonJS((exports, module) => {
           wsComponents.secure = undefined;
         }
         if (wsComponents.resourceName) {
-          var _wsComponents$resourc = wsComponents.resourceName.split("?"), _wsComponents$resourc2 = slicedToArray(_wsComponents$resourc, 2), path = _wsComponents$resourc2[0], query = _wsComponents$resourc2[1];
+          var _wsComponents$resourc = wsComponents.resourceName.split("?"),
+            _wsComponents$resourc2 = slicedToArray(_wsComponents$resourc, 2),
+            path = _wsComponents$resourc2[0],
+            query = _wsComponents$resourc2[1];
           wsComponents.path = path && path !== "/" ? path : undefined;
           wsComponents.query = query;
           wsComponents.resourceName = undefined;
         }
         wsComponents.fragment = undefined;
         return wsComponents;
-      }
+      },
     };
     var handler$3 = {
       scheme: "wss",
       domainHost: handler$2.domainHost,
       parse: handler$2.parse,
-      serialize: handler$2.serialize
+      serialize: handler$2.serialize,
     };
     var O = {};
     var isIRI = true;
-    var UNRESERVED$$ = "[A-Za-z0-9\\-\\.\\_\\~" + (isIRI ? "\\xA0-\\u200D\\u2010-\\u2029\\u202F-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF" : "") + "]";
+    var UNRESERVED$$ =
+      "[A-Za-z0-9\\-\\.\\_\\~" +
+      (isIRI ? "\\xA0-\\u200D\\u2010-\\u2029\\u202F-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF" : "") +
+      "]";
     var HEXDIG$$ = "[0-9A-Fa-f]";
-    var PCT_ENCODED$ = subexp(subexp("%[EFef]" + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$) + "|" + subexp("%[89A-Fa-f]" + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$) + "|" + subexp("%" + HEXDIG$$ + HEXDIG$$));
+    var PCT_ENCODED$ = subexp(
+      subexp("%[EFef]" + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$) +
+        "|" +
+        subexp("%[89A-Fa-f]" + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$) +
+        "|" +
+        subexp("%" + HEXDIG$$ + HEXDIG$$)
+    );
     var ATEXT$$ = "[A-Za-z0-9\\!\\$\\%\\'\\*\\+\\-\\^\\_\\`\\{\\|\\}\\~]";
     var QTEXT$$ = "[\\!\\$\\%\\'\\(\\)\\*\\+\\,\\-\\.0-9\\<\\>A-Z\\x5E-\\x7E]";
-    var VCHAR$$ = merge(QTEXT$$, "[\\\"\\\\]");
+    var VCHAR$$ = merge(QTEXT$$, '[\\"\\\\]');
     var SOME_DELIMS$$ = "[\\!\\$\\'\\(\\)\\*\\+\\,\\;\\:\\@]";
     var UNRESERVED = new RegExp(UNRESERVED$$, "g");
     var PCT_ENCODED = new RegExp(PCT_ENCODED$, "g");
-    var NOT_LOCAL_PART = new RegExp(merge("[^]", ATEXT$$, "[\\.]", "[\\\"]", VCHAR$$), "g");
+    var NOT_LOCAL_PART = new RegExp(merge("[^]", ATEXT$$, "[\\.]", '[\\"]', VCHAR$$), "g");
     var NOT_HFNAME = new RegExp(merge("[^]", UNRESERVED$$, SOME_DELIMS$$), "g");
     var NOT_HFVALUE = NOT_HFNAME;
     function decodeUnreserved(str) {
@@ -878,18 +1174,18 @@ var require_uri_all = __commonJS((exports, module) => {
       scheme: "mailto",
       parse: function parse$$1(components, options) {
         var mailtoComponents = components;
-        var to = mailtoComponents.to = mailtoComponents.path ? mailtoComponents.path.split(",") : [];
+        var to = (mailtoComponents.to = mailtoComponents.path ? mailtoComponents.path.split(",") : []);
         mailtoComponents.path = undefined;
         if (mailtoComponents.query) {
           var unknownHeaders = false;
           var headers = {};
           var hfields = mailtoComponents.query.split("&");
-          for (var x = 0, xl = hfields.length;x < xl; ++x) {
+          for (var x = 0, xl = hfields.length; x < xl; ++x) {
             var hfield = hfields[x].split("=");
             switch (hfield[0]) {
               case "to":
                 var toAddrs = hfield[1].split(",");
-                for (var _x = 0, _xl = toAddrs.length;_x < _xl; ++_x) {
+                for (var _x = 0, _xl = toAddrs.length; _x < _xl; ++_x) {
                   to.push(toAddrs[_x]);
                 }
                 break;
@@ -905,18 +1201,19 @@ var require_uri_all = __commonJS((exports, module) => {
                 break;
             }
           }
-          if (unknownHeaders)
-            mailtoComponents.headers = headers;
+          if (unknownHeaders) mailtoComponents.headers = headers;
         }
         mailtoComponents.query = undefined;
-        for (var _x2 = 0, _xl2 = to.length;_x2 < _xl2; ++_x2) {
+        for (var _x2 = 0, _xl2 = to.length; _x2 < _xl2; ++_x2) {
           var addr = to[_x2].split("@");
           addr[0] = unescapeComponent(addr[0]);
           if (!options.unicodeSupport) {
             try {
               addr[1] = punycode.toASCII(unescapeComponent(addr[1], options).toLowerCase());
             } catch (e) {
-              mailtoComponents.error = mailtoComponents.error || "Email address's domain name can not be converted to ASCII via punycode: " + e;
+              mailtoComponents.error =
+                mailtoComponents.error ||
+                "Email address's domain name can not be converted to ASCII via punycode: " + e;
             }
           } else {
             addr[1] = unescapeComponent(addr[1], options).toLowerCase();
@@ -929,36 +1226,55 @@ var require_uri_all = __commonJS((exports, module) => {
         var components = mailtoComponents;
         var to = toArray(mailtoComponents.to);
         if (to) {
-          for (var x = 0, xl = to.length;x < xl; ++x) {
+          for (var x = 0, xl = to.length; x < xl; ++x) {
             var toAddr = String(to[x]);
             var atIdx = toAddr.lastIndexOf("@");
-            var localPart = toAddr.slice(0, atIdx).replace(PCT_ENCODED, decodeUnreserved).replace(PCT_ENCODED, toUpperCase).replace(NOT_LOCAL_PART, pctEncChar);
+            var localPart = toAddr
+              .slice(0, atIdx)
+              .replace(PCT_ENCODED, decodeUnreserved)
+              .replace(PCT_ENCODED, toUpperCase)
+              .replace(NOT_LOCAL_PART, pctEncChar);
             var domain = toAddr.slice(atIdx + 1);
             try {
-              domain = !options.iri ? punycode.toASCII(unescapeComponent(domain, options).toLowerCase()) : punycode.toUnicode(domain);
+              domain = !options.iri
+                ? punycode.toASCII(unescapeComponent(domain, options).toLowerCase())
+                : punycode.toUnicode(domain);
             } catch (e) {
-              components.error = components.error || "Email address's domain name can not be converted to " + (!options.iri ? "ASCII" : "Unicode") + " via punycode: " + e;
+              components.error =
+                components.error ||
+                "Email address's domain name can not be converted to " +
+                  (!options.iri ? "ASCII" : "Unicode") +
+                  " via punycode: " +
+                  e;
             }
             to[x] = localPart + "@" + domain;
           }
           components.path = to.join(",");
         }
-        var headers = mailtoComponents.headers = mailtoComponents.headers || {};
-        if (mailtoComponents.subject)
-          headers["subject"] = mailtoComponents.subject;
-        if (mailtoComponents.body)
-          headers["body"] = mailtoComponents.body;
+        var headers = (mailtoComponents.headers = mailtoComponents.headers || {});
+        if (mailtoComponents.subject) headers["subject"] = mailtoComponents.subject;
+        if (mailtoComponents.body) headers["body"] = mailtoComponents.body;
         var fields = [];
         for (var name in headers) {
           if (headers[name] !== O[name]) {
-            fields.push(name.replace(PCT_ENCODED, decodeUnreserved).replace(PCT_ENCODED, toUpperCase).replace(NOT_HFNAME, pctEncChar) + "=" + headers[name].replace(PCT_ENCODED, decodeUnreserved).replace(PCT_ENCODED, toUpperCase).replace(NOT_HFVALUE, pctEncChar));
+            fields.push(
+              name
+                .replace(PCT_ENCODED, decodeUnreserved)
+                .replace(PCT_ENCODED, toUpperCase)
+                .replace(NOT_HFNAME, pctEncChar) +
+                "=" +
+                headers[name]
+                  .replace(PCT_ENCODED, decodeUnreserved)
+                  .replace(PCT_ENCODED, toUpperCase)
+                  .replace(NOT_HFVALUE, pctEncChar)
+            );
           }
         }
         if (fields.length) {
           components.query = fields.join("&");
         }
         return components;
-      }
+      },
     };
     var URN_PARSE = /^([^\:]+)\:(.*)/;
     var handler$5 = {
@@ -995,7 +1311,7 @@ var require_uri_all = __commonJS((exports, module) => {
         var nss = urnComponents.nss;
         uriComponents.path = (nid || options.nid) + ":" + nss;
         return uriComponents;
-      }
+      },
     };
     var UUID = /^[0-9A-Fa-f]{8}(?:\-[0-9A-Fa-f]{4}){3}\-[0-9A-Fa-f]{12}$/;
     var handler$6 = {
@@ -1013,7 +1329,7 @@ var require_uri_all = __commonJS((exports, module) => {
         var urnComponents = uuidComponents;
         urnComponents.nss = (uuidComponents.uuid || "").toLowerCase();
         return urnComponents;
-      }
+      },
     };
     SCHEMES[handler.scheme] = handler;
     SCHEMES[handler$1.scheme] = handler$1;
@@ -1041,38 +1357,26 @@ var require_uri_all = __commonJS((exports, module) => {
 // node_modules/fast-deep-equal/index.js
 var require_fast_deep_equal = __commonJS((exports, module) => {
   module.exports = function equal(a, b) {
-    if (a === b)
-      return true;
+    if (a === b) return true;
     if (a && b && typeof a == "object" && typeof b == "object") {
-      if (a.constructor !== b.constructor)
-        return false;
+      if (a.constructor !== b.constructor) return false;
       var length, i, keys;
       if (Array.isArray(a)) {
         length = a.length;
-        if (length != b.length)
-          return false;
-        for (i = length;i-- !== 0; )
-          if (!equal(a[i], b[i]))
-            return false;
+        if (length != b.length) return false;
+        for (i = length; i-- !== 0; ) if (!equal(a[i], b[i])) return false;
         return true;
       }
-      if (a.constructor === RegExp)
-        return a.source === b.source && a.flags === b.flags;
-      if (a.valueOf !== Object.prototype.valueOf)
-        return a.valueOf() === b.valueOf();
-      if (a.toString !== Object.prototype.toString)
-        return a.toString() === b.toString();
+      if (a.constructor === RegExp) return a.source === b.source && a.flags === b.flags;
+      if (a.valueOf !== Object.prototype.valueOf) return a.valueOf() === b.valueOf();
+      if (a.toString !== Object.prototype.toString) return a.toString() === b.toString();
       keys = Object.keys(a);
       length = keys.length;
-      if (length !== Object.keys(b).length)
-        return false;
-      for (i = length;i-- !== 0; )
-        if (!Object.prototype.hasOwnProperty.call(b, keys[i]))
-          return false;
-      for (i = length;i-- !== 0; ) {
+      if (length !== Object.keys(b).length) return false;
+      for (i = length; i-- !== 0; ) if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
+      for (i = length; i-- !== 0; ) {
         var key = keys[i];
-        if (!equal(a[key], b[key]))
-          return false;
+        if (!equal(a[key], b[key])) return false;
       }
       return true;
     }
@@ -1083,14 +1387,16 @@ var require_fast_deep_equal = __commonJS((exports, module) => {
 // node_modules/ajv/lib/compile/ucs2length.js
 var require_ucs2length = __commonJS((exports, module) => {
   module.exports = function ucs2length(str) {
-    var length = 0, len = str.length, pos = 0, value;
+    var length = 0,
+      len = str.length,
+      pos = 0,
+      value;
     while (pos < len) {
       length++;
       value = str.charCodeAt(pos++);
       if (value >= 55296 && value <= 56319 && pos < len) {
         value = str.charCodeAt(pos);
-        if ((value & 64512) == 56320)
-          pos++;
+        if ((value & 64512) == 56320) pos++;
       }
     }
     return length;
@@ -1121,27 +1427,56 @@ var require_util = __commonJS((exports, module) => {
     unescapeFragment,
     unescapeJsonPointer,
     escapeFragment,
-    escapeJsonPointer
+    escapeJsonPointer,
   };
   function copy(o, to) {
     to = to || {};
-    for (var key in o)
-      to[key] = o[key];
+    for (var key in o) to[key] = o[key];
     return to;
   }
   function checkDataType(dataType, data, strictNumbers, negate) {
-    var EQUAL = negate ? " !== " : " === ", AND = negate ? " || " : " && ", OK2 = negate ? "!" : "", NOT = negate ? "" : "!";
+    var EQUAL = negate ? " !== " : " === ",
+      AND = negate ? " || " : " && ",
+      OK2 = negate ? "!" : "",
+      NOT = negate ? "" : "!";
     switch (dataType) {
       case "null":
         return data + EQUAL + "null";
       case "array":
         return OK2 + "Array.isArray(" + data + ")";
       case "object":
-        return "(" + OK2 + data + AND + "typeof " + data + EQUAL + '"object"' + AND + NOT + "Array.isArray(" + data + "))";
+        return (
+          "(" + OK2 + data + AND + "typeof " + data + EQUAL + '"object"' + AND + NOT + "Array.isArray(" + data + "))"
+        );
       case "integer":
-        return "(typeof " + data + EQUAL + '"number"' + AND + NOT + "(" + data + " % 1)" + AND + data + EQUAL + data + (strictNumbers ? AND + OK2 + "isFinite(" + data + ")" : "") + ")";
+        return (
+          "(typeof " +
+          data +
+          EQUAL +
+          '"number"' +
+          AND +
+          NOT +
+          "(" +
+          data +
+          " % 1)" +
+          AND +
+          data +
+          EQUAL +
+          data +
+          (strictNumbers ? AND + OK2 + "isFinite(" + data + ")" : "") +
+          ")"
+        );
       case "number":
-        return "(typeof " + data + EQUAL + '"' + dataType + '"' + (strictNumbers ? AND + OK2 + "isFinite(" + data + ")" : "") + ")";
+        return (
+          "(typeof " +
+          data +
+          EQUAL +
+          '"' +
+          dataType +
+          '"' +
+          (strictNumbers ? AND + OK2 + "isFinite(" + data + ")" : "") +
+          ")"
+        );
       default:
         return "typeof " + data + EQUAL + '"' + dataType + '"';
     }
@@ -1160,10 +1495,8 @@ var require_util = __commonJS((exports, module) => {
           delete types2.array;
           delete types2.object;
         }
-        if (types2.number)
-          delete types2.integer;
-        for (var t in types2)
-          code += (code ? " && " : "") + checkDataType(t, data, strictNumbers, true);
+        if (types2.number) delete types2.integer;
+        for (var t in types2) code += (code ? " && " : "") + checkDataType(t, data, strictNumbers, true);
         return code;
     }
   }
@@ -1171,15 +1504,12 @@ var require_util = __commonJS((exports, module) => {
   function coerceToTypes(optionCoerceTypes, dataTypes) {
     if (Array.isArray(dataTypes)) {
       var types2 = [];
-      for (var i = 0;i < dataTypes.length; i++) {
+      for (var i = 0; i < dataTypes.length; i++) {
         var t = dataTypes[i];
-        if (COERCE_TO_TYPES[t])
-          types2[types2.length] = t;
-        else if (optionCoerceTypes === "array" && t === "array")
-          types2[types2.length] = t;
+        if (COERCE_TO_TYPES[t]) types2[types2.length] = t;
+        else if (optionCoerceTypes === "array" && t === "array") types2[types2.length] = t;
       }
-      if (types2.length)
-        return types2;
+      if (types2.length) return types2;
     } else if (COERCE_TO_TYPES[dataTypes]) {
       return [dataTypes];
     } else if (optionCoerceTypes === "array" && dataTypes === "array") {
@@ -1188,17 +1518,25 @@ var require_util = __commonJS((exports, module) => {
   }
   function toHash(arr) {
     var hash = {};
-    for (var i = 0;i < arr.length; i++)
-      hash[arr[i]] = true;
+    for (var i = 0; i < arr.length; i++) hash[arr[i]] = true;
     return hash;
   }
   var IDENTIFIER = /^[a-z$_][a-z$_0-9]*$/i;
   var SINGLE_QUOTE = /'|\\/g;
   function getProperty(key) {
-    return typeof key == "number" ? "[" + key + "]" : IDENTIFIER.test(key) ? "." + key : "['" + escapeQuotes(key) + "']";
+    return typeof key == "number"
+      ? "[" + key + "]"
+      : IDENTIFIER.test(key)
+        ? "." + key
+        : "['" + escapeQuotes(key) + "']";
   }
   function escapeQuotes(str) {
-    return str.replace(SINGLE_QUOTE, "\\$&").replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\f/g, "\\f").replace(/\t/g, "\\t");
+    return str
+      .replace(SINGLE_QUOTE, "\\$&")
+      .replace(/\n/g, "\\n")
+      .replace(/\r/g, "\\r")
+      .replace(/\f/g, "\\f")
+      .replace(/\t/g, "\\t");
   }
   function varOccurences(str, dataVar) {
     dataVar += "[^0-9]";
@@ -1211,31 +1549,26 @@ var require_util = __commonJS((exports, module) => {
     return str.replace(new RegExp(dataVar, "g"), expr + "$1");
   }
   function schemaHasRules(schema, rules) {
-    if (typeof schema == "boolean")
-      return !schema;
-    for (var key in schema)
-      if (rules[key])
-        return true;
+    if (typeof schema == "boolean") return !schema;
+    for (var key in schema) if (rules[key]) return true;
   }
   function schemaHasRulesExcept(schema, rules, exceptKeyword) {
-    if (typeof schema == "boolean")
-      return !schema && exceptKeyword != "not";
-    for (var key in schema)
-      if (key != exceptKeyword && rules[key])
-        return true;
+    if (typeof schema == "boolean") return !schema && exceptKeyword != "not";
+    for (var key in schema) if (key != exceptKeyword && rules[key]) return true;
   }
   function schemaUnknownRules(schema, rules) {
-    if (typeof schema == "boolean")
-      return;
-    for (var key in schema)
-      if (!rules[key])
-        return key;
+    if (typeof schema == "boolean") return;
+    for (var key in schema) if (!rules[key]) return key;
   }
   function toQuotedString(str) {
     return "'" + escapeQuotes(str) + "'";
   }
   function getPathExpr(currentPath, expr, jsonPointers, isNumber) {
-    var path = jsonPointers ? "'/' + " + expr + (isNumber ? "" : ".replace(/~/g, '~0').replace(/\\//g, '~1')") : isNumber ? "'[' + " + expr + " + ']'" : "'[\\'' + " + expr + " + '\\']'";
+    var path = jsonPointers
+      ? "'/' + " + expr + (isNumber ? "" : ".replace(/~/g, '~0').replace(/\\//g, '~1')")
+      : isNumber
+        ? "'[' + " + expr + " + ']'"
+        : "'[\\'' + " + expr + " + '\\']'";
     return joinPaths(currentPath, path);
   }
   function getPath(currentPath, prop, jsonPointers) {
@@ -1246,33 +1579,27 @@ var require_util = __commonJS((exports, module) => {
   var RELATIVE_JSON_POINTER = /^([0-9]+)(#|\/(?:[^~]|~0|~1)*)?$/;
   function getData($data, lvl, paths) {
     var up, jsonPointer, data, matches;
-    if ($data === "")
-      return "rootData";
+    if ($data === "") return "rootData";
     if ($data[0] == "/") {
-      if (!JSON_POINTER.test($data))
-        throw new Error("Invalid JSON-pointer: " + $data);
+      if (!JSON_POINTER.test($data)) throw new Error("Invalid JSON-pointer: " + $data);
       jsonPointer = $data;
       data = "rootData";
     } else {
       matches = $data.match(RELATIVE_JSON_POINTER);
-      if (!matches)
-        throw new Error("Invalid JSON-pointer: " + $data);
+      if (!matches) throw new Error("Invalid JSON-pointer: " + $data);
       up = +matches[1];
       jsonPointer = matches[2];
       if (jsonPointer == "#") {
-        if (up >= lvl)
-          throw new Error("Cannot access property/index " + up + " levels up, current level is " + lvl);
+        if (up >= lvl) throw new Error("Cannot access property/index " + up + " levels up, current level is " + lvl);
         return paths[lvl - up];
       }
-      if (up > lvl)
-        throw new Error("Cannot access data " + up + " levels up, current level is " + lvl);
+      if (up > lvl) throw new Error("Cannot access data " + up + " levels up, current level is " + lvl);
       data = "data" + (lvl - up || "");
-      if (!jsonPointer)
-        return data;
+      if (!jsonPointer) return data;
     }
     var expr = data;
     var segments = jsonPointer.split("/");
-    for (var i = 0;i < segments.length; i++) {
+    for (var i = 0; i < segments.length; i++) {
       var segment = segments[i];
       if (segment) {
         data += getProperty(unescapeJsonPointer(segment));
@@ -1282,8 +1609,7 @@ var require_util = __commonJS((exports, module) => {
     return expr;
   }
   function joinPaths(a, b) {
-    if (a == '""')
-      return b;
+    if (a == '""') return b;
     return (a + " + " + b).replace(/([^\\])' \+ '/g, "$1");
   }
   function unescapeFragment(str) {
@@ -1311,35 +1637,35 @@ var require_schema_obj = __commonJS((exports, module) => {
 
 // node_modules/json-schema-traverse/index.js
 var require_json_schema_traverse = __commonJS((exports, module) => {
-  var traverse = module.exports = function(schema, opts, cb) {
+  var traverse = (module.exports = function (schema, opts, cb) {
     if (typeof opts == "function") {
       cb = opts;
       opts = {};
     }
     cb = opts.cb || cb;
-    var pre = typeof cb == "function" ? cb : cb.pre || function() {};
-    var post = cb.post || function() {};
+    var pre = typeof cb == "function" ? cb : cb.pre || function () {};
+    var post = cb.post || function () {};
     _traverse(opts, pre, post, schema, "", schema);
-  };
+  });
   traverse.keywords = {
     additionalItems: true,
     items: true,
     contains: true,
     additionalProperties: true,
     propertyNames: true,
-    not: true
+    not: true,
   };
   traverse.arrayKeywords = {
     items: true,
     allOf: true,
     anyOf: true,
-    oneOf: true
+    oneOf: true,
   };
   traverse.propsKeywords = {
     definitions: true,
     properties: true,
     patternProperties: true,
-    dependencies: true
+    dependencies: true,
   };
   traverse.skipKeywords = {
     default: true,
@@ -1359,24 +1685,46 @@ var require_json_schema_traverse = __commonJS((exports, module) => {
     minItems: true,
     uniqueItems: true,
     maxProperties: true,
-    minProperties: true
+    minProperties: true,
   };
-  function _traverse(opts, pre, post, schema, jsonPtr, rootSchema, parentJsonPtr, parentKeyword, parentSchema, keyIndex) {
+  function _traverse(
+    opts,
+    pre,
+    post,
+    schema,
+    jsonPtr,
+    rootSchema,
+    parentJsonPtr,
+    parentKeyword,
+    parentSchema,
+    keyIndex
+  ) {
     if (schema && typeof schema == "object" && !Array.isArray(schema)) {
       pre(schema, jsonPtr, rootSchema, parentJsonPtr, parentKeyword, parentSchema, keyIndex);
       for (var key in schema) {
         var sch = schema[key];
         if (Array.isArray(sch)) {
           if (key in traverse.arrayKeywords) {
-            for (var i = 0;i < sch.length; i++)
+            for (var i = 0; i < sch.length; i++)
               _traverse(opts, pre, post, sch[i], jsonPtr + "/" + key + "/" + i, rootSchema, jsonPtr, key, schema, i);
           }
         } else if (key in traverse.propsKeywords) {
           if (sch && typeof sch == "object") {
             for (var prop in sch)
-              _traverse(opts, pre, post, sch[prop], jsonPtr + "/" + key + "/" + escapeJsonPtr(prop), rootSchema, jsonPtr, key, schema, prop);
+              _traverse(
+                opts,
+                pre,
+                post,
+                sch[prop],
+                jsonPtr + "/" + key + "/" + escapeJsonPtr(prop),
+                rootSchema,
+                jsonPtr,
+                key,
+                schema,
+                prop
+              );
           }
-        } else if (key in traverse.keywords || opts.allKeys && !(key in traverse.skipKeywords)) {
+        } else if (key in traverse.keywords || (opts.allKeys && !(key in traverse.skipKeywords))) {
           _traverse(opts, pre, post, sch, jsonPtr + "/" + key, rootSchema, jsonPtr, key, schema);
         }
       }
@@ -1405,10 +1753,8 @@ var require_resolve = __commonJS((exports, module) => {
   function resolve(compile, root, ref) {
     var refVal = this._refs[ref];
     if (typeof refVal == "string") {
-      if (this._refs[refVal])
-        refVal = this._refs[refVal];
-      else
-        return resolve.call(this, compile, root, refVal);
+      if (this._refs[refVal]) refVal = this._refs[refVal];
+      else return resolve.call(this, compile, root, refVal);
     }
     refVal = refVal || this._schemas[ref];
     if (refVal instanceof SchemaObject) {
@@ -1429,30 +1775,28 @@ var require_resolve = __commonJS((exports, module) => {
     return v;
   }
   function resolveSchema(root, ref) {
-    var p = URI.parse(ref), refPath = _getFullPath(p), baseId = getFullPath(this._getId(root.schema));
+    var p = URI.parse(ref),
+      refPath = _getFullPath(p),
+      baseId = getFullPath(this._getId(root.schema));
     if (Object.keys(root.schema).length === 0 || refPath !== baseId) {
       var id = normalizeId(refPath);
       var refVal = this._refs[id];
       if (typeof refVal == "string") {
         return resolveRecursive.call(this, root, refVal, p);
       } else if (refVal instanceof SchemaObject) {
-        if (!refVal.validate)
-          this._compile(refVal);
+        if (!refVal.validate) this._compile(refVal);
         root = refVal;
       } else {
         refVal = this._schemas[id];
         if (refVal instanceof SchemaObject) {
-          if (!refVal.validate)
-            this._compile(refVal);
-          if (id == normalizeId(ref))
-            return { schema: refVal, root, baseId };
+          if (!refVal.validate) this._compile(refVal);
+          if (id == normalizeId(ref)) return { schema: refVal, root, baseId };
           root = refVal;
         } else {
           return;
         }
       }
-      if (!root.schema)
-        return;
+      if (!root.schema) return;
       baseId = getFullPath(this._getId(root.schema));
     }
     return getJsonPointer.call(this, p, baseId, root.schema, root);
@@ -1464,29 +1808,25 @@ var require_resolve = __commonJS((exports, module) => {
       var baseId = res.baseId;
       root = res.root;
       var id = this._getId(schema);
-      if (id)
-        baseId = resolveUrl(baseId, id);
+      if (id) baseId = resolveUrl(baseId, id);
       return getJsonPointer.call(this, parsedRef, baseId, schema, root);
     }
   }
   var PREVENT_SCOPE_CHANGE = util3.toHash(["properties", "patternProperties", "enum", "dependencies", "definitions"]);
   function getJsonPointer(parsedRef, baseId, schema, root) {
     parsedRef.fragment = parsedRef.fragment || "";
-    if (parsedRef.fragment.slice(0, 1) != "/")
-      return;
+    if (parsedRef.fragment.slice(0, 1) != "/") return;
     var parts = parsedRef.fragment.split("/");
-    for (var i = 1;i < parts.length; i++) {
+    for (var i = 1; i < parts.length; i++) {
       var part = parts[i];
       if (part) {
         part = util3.unescapeFragment(part);
         schema = schema[part];
-        if (schema === undefined)
-          break;
+        if (schema === undefined) break;
         var id;
         if (!PREVENT_SCOPE_CHANGE[part]) {
           id = this._getId(schema);
-          if (id)
-            baseId = resolveUrl(baseId, id);
+          if (id) baseId = resolveUrl(baseId, id);
           if (schema.$ref) {
             var $ref = resolveUrl(baseId, schema.$ref);
             var res = resolveSchema.call(this, root, $ref);
@@ -1499,8 +1839,7 @@ var require_resolve = __commonJS((exports, module) => {
         }
       }
     }
-    if (schema !== undefined && schema !== root.schema)
-      return { schema, root, baseId };
+    if (schema !== undefined && schema !== root.schema) return { schema, root, baseId };
   }
   var SIMPLE_INLINED = util3.toHash([
     "type",
@@ -1517,65 +1856,54 @@ var require_resolve = __commonJS((exports, module) => {
     "uniqueItems",
     "multipleOf",
     "required",
-    "enum"
+    "enum",
   ]);
   function inlineRef(schema, limit) {
-    if (limit === false)
-      return false;
-    if (limit === undefined || limit === true)
-      return checkNoRef(schema);
-    else if (limit)
-      return countKeys(schema) <= limit;
+    if (limit === false) return false;
+    if (limit === undefined || limit === true) return checkNoRef(schema);
+    else if (limit) return countKeys(schema) <= limit;
   }
   function checkNoRef(schema) {
     var item;
     if (Array.isArray(schema)) {
-      for (var i = 0;i < schema.length; i++) {
+      for (var i = 0; i < schema.length; i++) {
         item = schema[i];
-        if (typeof item == "object" && !checkNoRef(item))
-          return false;
+        if (typeof item == "object" && !checkNoRef(item)) return false;
       }
     } else {
       for (var key in schema) {
-        if (key == "$ref")
-          return false;
+        if (key == "$ref") return false;
         item = schema[key];
-        if (typeof item == "object" && !checkNoRef(item))
-          return false;
+        if (typeof item == "object" && !checkNoRef(item)) return false;
       }
     }
     return true;
   }
   function countKeys(schema) {
-    var count = 0, item;
+    var count = 0,
+      item;
     if (Array.isArray(schema)) {
-      for (var i = 0;i < schema.length; i++) {
+      for (var i = 0; i < schema.length; i++) {
         item = schema[i];
-        if (typeof item == "object")
-          count += countKeys(item);
-        if (count == Infinity)
-          return Infinity;
+        if (typeof item == "object") count += countKeys(item);
+        if (count == Infinity) return Infinity;
       }
     } else {
       for (var key in schema) {
-        if (key == "$ref")
-          return Infinity;
+        if (key == "$ref") return Infinity;
         if (SIMPLE_INLINED[key]) {
           count++;
         } else {
           item = schema[key];
-          if (typeof item == "object")
-            count += countKeys(item) + 1;
-          if (count == Infinity)
-            return Infinity;
+          if (typeof item == "object") count += countKeys(item) + 1;
+          if (count == Infinity) return Infinity;
         }
       }
     }
     return count;
   }
   function getFullPath(id, normalize) {
-    if (normalize !== false)
-      id = normalizeId(id);
+    if (normalize !== false) id = normalizeId(id);
     var p = URI.parse(id);
     return _getFullPath(p);
   }
@@ -1596,35 +1924,36 @@ var require_resolve = __commonJS((exports, module) => {
     var fullPaths = { "": getFullPath(schemaId, false) };
     var localRefs = {};
     var self = this;
-    traverse(schema, { allKeys: true }, function(sch, jsonPtr, rootSchema, parentJsonPtr, parentKeyword, parentSchema, keyIndex) {
-      if (jsonPtr === "")
-        return;
-      var id = self._getId(sch);
-      var baseId = baseIds[parentJsonPtr];
-      var fullPath = fullPaths[parentJsonPtr] + "/" + parentKeyword;
-      if (keyIndex !== undefined)
-        fullPath += "/" + (typeof keyIndex == "number" ? keyIndex : util3.escapeFragment(keyIndex));
-      if (typeof id == "string") {
-        id = baseId = normalizeId(baseId ? URI.resolve(baseId, id) : id);
-        var refVal = self._refs[id];
-        if (typeof refVal == "string")
-          refVal = self._refs[refVal];
-        if (refVal && refVal.schema) {
-          if (!equal(sch, refVal.schema))
-            throw new Error('id "' + id + '" resolves to more than one schema');
-        } else if (id != normalizeId(fullPath)) {
-          if (id[0] == "#") {
-            if (localRefs[id] && !equal(sch, localRefs[id]))
-              throw new Error('id "' + id + '" resolves to more than one schema');
-            localRefs[id] = sch;
-          } else {
-            self._refs[id] = fullPath;
+    traverse(
+      schema,
+      { allKeys: true },
+      function (sch, jsonPtr, rootSchema, parentJsonPtr, parentKeyword, parentSchema, keyIndex) {
+        if (jsonPtr === "") return;
+        var id = self._getId(sch);
+        var baseId = baseIds[parentJsonPtr];
+        var fullPath = fullPaths[parentJsonPtr] + "/" + parentKeyword;
+        if (keyIndex !== undefined)
+          fullPath += "/" + (typeof keyIndex == "number" ? keyIndex : util3.escapeFragment(keyIndex));
+        if (typeof id == "string") {
+          id = baseId = normalizeId(baseId ? URI.resolve(baseId, id) : id);
+          var refVal = self._refs[id];
+          if (typeof refVal == "string") refVal = self._refs[refVal];
+          if (refVal && refVal.schema) {
+            if (!equal(sch, refVal.schema)) throw new Error('id "' + id + '" resolves to more than one schema');
+          } else if (id != normalizeId(fullPath)) {
+            if (id[0] == "#") {
+              if (localRefs[id] && !equal(sch, localRefs[id]))
+                throw new Error('id "' + id + '" resolves to more than one schema');
+              localRefs[id] = sch;
+            } else {
+              self._refs[id] = fullPath;
+            }
           }
         }
+        baseIds[jsonPtr] = baseId;
+        fullPaths[jsonPtr] = fullPath;
       }
-      baseIds[jsonPtr] = baseId;
-      fullPaths[jsonPtr] = fullPath;
-    });
+    );
     return localRefs;
   }
 });
@@ -1634,14 +1963,14 @@ var require_error_classes = __commonJS((exports, module) => {
   var resolve = require_resolve();
   module.exports = {
     Validation: errorSubclass(ValidationError),
-    MissingRef: errorSubclass(MissingRefError)
+    MissingRef: errorSubclass(MissingRefError),
   };
   function ValidationError(errors2) {
     this.message = "validation failed";
     this.errors = errors2;
     this.ajv = this.validation = true;
   }
-  MissingRefError.message = function(baseId, ref) {
+  MissingRefError.message = function (baseId, ref) {
     return "can't resolve reference " + ref + " from id " + baseId;
   };
   function MissingRefError(baseId, ref, message) {
@@ -1658,64 +1987,56 @@ var require_error_classes = __commonJS((exports, module) => {
 
 // node_modules/fast-json-stable-stringify/index.js
 var require_fast_json_stable_stringify = __commonJS((exports, module) => {
-  module.exports = function(data, opts) {
-    if (!opts)
-      opts = {};
-    if (typeof opts === "function")
-      opts = { cmp: opts };
+  module.exports = function (data, opts) {
+    if (!opts) opts = {};
+    if (typeof opts === "function") opts = { cmp: opts };
     var cycles = typeof opts.cycles === "boolean" ? opts.cycles : false;
-    var cmp = opts.cmp && function(f) {
-      return function(node) {
-        return function(a, b) {
-          var aobj = { key: a, value: node[a] };
-          var bobj = { key: b, value: node[b] };
-          return f(aobj, bobj);
+    var cmp =
+      opts.cmp &&
+      (function (f) {
+        return function (node) {
+          return function (a, b) {
+            var aobj = { key: a, value: node[a] };
+            var bobj = { key: b, value: node[b] };
+            return f(aobj, bobj);
+          };
         };
-      };
-    }(opts.cmp);
+      })(opts.cmp);
     var seen = [];
-    return function stringify(node) {
+    return (function stringify(node) {
       if (node && node.toJSON && typeof node.toJSON === "function") {
         node = node.toJSON();
       }
-      if (node === undefined)
-        return;
-      if (typeof node == "number")
-        return isFinite(node) ? "" + node : "null";
-      if (typeof node !== "object")
-        return JSON.stringify(node);
+      if (node === undefined) return;
+      if (typeof node == "number") return isFinite(node) ? "" + node : "null";
+      if (typeof node !== "object") return JSON.stringify(node);
       var i, out;
       if (Array.isArray(node)) {
         out = "[";
-        for (i = 0;i < node.length; i++) {
-          if (i)
-            out += ",";
+        for (i = 0; i < node.length; i++) {
+          if (i) out += ",";
           out += stringify(node[i]) || "null";
         }
         return out + "]";
       }
-      if (node === null)
-        return "null";
+      if (node === null) return "null";
       if (seen.indexOf(node) !== -1) {
-        if (cycles)
-          return JSON.stringify("__cycle__");
+        if (cycles) return JSON.stringify("__cycle__");
         throw new TypeError("Converting circular structure to JSON");
       }
       var seenIndex = seen.push(node) - 1;
       var keys = Object.keys(node).sort(cmp && cmp(node));
       out = "";
-      for (i = 0;i < keys.length; i++) {
+      for (i = 0; i < keys.length; i++) {
         var key = keys[i];
         var value = stringify(node[key]);
-        if (!value)
-          continue;
-        if (out)
-          out += ",";
+        if (!value) continue;
+        if (out) out += ",";
         out += JSON.stringify(key) + ":" + value;
       }
       seen.splice(seenIndex, 1);
       return "{" + out + "}";
-    }(data);
+    })(data);
   };
 });
 
@@ -1723,15 +2044,15 @@ var require_fast_json_stable_stringify = __commonJS((exports, module) => {
 var require_validate = __commonJS((exports, module) => {
   module.exports = function generate_validate(it, $keyword, $ruleType) {
     var out = "";
-    var $async = it.schema.$async === true, $refKeywords = it.util.schemaHasRulesExcept(it.schema, it.RULES.all, "$ref"), $id = it.self._getId(it.schema);
+    var $async = it.schema.$async === true,
+      $refKeywords = it.util.schemaHasRulesExcept(it.schema, it.RULES.all, "$ref"),
+      $id = it.self._getId(it.schema);
     if (it.opts.strictKeywords) {
       var $unknownKwd = it.util.schemaUnknownRules(it.schema, it.RULES.keywords);
       if ($unknownKwd) {
         var $keywordsMsg = "unknown keyword: " + $unknownKwd;
-        if (it.opts.strictKeywords === "log")
-          it.logger.warn($keywordsMsg);
-        else
-          throw new Error($keywordsMsg);
+        if (it.opts.strictKeywords === "log") it.logger.warn($keywordsMsg);
+        else throw new Error($keywordsMsg);
       }
     }
     if (it.isTop) {
@@ -1766,7 +2087,14 @@ var require_validate = __commonJS((exports, module) => {
         $$outStack.push(out);
         out = "";
         if (it.createErrors !== false) {
-          out += " { keyword: '" + ($errorKeyword || "false schema") + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: {} ";
+          out +=
+            " { keyword: '" +
+            ($errorKeyword || "false schema") +
+            "' , dataPath: (dataPath || '') + " +
+            it.errorPath +
+            " , schemaPath: " +
+            it.util.toQuotedString($errSchemaPath) +
+            " , params: {} ";
           if (it.opts.messages !== false) {
             out += " , message: 'boolean schema is false' ";
           }
@@ -1805,36 +2133,39 @@ var require_validate = __commonJS((exports, module) => {
       return out;
     }
     if (it.isTop) {
-      var $top = it.isTop, $lvl = it.level = 0, $dataLvl = it.dataLevel = 0, $data = "data";
+      var $top = it.isTop,
+        $lvl = (it.level = 0),
+        $dataLvl = (it.dataLevel = 0),
+        $data = "data";
       it.rootId = it.resolve.fullPath(it.self._getId(it.root.schema));
       it.baseId = it.baseId || it.rootId;
       delete it.isTop;
       it.dataPathArr = [""];
       if (it.schema.default !== undefined && it.opts.useDefaults && it.opts.strictDefaults) {
         var $defaultMsg = "default is ignored in the schema root";
-        if (it.opts.strictDefaults === "log")
-          it.logger.warn($defaultMsg);
-        else
-          throw new Error($defaultMsg);
+        if (it.opts.strictDefaults === "log") it.logger.warn($defaultMsg);
+        else throw new Error($defaultMsg);
       }
       out += " var vErrors = null; ";
       out += " var errors = 0;     ";
       out += " if (rootData === undefined) rootData = data; ";
     } else {
-      var { level: $lvl, dataLevel: $dataLvl } = it, $data = "data" + ($dataLvl || "");
-      if ($id)
-        it.baseId = it.resolve.url(it.baseId, $id);
-      if ($async && !it.async)
-        throw new Error("async schema in sync schema");
+      var { level: $lvl, dataLevel: $dataLvl } = it,
+        $data = "data" + ($dataLvl || "");
+      if ($id) it.baseId = it.resolve.url(it.baseId, $id);
+      if ($async && !it.async) throw new Error("async schema in sync schema");
       out += " var errs_" + $lvl + " = errors;";
     }
-    var $valid = "valid" + $lvl, $breakOnError = !it.opts.allErrors, $closingBraces1 = "", $closingBraces2 = "";
+    var $valid = "valid" + $lvl,
+      $breakOnError = !it.opts.allErrors,
+      $closingBraces1 = "",
+      $closingBraces2 = "";
     var $errorKeyword;
-    var $typeSchema = it.schema.type, $typeIsArray = Array.isArray($typeSchema);
+    var $typeSchema = it.schema.type,
+      $typeIsArray = Array.isArray($typeSchema);
     if ($typeSchema && it.opts.nullable && it.schema.nullable === true) {
       if ($typeIsArray) {
-        if ($typeSchema.indexOf("null") == -1)
-          $typeSchema = $typeSchema.concat("null");
+        if ($typeSchema.indexOf("null") == -1) $typeSchema = $typeSchema.concat("null");
       } else if ($typeSchema != "null") {
         $typeSchema = [$typeSchema, "null"];
         $typeIsArray = true;
@@ -1846,7 +2177,9 @@ var require_validate = __commonJS((exports, module) => {
     }
     if (it.schema.$ref && $refKeywords) {
       if (it.opts.extendRefs == "fail") {
-        throw new Error('$ref: validation keywords used in schema at path "' + it.errSchemaPath + '" (see option extendRefs)');
+        throw new Error(
+          '$ref: validation keywords used in schema at path "' + it.errSchemaPath + '" (see option extendRefs)'
+        );
       } else if (it.opts.extendRefs !== true) {
         $refKeywords = false;
         it.logger.warn('$ref: keywords ignored in schema at path "' + it.errSchemaPath + '"');
@@ -1860,36 +2193,126 @@ var require_validate = __commonJS((exports, module) => {
         var $coerceToTypes = it.util.coerceToTypes(it.opts.coerceTypes, $typeSchema);
       }
       var $rulesGroup = it.RULES.types[$typeSchema];
-      if ($coerceToTypes || $typeIsArray || $rulesGroup === true || $rulesGroup && !$shouldUseGroup($rulesGroup)) {
-        var $schemaPath = it.schemaPath + ".type", $errSchemaPath = it.errSchemaPath + "/type";
-        var $schemaPath = it.schemaPath + ".type", $errSchemaPath = it.errSchemaPath + "/type", $method = $typeIsArray ? "checkDataTypes" : "checkDataType";
+      if ($coerceToTypes || $typeIsArray || $rulesGroup === true || ($rulesGroup && !$shouldUseGroup($rulesGroup))) {
+        var $schemaPath = it.schemaPath + ".type",
+          $errSchemaPath = it.errSchemaPath + "/type";
+        var $schemaPath = it.schemaPath + ".type",
+          $errSchemaPath = it.errSchemaPath + "/type",
+          $method = $typeIsArray ? "checkDataTypes" : "checkDataType";
         out += " if (" + it.util[$method]($typeSchema, $data, it.opts.strictNumbers, true) + ") { ";
         if ($coerceToTypes) {
-          var $dataType = "dataType" + $lvl, $coerced = "coerced" + $lvl;
+          var $dataType = "dataType" + $lvl,
+            $coerced = "coerced" + $lvl;
           out += " var " + $dataType + " = typeof " + $data + "; var " + $coerced + " = undefined; ";
           if (it.opts.coerceTypes == "array") {
-            out += " if (" + $dataType + " == 'object' && Array.isArray(" + $data + ") && " + $data + ".length == 1) { " + $data + " = " + $data + "[0]; " + $dataType + " = typeof " + $data + "; if (" + it.util.checkDataType(it.schema.type, $data, it.opts.strictNumbers) + ") " + $coerced + " = " + $data + "; } ";
+            out +=
+              " if (" +
+              $dataType +
+              " == 'object' && Array.isArray(" +
+              $data +
+              ") && " +
+              $data +
+              ".length == 1) { " +
+              $data +
+              " = " +
+              $data +
+              "[0]; " +
+              $dataType +
+              " = typeof " +
+              $data +
+              "; if (" +
+              it.util.checkDataType(it.schema.type, $data, it.opts.strictNumbers) +
+              ") " +
+              $coerced +
+              " = " +
+              $data +
+              "; } ";
           }
           out += " if (" + $coerced + " !== undefined) ; ";
           var arr1 = $coerceToTypes;
           if (arr1) {
-            var $type, $i = -1, l1 = arr1.length - 1;
+            var $type,
+              $i = -1,
+              l1 = arr1.length - 1;
             while ($i < l1) {
-              $type = arr1[$i += 1];
+              $type = arr1[($i += 1)];
               if ($type == "string") {
-                out += " else if (" + $dataType + " == 'number' || " + $dataType + " == 'boolean') " + $coerced + " = '' + " + $data + "; else if (" + $data + " === null) " + $coerced + " = ''; ";
+                out +=
+                  " else if (" +
+                  $dataType +
+                  " == 'number' || " +
+                  $dataType +
+                  " == 'boolean') " +
+                  $coerced +
+                  " = '' + " +
+                  $data +
+                  "; else if (" +
+                  $data +
+                  " === null) " +
+                  $coerced +
+                  " = ''; ";
               } else if ($type == "number" || $type == "integer") {
-                out += " else if (" + $dataType + " == 'boolean' || " + $data + " === null || (" + $dataType + " == 'string' && " + $data + " && " + $data + " == +" + $data + " ";
+                out +=
+                  " else if (" +
+                  $dataType +
+                  " == 'boolean' || " +
+                  $data +
+                  " === null || (" +
+                  $dataType +
+                  " == 'string' && " +
+                  $data +
+                  " && " +
+                  $data +
+                  " == +" +
+                  $data +
+                  " ";
                 if ($type == "integer") {
                   out += " && !(" + $data + " % 1)";
                 }
                 out += ")) " + $coerced + " = +" + $data + "; ";
               } else if ($type == "boolean") {
-                out += " else if (" + $data + " === 'false' || " + $data + " === 0 || " + $data + " === null) " + $coerced + " = false; else if (" + $data + " === 'true' || " + $data + " === 1) " + $coerced + " = true; ";
+                out +=
+                  " else if (" +
+                  $data +
+                  " === 'false' || " +
+                  $data +
+                  " === 0 || " +
+                  $data +
+                  " === null) " +
+                  $coerced +
+                  " = false; else if (" +
+                  $data +
+                  " === 'true' || " +
+                  $data +
+                  " === 1) " +
+                  $coerced +
+                  " = true; ";
               } else if ($type == "null") {
-                out += " else if (" + $data + " === '' || " + $data + " === 0 || " + $data + " === false) " + $coerced + " = null; ";
+                out +=
+                  " else if (" +
+                  $data +
+                  " === '' || " +
+                  $data +
+                  " === 0 || " +
+                  $data +
+                  " === false) " +
+                  $coerced +
+                  " = null; ";
               } else if (it.opts.coerceTypes == "array" && $type == "array") {
-                out += " else if (" + $dataType + " == 'string' || " + $dataType + " == 'number' || " + $dataType + " == 'boolean' || " + $data + " == null) " + $coerced + " = [" + $data + "]; ";
+                out +=
+                  " else if (" +
+                  $dataType +
+                  " == 'string' || " +
+                  $dataType +
+                  " == 'number' || " +
+                  $dataType +
+                  " == 'boolean' || " +
+                  $data +
+                  " == null) " +
+                  $coerced +
+                  " = [" +
+                  $data +
+                  "]; ";
               }
             }
           }
@@ -1898,7 +2321,14 @@ var require_validate = __commonJS((exports, module) => {
           $$outStack.push(out);
           out = "";
           if (it.createErrors !== false) {
-            out += " { keyword: '" + ($errorKeyword || "type") + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { type: '";
+            out +=
+              " { keyword: '" +
+              ($errorKeyword || "type") +
+              "' , dataPath: (dataPath || '') + " +
+              it.errorPath +
+              " , schemaPath: " +
+              it.util.toQuotedString($errSchemaPath) +
+              " , params: { type: '";
             if ($typeIsArray) {
               out += "" + $typeSchema.join(",");
             } else {
@@ -1915,7 +2345,14 @@ var require_validate = __commonJS((exports, module) => {
               out += "' ";
             }
             if (it.opts.verbose) {
-              out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+              out +=
+                " , schema: validate.schema" +
+                $schemaPath +
+                " , parentSchema: validate.schema" +
+                it.schemaPath +
+                " , data: " +
+                $data +
+                " ";
             }
             out += " } ";
           } else {
@@ -1930,10 +2367,12 @@ var require_validate = __commonJS((exports, module) => {
               out += " validate.errors = [" + __err + "]; return false; ";
             }
           } else {
-            out += " var err = " + __err + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
+            out +=
+              " var err = " + __err + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
           }
           out += " } if (" + $coerced + " !== undefined) {  ";
-          var $parentData = $dataLvl ? "data" + ($dataLvl - 1 || "") : "parentData", $parentDataProperty = $dataLvl ? it.dataPathArr[$dataLvl] : "parentDataProperty";
+          var $parentData = $dataLvl ? "data" + ($dataLvl - 1 || "") : "parentData",
+            $parentDataProperty = $dataLvl ? it.dataPathArr[$dataLvl] : "parentDataProperty";
           out += " " + $data + " = " + $coerced + "; ";
           if (!$dataLvl) {
             out += "if (" + $parentData + " !== undefined)";
@@ -1944,7 +2383,14 @@ var require_validate = __commonJS((exports, module) => {
           $$outStack.push(out);
           out = "";
           if (it.createErrors !== false) {
-            out += " { keyword: '" + ($errorKeyword || "type") + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { type: '";
+            out +=
+              " { keyword: '" +
+              ($errorKeyword || "type") +
+              "' , dataPath: (dataPath || '') + " +
+              it.errorPath +
+              " , schemaPath: " +
+              it.util.toQuotedString($errSchemaPath) +
+              " , params: { type: '";
             if ($typeIsArray) {
               out += "" + $typeSchema.join(",");
             } else {
@@ -1961,7 +2407,14 @@ var require_validate = __commonJS((exports, module) => {
               out += "' ";
             }
             if (it.opts.verbose) {
-              out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+              out +=
+                " , schema: validate.schema" +
+                $schemaPath +
+                " , parentSchema: validate.schema" +
+                it.schemaPath +
+                " , data: " +
+                $data +
+                " ";
             }
             out += " } ";
           } else {
@@ -1976,7 +2429,8 @@ var require_validate = __commonJS((exports, module) => {
               out += " validate.errors = [" + __err + "]; return false; ";
             }
           } else {
-            out += " var err = " + __err + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
+            out +=
+              " var err = " + __err + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
           }
         }
         out += " } ";
@@ -1997,31 +2451,34 @@ var require_validate = __commonJS((exports, module) => {
     } else {
       var arr2 = it.RULES;
       if (arr2) {
-        var $rulesGroup, i2 = -1, l2 = arr2.length - 1;
+        var $rulesGroup,
+          i2 = -1,
+          l2 = arr2.length - 1;
         while (i2 < l2) {
-          $rulesGroup = arr2[i2 += 1];
+          $rulesGroup = arr2[(i2 += 1)];
           if ($shouldUseGroup($rulesGroup)) {
             if ($rulesGroup.type) {
               out += " if (" + it.util.checkDataType($rulesGroup.type, $data, it.opts.strictNumbers) + ") { ";
             }
             if (it.opts.useDefaults) {
               if ($rulesGroup.type == "object" && it.schema.properties) {
-                var $schema = it.schema.properties, $schemaKeys = Object.keys($schema);
+                var $schema = it.schema.properties,
+                  $schemaKeys = Object.keys($schema);
                 var arr3 = $schemaKeys;
                 if (arr3) {
-                  var $propertyKey, i3 = -1, l3 = arr3.length - 1;
+                  var $propertyKey,
+                    i3 = -1,
+                    l3 = arr3.length - 1;
                   while (i3 < l3) {
-                    $propertyKey = arr3[i3 += 1];
+                    $propertyKey = arr3[(i3 += 1)];
                     var $sch = $schema[$propertyKey];
                     if ($sch.default !== undefined) {
                       var $passData = $data + it.util.getProperty($propertyKey);
                       if (it.compositeRule) {
                         if (it.opts.strictDefaults) {
                           var $defaultMsg = "default is ignored for: " + $passData;
-                          if (it.opts.strictDefaults === "log")
-                            it.logger.warn($defaultMsg);
-                          else
-                            throw new Error($defaultMsg);
+                          if (it.opts.strictDefaults === "log") it.logger.warn($defaultMsg);
+                          else throw new Error($defaultMsg);
                         }
                       } else {
                         out += " if (" + $passData + " === undefined ";
@@ -2042,18 +2499,18 @@ var require_validate = __commonJS((exports, module) => {
               } else if ($rulesGroup.type == "array" && Array.isArray(it.schema.items)) {
                 var arr4 = it.schema.items;
                 if (arr4) {
-                  var $sch, $i = -1, l4 = arr4.length - 1;
+                  var $sch,
+                    $i = -1,
+                    l4 = arr4.length - 1;
                   while ($i < l4) {
-                    $sch = arr4[$i += 1];
+                    $sch = arr4[($i += 1)];
                     if ($sch.default !== undefined) {
                       var $passData = $data + "[" + $i + "]";
                       if (it.compositeRule) {
                         if (it.opts.strictDefaults) {
                           var $defaultMsg = "default is ignored for: " + $passData;
-                          if (it.opts.strictDefaults === "log")
-                            it.logger.warn($defaultMsg);
-                          else
-                            throw new Error($defaultMsg);
+                          if (it.opts.strictDefaults === "log") it.logger.warn($defaultMsg);
+                          else throw new Error($defaultMsg);
                         }
                       } else {
                         out += " if (" + $passData + " === undefined ";
@@ -2075,9 +2532,11 @@ var require_validate = __commonJS((exports, module) => {
             }
             var arr5 = $rulesGroup.rules;
             if (arr5) {
-              var $rule, i5 = -1, l5 = arr5.length - 1;
+              var $rule,
+                i5 = -1,
+                l5 = arr5.length - 1;
               while (i5 < l5) {
-                $rule = arr5[i5 += 1];
+                $rule = arr5[(i5 += 1)];
                 if ($shouldUseRule($rule)) {
                   var $code = $rule.code(it, $rule.keyword, $rulesGroup.type);
                   if ($code) {
@@ -2097,12 +2556,20 @@ var require_validate = __commonJS((exports, module) => {
               out += " } ";
               if ($typeSchema && $typeSchema === $rulesGroup.type && !$coerceToTypes) {
                 out += " else { ";
-                var $schemaPath = it.schemaPath + ".type", $errSchemaPath = it.errSchemaPath + "/type";
+                var $schemaPath = it.schemaPath + ".type",
+                  $errSchemaPath = it.errSchemaPath + "/type";
                 var $$outStack = $$outStack || [];
                 $$outStack.push(out);
                 out = "";
                 if (it.createErrors !== false) {
-                  out += " { keyword: '" + ($errorKeyword || "type") + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { type: '";
+                  out +=
+                    " { keyword: '" +
+                    ($errorKeyword || "type") +
+                    "' , dataPath: (dataPath || '') + " +
+                    it.errorPath +
+                    " , schemaPath: " +
+                    it.util.toQuotedString($errSchemaPath) +
+                    " , params: { type: '";
                   if ($typeIsArray) {
                     out += "" + $typeSchema.join(",");
                   } else {
@@ -2119,7 +2586,14 @@ var require_validate = __commonJS((exports, module) => {
                     out += "' ";
                   }
                   if (it.opts.verbose) {
-                    out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+                    out +=
+                      " , schema: validate.schema" +
+                      $schemaPath +
+                      " , parentSchema: validate.schema" +
+                      it.schemaPath +
+                      " , data: " +
+                      $data +
+                      " ";
                   }
                   out += " } ";
                 } else {
@@ -2134,7 +2608,10 @@ var require_validate = __commonJS((exports, module) => {
                     out += " validate.errors = [" + __err + "]; return false; ";
                   }
                 } else {
-                  out += " var err = " + __err + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
+                  out +=
+                    " var err = " +
+                    __err +
+                    ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
                 }
                 out += " } ";
               }
@@ -2170,18 +2647,14 @@ var require_validate = __commonJS((exports, module) => {
     }
     function $shouldUseGroup($rulesGroup2) {
       var rules = $rulesGroup2.rules;
-      for (var i = 0;i < rules.length; i++)
-        if ($shouldUseRule(rules[i]))
-          return true;
+      for (var i = 0; i < rules.length; i++) if ($shouldUseRule(rules[i])) return true;
     }
     function $shouldUseRule($rule2) {
-      return it.schema[$rule2.keyword] !== undefined || $rule2.implements && $ruleImplementsSomeKeyword($rule2);
+      return it.schema[$rule2.keyword] !== undefined || ($rule2.implements && $ruleImplementsSomeKeyword($rule2));
     }
     function $ruleImplementsSomeKeyword($rule2) {
       var impl = $rule2.implements;
-      for (var i = 0;i < impl.length; i++)
-        if (it.schema[impl[i]] !== undefined)
-          return true;
+      for (var i = 0; i < impl.length; i++) if (it.schema[impl[i]] !== undefined) return true;
     }
     return out;
   };
@@ -2199,12 +2672,19 @@ var require_compile = __commonJS((exports, module) => {
   var ValidationError = errorClasses.Validation;
   module.exports = compile;
   function compile(schema, root, localRefs, baseId) {
-    var self = this, opts = this._opts, refVal = [undefined], refs = {}, patterns = [], patternsHash = {}, defaults = [], defaultsHash = {}, customRules = [];
+    var self = this,
+      opts = this._opts,
+      refVal = [undefined],
+      refs = {},
+      patterns = [],
+      patternsHash = {},
+      defaults = [],
+      defaultsHash = {},
+      customRules = [];
     root = root || { schema, refVal, refs };
     var c = checkCompiling.call(this, schema, root, baseId);
     var compilation = this._compilations[c.index];
-    if (c.compiling)
-      return compilation.callValidate = callValidate;
+    if (c.compiling) return (compilation.callValidate = callValidate);
     var formats = this._formats;
     var RULES = this.RULES;
     try {
@@ -2218,8 +2698,7 @@ var require_compile = __commonJS((exports, module) => {
         cv.refVal = v.refVal;
         cv.root = v.root;
         cv.$async = v.$async;
-        if (opts.sourceCode)
-          cv.source = v.source;
+        if (opts.sourceCode) cv.source = v.source;
       }
       return v;
     } finally {
@@ -2232,9 +2711,8 @@ var require_compile = __commonJS((exports, module) => {
       return result;
     }
     function localCompile(_schema, _root, localRefs2, baseId2) {
-      var isRoot = !_root || _root && _root.schema == _schema;
-      if (_root.schema != root.schema)
-        return compile.call(self, _schema, _root, localRefs2, baseId2);
+      var isRoot = !_root || (_root && _root.schema == _schema);
+      if (_root.schema != root.schema) return compile.call(self, _schema, _root, localRefs2, baseId2);
       var $async = _schema.$async === true;
       var sourceCode = validateGenerator({
         isTop: true,
@@ -2257,15 +2735,42 @@ var require_compile = __commonJS((exports, module) => {
         opts,
         formats,
         logger: self.logger,
-        self
+        self,
       });
-      sourceCode = vars(refVal, refValCode) + vars(patterns, patternCode) + vars(defaults, defaultCode) + vars(customRules, customRuleCode) + sourceCode;
-      if (opts.processCode)
-        sourceCode = opts.processCode(sourceCode, _schema);
+      sourceCode =
+        vars(refVal, refValCode) +
+        vars(patterns, patternCode) +
+        vars(defaults, defaultCode) +
+        vars(customRules, customRuleCode) +
+        sourceCode;
+      if (opts.processCode) sourceCode = opts.processCode(sourceCode, _schema);
       var validate;
       try {
-        var makeValidate = new Function("self", "RULES", "formats", "root", "refVal", "defaults", "customRules", "equal", "ucs2length", "ValidationError", sourceCode);
-        validate = makeValidate(self, RULES, formats, root, refVal, defaults, customRules, equal, ucs2length, ValidationError);
+        var makeValidate = new Function(
+          "self",
+          "RULES",
+          "formats",
+          "root",
+          "refVal",
+          "defaults",
+          "customRules",
+          "equal",
+          "ucs2length",
+          "ValidationError",
+          sourceCode
+        );
+        validate = makeValidate(
+          self,
+          RULES,
+          formats,
+          root,
+          refVal,
+          defaults,
+          customRules,
+          equal,
+          ucs2length,
+          ValidationError
+        );
         refVal[0] = validate;
       } catch (e) {
         self.logger.error("Error compiling schema, function code:", sourceCode);
@@ -2276,13 +2781,12 @@ var require_compile = __commonJS((exports, module) => {
       validate.refs = refs;
       validate.refVal = refVal;
       validate.root = isRoot ? validate : _root;
-      if ($async)
-        validate.$async = true;
+      if ($async) validate.$async = true;
       if (opts.sourceCode === true) {
         validate.source = {
           code: sourceCode,
           patterns,
-          defaults
+          defaults,
         };
       }
       return validate;
@@ -2309,7 +2813,9 @@ var require_compile = __commonJS((exports, module) => {
       if (v2 === undefined) {
         var localSchema = localRefs && localRefs[ref];
         if (localSchema) {
-          v2 = resolve.inlineRef(localSchema, opts.inlineRefs) ? localSchema : compile.call(self, localSchema, root, localRefs, baseId2);
+          v2 = resolve.inlineRef(localSchema, opts.inlineRefs)
+            ? localSchema
+            : compile.call(self, localSchema, root, localRefs, baseId2);
         }
       }
       if (v2 === undefined) {
@@ -2333,7 +2839,9 @@ var require_compile = __commonJS((exports, module) => {
       refVal[refId] = v2;
     }
     function resolvedRef(refVal2, code) {
-      return typeof refVal2 == "object" || typeof refVal2 == "boolean" ? { code, schema: refVal2, inline: true } : { code, $async: refVal2 && !!refVal2.$async };
+      return typeof refVal2 == "object" || typeof refVal2 == "boolean"
+        ? { code, schema: refVal2, inline: true }
+        : { code, $async: refVal2 && !!refVal2.$async };
     }
     function usePattern(regexStr) {
       var index = patternsHash[regexStr];
@@ -2351,8 +2859,7 @@ var require_compile = __commonJS((exports, module) => {
         case "string":
           return util3.toQuotedString(value);
         case "object":
-          if (value === null)
-            return "null";
+          if (value === null) return "null";
           var valueStr = stableStringify(value);
           var index = defaultsHash[valueStr];
           if (index === undefined) {
@@ -2365,69 +2872,66 @@ var require_compile = __commonJS((exports, module) => {
     function useCustomRule(rule, schema2, parentSchema, it) {
       if (self._opts.validateSchema !== false) {
         var deps = rule.definition.dependencies;
-        if (deps && !deps.every(function(keyword) {
-          return Object.prototype.hasOwnProperty.call(parentSchema, keyword);
-        }))
+        if (
+          deps &&
+          !deps.every(function (keyword) {
+            return Object.prototype.hasOwnProperty.call(parentSchema, keyword);
+          })
+        )
           throw new Error("parent schema must have all required keywords: " + deps.join(","));
         var validateSchema = rule.definition.validateSchema;
         if (validateSchema) {
           var valid = validateSchema(schema2);
           if (!valid) {
             var message = "keyword schema is invalid: " + self.errorsText(validateSchema.errors);
-            if (self._opts.validateSchema == "log")
-              self.logger.error(message);
-            else
-              throw new Error(message);
+            if (self._opts.validateSchema == "log") self.logger.error(message);
+            else throw new Error(message);
           }
         }
       }
-      var compile2 = rule.definition.compile, inline = rule.definition.inline, macro = rule.definition.macro;
+      var compile2 = rule.definition.compile,
+        inline = rule.definition.inline,
+        macro = rule.definition.macro;
       var validate;
       if (compile2) {
         validate = compile2.call(self, schema2, parentSchema, it);
       } else if (macro) {
         validate = macro.call(self, schema2, parentSchema, it);
-        if (opts.validateSchema !== false)
-          self.validateSchema(validate, true);
+        if (opts.validateSchema !== false) self.validateSchema(validate, true);
       } else if (inline) {
         validate = inline.call(self, it, rule.keyword, schema2, parentSchema);
       } else {
         validate = rule.definition.validate;
-        if (!validate)
-          return;
+        if (!validate) return;
       }
-      if (validate === undefined)
-        throw new Error('custom keyword "' + rule.keyword + '"failed to compile');
+      if (validate === undefined) throw new Error('custom keyword "' + rule.keyword + '"failed to compile');
       var index = customRules.length;
       customRules[index] = validate;
       return {
         code: "customRule" + index,
-        validate
+        validate,
       };
     }
   }
   function checkCompiling(schema, root, baseId) {
     var index = compIndex.call(this, schema, root, baseId);
-    if (index >= 0)
-      return { index, compiling: true };
+    if (index >= 0) return { index, compiling: true };
     index = this._compilations.length;
     this._compilations[index] = {
       schema,
       root,
-      baseId
+      baseId,
     };
     return { index, compiling: false };
   }
   function endCompiling(schema, root, baseId) {
     var i = compIndex.call(this, schema, root, baseId);
-    if (i >= 0)
-      this._compilations.splice(i, 1);
+    if (i >= 0) this._compilations.splice(i, 1);
   }
   function compIndex(schema, root, baseId) {
-    for (var i = 0;i < this._compilations.length; i++) {
+    for (var i = 0; i < this._compilations.length; i++) {
       var c = this._compilations[i];
-      if (c.schema == schema && c.root == root && c.baseId == baseId)
-        return i;
+      if (c.schema == schema && c.root == root && c.baseId == baseId) return i;
     }
     return -1;
   }
@@ -2444,20 +2948,18 @@ var require_compile = __commonJS((exports, module) => {
     return "var customRule" + i + " = customRules[" + i + "];";
   }
   function vars(arr, statement) {
-    if (!arr.length)
-      return "";
+    if (!arr.length) return "";
     var code = "";
-    for (var i = 0;i < arr.length; i++)
-      code += statement(i, arr);
+    for (var i = 0; i < arr.length; i++) code += statement(i, arr);
     return code;
   }
 });
 
 // node_modules/ajv/lib/cache.js
 var require_cache = __commonJS((exports, module) => {
-  var Cache = module.exports = function Cache() {
+  var Cache = (module.exports = function Cache() {
     this._cache = {};
-  };
+  });
   Cache.prototype.put = function Cache_put(key, value) {
     this._cache[key] = value;
   };
@@ -2478,11 +2980,16 @@ var require_formats = __commonJS((exports, module) => {
   var DATE = /^(\d\d\d\d)-(\d\d)-(\d\d)$/;
   var DAYS = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
   var TIME = /^(\d\d):(\d\d):(\d\d)(\.\d+)?(z|[+-]\d\d(?::?\d\d)?)?$/i;
-  var HOSTNAME = /^(?=.{1,253}\.?$)[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[-0-9a-z]{0,61}[0-9a-z])?)*\.?$/i;
-  var URI = /^(?:[a-z][a-z0-9+\-.]*:)(?:\/?\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:]|%[0-9a-f]{2})*@)?(?:\[(?:(?:(?:(?:[0-9a-f]{1,4}:){6}|::(?:[0-9a-f]{1,4}:){5}|(?:[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){4}|(?:(?:[0-9a-f]{1,4}:){0,1}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){3}|(?:(?:[0-9a-f]{1,4}:){0,2}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){2}|(?:(?:[0-9a-f]{1,4}:){0,3}[0-9a-f]{1,4})?::[0-9a-f]{1,4}:|(?:(?:[0-9a-f]{1,4}:){0,4}[0-9a-f]{1,4})?::)(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))|(?:(?:[0-9a-f]{1,4}:){0,5}[0-9a-f]{1,4})?::[0-9a-f]{1,4}|(?:(?:[0-9a-f]{1,4}:){0,6}[0-9a-f]{1,4})?::)|[Vv][0-9a-f]+\.[a-z0-9\-._~!$&'()*+,;=:]+)\]|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)|(?:[a-z0-9\-._~!$&'()*+,;=]|%[0-9a-f]{2})*)(?::\d*)?(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*|\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*)?|(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*)(?:\?(?:[a-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9a-f]{2})*)?(?:#(?:[a-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9a-f]{2})*)?$/i;
-  var URIREF = /^(?:[a-z][a-z0-9+\-.]*:)?(?:\/?\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:]|%[0-9a-f]{2})*@)?(?:\[(?:(?:(?:(?:[0-9a-f]{1,4}:){6}|::(?:[0-9a-f]{1,4}:){5}|(?:[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){4}|(?:(?:[0-9a-f]{1,4}:){0,1}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){3}|(?:(?:[0-9a-f]{1,4}:){0,2}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){2}|(?:(?:[0-9a-f]{1,4}:){0,3}[0-9a-f]{1,4})?::[0-9a-f]{1,4}:|(?:(?:[0-9a-f]{1,4}:){0,4}[0-9a-f]{1,4})?::)(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))|(?:(?:[0-9a-f]{1,4}:){0,5}[0-9a-f]{1,4})?::[0-9a-f]{1,4}|(?:(?:[0-9a-f]{1,4}:){0,6}[0-9a-f]{1,4})?::)|[Vv][0-9a-f]+\.[a-z0-9\-._~!$&'()*+,;=:]+)\]|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)|(?:[a-z0-9\-._~!$&'"()*+,;=]|%[0-9a-f]{2})*)(?::\d*)?(?:\/(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})*)*|\/(?:(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})*)*)?|(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})*)*)?(?:\?(?:[a-z0-9\-._~!$&'"()*+,;=:@/?]|%[0-9a-f]{2})*)?(?:#(?:[a-z0-9\-._~!$&'"()*+,;=:@/?]|%[0-9a-f]{2})*)?$/i;
-  var URITEMPLATE = /^(?:(?:[^\x00-\x20"'<>%\\^`{|}]|%[0-9a-f]{2})|\{[+#./;?&=,!@|]?(?:[a-z0-9_]|%[0-9a-f]{2})+(?::[1-9][0-9]{0,3}|\*)?(?:,(?:[a-z0-9_]|%[0-9a-f]{2})+(?::[1-9][0-9]{0,3}|\*)?)*\})*$/i;
-  var URL2 = /^(?:(?:http[s\u017F]?|ftp):\/\/)(?:(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+(?::(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*)?@)?(?:(?!10(?:\.[0-9]{1,3}){3})(?!127(?:\.[0-9]{1,3}){3})(?!169\.254(?:\.[0-9]{1,3}){2})(?!192\.168(?:\.[0-9]{1,3}){2})(?!172\.(?:1[6-9]|2[0-9]|3[01])(?:\.[0-9]{1,3}){2})(?:[1-9][0-9]?|1[0-9][0-9]|2[01][0-9]|22[0-3])(?:\.(?:1?[0-9]{1,2}|2[0-4][0-9]|25[0-5])){2}(?:\.(?:[1-9][0-9]?|1[0-9][0-9]|2[0-4][0-9]|25[0-4]))|(?:(?:(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+-)*(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+)(?:\.(?:(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+-)*(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+)*(?:\.(?:(?:[a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]){2,})))(?::[0-9]{2,5})?(?:\/(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*)?$/i;
+  var HOSTNAME =
+    /^(?=.{1,253}\.?$)[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[-0-9a-z]{0,61}[0-9a-z])?)*\.?$/i;
+  var URI =
+    /^(?:[a-z][a-z0-9+\-.]*:)(?:\/?\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:]|%[0-9a-f]{2})*@)?(?:\[(?:(?:(?:(?:[0-9a-f]{1,4}:){6}|::(?:[0-9a-f]{1,4}:){5}|(?:[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){4}|(?:(?:[0-9a-f]{1,4}:){0,1}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){3}|(?:(?:[0-9a-f]{1,4}:){0,2}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){2}|(?:(?:[0-9a-f]{1,4}:){0,3}[0-9a-f]{1,4})?::[0-9a-f]{1,4}:|(?:(?:[0-9a-f]{1,4}:){0,4}[0-9a-f]{1,4})?::)(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))|(?:(?:[0-9a-f]{1,4}:){0,5}[0-9a-f]{1,4})?::[0-9a-f]{1,4}|(?:(?:[0-9a-f]{1,4}:){0,6}[0-9a-f]{1,4})?::)|[Vv][0-9a-f]+\.[a-z0-9\-._~!$&'()*+,;=:]+)\]|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)|(?:[a-z0-9\-._~!$&'()*+,;=]|%[0-9a-f]{2})*)(?::\d*)?(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*|\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*)?|(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*)(?:\?(?:[a-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9a-f]{2})*)?(?:#(?:[a-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9a-f]{2})*)?$/i;
+  var URIREF =
+    /^(?:[a-z][a-z0-9+\-.]*:)?(?:\/?\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:]|%[0-9a-f]{2})*@)?(?:\[(?:(?:(?:(?:[0-9a-f]{1,4}:){6}|::(?:[0-9a-f]{1,4}:){5}|(?:[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){4}|(?:(?:[0-9a-f]{1,4}:){0,1}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){3}|(?:(?:[0-9a-f]{1,4}:){0,2}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){2}|(?:(?:[0-9a-f]{1,4}:){0,3}[0-9a-f]{1,4})?::[0-9a-f]{1,4}:|(?:(?:[0-9a-f]{1,4}:){0,4}[0-9a-f]{1,4})?::)(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))|(?:(?:[0-9a-f]{1,4}:){0,5}[0-9a-f]{1,4})?::[0-9a-f]{1,4}|(?:(?:[0-9a-f]{1,4}:){0,6}[0-9a-f]{1,4})?::)|[Vv][0-9a-f]+\.[a-z0-9\-._~!$&'()*+,;=:]+)\]|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)|(?:[a-z0-9\-._~!$&'"()*+,;=]|%[0-9a-f]{2})*)(?::\d*)?(?:\/(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})*)*|\/(?:(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})*)*)?|(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})*)*)?(?:\?(?:[a-z0-9\-._~!$&'"()*+,;=:@/?]|%[0-9a-f]{2})*)?(?:#(?:[a-z0-9\-._~!$&'"()*+,;=:@/?]|%[0-9a-f]{2})*)?$/i;
+  var URITEMPLATE =
+    /^(?:(?:[^\x00-\x20"'<>%\\^`{|}]|%[0-9a-f]{2})|\{[+#./;?&=,!@|]?(?:[a-z0-9_]|%[0-9a-f]{2})+(?::[1-9][0-9]{0,3}|\*)?(?:,(?:[a-z0-9_]|%[0-9a-f]{2})+(?::[1-9][0-9]{0,3}|\*)?)*\})*$/i;
+  var URL2 =
+    /^(?:(?:http[s\u017F]?|ftp):\/\/)(?:(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+(?::(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*)?@)?(?:(?!10(?:\.[0-9]{1,3}){3})(?!127(?:\.[0-9]{1,3}){3})(?!169\.254(?:\.[0-9]{1,3}){2})(?!192\.168(?:\.[0-9]{1,3}){2})(?!172\.(?:1[6-9]|2[0-9]|3[01])(?:\.[0-9]{1,3}){2})(?:[1-9][0-9]?|1[0-9][0-9]|2[01][0-9]|22[0-3])(?:\.(?:1?[0-9]{1,2}|2[0-4][0-9]|25[0-5])){2}(?:\.(?:[1-9][0-9]?|1[0-9][0-9]|2[0-4][0-9]|25[0-4]))|(?:(?:(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+-)*(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+)(?:\.(?:(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+-)*(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+)*(?:\.(?:(?:[a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]){2,})))(?::[0-9]{2,5})?(?:\/(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*)?$/i;
   var UUID = /^(?:urn:uuid:)?[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
   var JSON_POINTER = /^(?:\/(?:[^~/]|~0|~1)*)*$/;
   var JSON_POINTER_URI_FRAGMENT = /^#(?:\/(?:[a-z0-9_\-.!$&'()*+,;:=@]|%[0-9a-f]{2}|~0|~1)*)*$/i;
@@ -2495,12 +3002,14 @@ var require_formats = __commonJS((exports, module) => {
   formats.fast = {
     date: /^\d\d\d\d-[0-1]\d-[0-3]\d$/,
     time: /^(?:[0-2]\d:[0-5]\d:[0-5]\d|23:59:60)(?:\.\d+)?(?:z|[+-]\d\d(?::?\d\d)?)?$/i,
-    "date-time": /^\d\d\d\d-[0-1]\d-[0-3]\d[t\s](?:[0-2]\d:[0-5]\d:[0-5]\d|23:59:60)(?:\.\d+)?(?:z|[+-]\d\d(?::?\d\d)?)$/i,
+    "date-time":
+      /^\d\d\d\d-[0-1]\d-[0-3]\d[t\s](?:[0-2]\d:[0-5]\d:[0-5]\d|23:59:60)(?:\.\d+)?(?:z|[+-]\d\d(?::?\d\d)?)$/i,
     uri: /^(?:[a-z][a-z0-9+\-.]*:)(?:\/?\/)?[^\s]*$/i,
     "uri-reference": /^(?:(?:[a-z][a-z0-9+\-.]*:)?\/?\/)?(?:[^\\\s#][^\s#]*)?(?:#[^\\\s]*)?$/i,
     "uri-template": URITEMPLATE,
     url: URL2,
-    email: /^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*$/i,
+    email:
+      /^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*$/i,
     hostname: HOSTNAME,
     ipv4: /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$/,
     ipv6: /^\s*(?:(?:(?:[0-9a-f]{1,4}:){7}(?:[0-9a-f]{1,4}|:))|(?:(?:[0-9a-f]{1,4}:){6}(?::[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){5}(?:(?:(?::[0-9a-f]{1,4}){1,2})|:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){4}(?:(?:(?::[0-9a-f]{1,4}){1,3})|(?:(?::[0-9a-f]{1,4})?:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){3}(?:(?:(?::[0-9a-f]{1,4}){1,4})|(?:(?::[0-9a-f]{1,4}){0,2}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){2}(?:(?:(?::[0-9a-f]{1,4}){1,5})|(?:(?::[0-9a-f]{1,4}){0,3}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){1}(?:(?:(?::[0-9a-f]{1,4}){1,6})|(?:(?::[0-9a-f]{1,4}){0,4}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?::(?:(?:(?::[0-9a-f]{1,4}){1,7})|(?:(?::[0-9a-f]{1,4}){0,5}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(?:%.+)?\s*$/i,
@@ -2508,7 +3017,7 @@ var require_formats = __commonJS((exports, module) => {
     uuid: UUID,
     "json-pointer": JSON_POINTER,
     "json-pointer-uri-fragment": JSON_POINTER_URI_FRAGMENT,
-    "relative-json-pointer": RELATIVE_JSON_POINTER
+    "relative-json-pointer": RELATIVE_JSON_POINTER,
   };
   formats.full = {
     date,
@@ -2518,7 +3027,8 @@ var require_formats = __commonJS((exports, module) => {
     "uri-reference": URIREF,
     "uri-template": URITEMPLATE,
     url: URL2,
-    email: /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i,
+    email:
+      /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i,
     hostname: HOSTNAME,
     ipv4: /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$/,
     ipv6: /^\s*(?:(?:(?:[0-9a-f]{1,4}:){7}(?:[0-9a-f]{1,4}|:))|(?:(?:[0-9a-f]{1,4}:){6}(?::[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){5}(?:(?:(?::[0-9a-f]{1,4}){1,2})|:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){4}(?:(?:(?::[0-9a-f]{1,4}){1,3})|(?:(?::[0-9a-f]{1,4})?:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){3}(?:(?:(?::[0-9a-f]{1,4}){1,4})|(?:(?::[0-9a-f]{1,4}){0,2}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){2}(?:(?:(?::[0-9a-f]{1,4}){1,5})|(?:(?::[0-9a-f]{1,4}){0,3}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){1}(?:(?:(?::[0-9a-f]{1,4}){1,6})|(?:(?::[0-9a-f]{1,4}){0,4}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?::(?:(?:(?::[0-9a-f]{1,4}){1,7})|(?:(?::[0-9a-f]{1,4}){0,5}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(?:%.+)?\s*$/i,
@@ -2526,15 +3036,14 @@ var require_formats = __commonJS((exports, module) => {
     uuid: UUID,
     "json-pointer": JSON_POINTER,
     "json-pointer-uri-fragment": JSON_POINTER_URI_FRAGMENT,
-    "relative-json-pointer": RELATIVE_JSON_POINTER
+    "relative-json-pointer": RELATIVE_JSON_POINTER,
   };
   function isLeapYear(year) {
     return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
   }
   function date(str) {
     var matches = str.match(DATE);
-    if (!matches)
-      return false;
+    if (!matches) return false;
     var year = +matches[1];
     var month = +matches[2];
     var day = +matches[3];
@@ -2542,13 +3051,15 @@ var require_formats = __commonJS((exports, module) => {
   }
   function time(str, full) {
     var matches = str.match(TIME);
-    if (!matches)
-      return false;
+    if (!matches) return false;
     var hour = matches[1];
     var minute = matches[2];
     var second = matches[3];
     var timeZone = matches[5];
-    return (hour <= 23 && minute <= 59 && second <= 59 || hour == 23 && minute == 59 && second == 60) && (!full || timeZone);
+    return (
+      ((hour <= 23 && minute <= 59 && second <= 59) || (hour == 23 && minute == 59 && second == 60)) &&
+      (!full || timeZone)
+    );
   }
   var DATE_TIME_SEPARATOR = /t|\s/i;
   function date_time(str) {
@@ -2561,8 +3072,7 @@ var require_formats = __commonJS((exports, module) => {
   }
   var Z_ANCHOR = /[^\\]\\Z/;
   function regex(str) {
-    if (Z_ANCHOR.test(str))
-      return false;
+    if (Z_ANCHOR.test(str)) return false;
     try {
       new RegExp(str);
       return true;
@@ -2602,12 +3112,28 @@ var require_ref = __commonJS((exports, module) => {
           $$outStack.push(out);
           out = "";
           if (it.createErrors !== false) {
-            out += " { keyword: '" + "$ref" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { ref: '" + it.util.escapeQuotes($schema) + "' } ";
+            out +=
+              " { keyword: '" +
+              "$ref" +
+              "' , dataPath: (dataPath || '') + " +
+              it.errorPath +
+              " , schemaPath: " +
+              it.util.toQuotedString($errSchemaPath) +
+              " , params: { ref: '" +
+              it.util.escapeQuotes($schema) +
+              "' } ";
             if (it.opts.messages !== false) {
               out += " , message: 'can\\'t resolve reference " + it.util.escapeQuotes($schema) + "' ";
             }
             if (it.opts.verbose) {
-              out += " , schema: " + it.util.toQuotedString($schema) + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+              out +=
+                " , schema: " +
+                it.util.toQuotedString($schema) +
+                " , parentSchema: validate.schema" +
+                it.schemaPath +
+                " , data: " +
+                $data +
+                " ";
             }
             out += " } ";
           } else {
@@ -2622,7 +3148,8 @@ var require_ref = __commonJS((exports, module) => {
               out += " validate.errors = [" + __err + "]; return false; ";
             }
           } else {
-            out += " var err = " + __err + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
+            out +=
+              " var err = " + __err + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
           }
           if ($breakOnError) {
             out += " if (false) { ";
@@ -2648,7 +3175,7 @@ var require_ref = __commonJS((exports, module) => {
           out += " if (" + $nextValid + ") { ";
         }
       } else {
-        $async = $refVal.$async === true || it.async && $refVal.$async !== false;
+        $async = $refVal.$async === true || (it.async && $refVal.$async !== false);
         $refCode = $refVal.code;
       }
     }
@@ -2665,13 +3192,13 @@ var require_ref = __commonJS((exports, module) => {
       if (it.errorPath != '""') {
         out += " + " + it.errorPath;
       }
-      var $parentData = $dataLvl ? "data" + ($dataLvl - 1 || "") : "parentData", $parentDataProperty = $dataLvl ? it.dataPathArr[$dataLvl] : "parentDataProperty";
+      var $parentData = $dataLvl ? "data" + ($dataLvl - 1 || "") : "parentData",
+        $parentDataProperty = $dataLvl ? it.dataPathArr[$dataLvl] : "parentDataProperty";
       out += " , " + $parentData + " , " + $parentDataProperty + ", rootData)  ";
       var __callValidate = out;
       out = $$outStack.pop();
       if ($async) {
-        if (!it.async)
-          throw new Error("async schema referenced by sync schema");
+        if (!it.async) throw new Error("async schema referenced by sync schema");
         if ($breakOnError) {
           out += " var " + $valid + "; ";
         }
@@ -2679,7 +3206,8 @@ var require_ref = __commonJS((exports, module) => {
         if ($breakOnError) {
           out += " " + $valid + " = true; ";
         }
-        out += " } catch (e) { if (!(e instanceof ValidationError)) throw e; if (vErrors === null) vErrors = e.errors; else vErrors = vErrors.concat(e.errors); errors = vErrors.length; ";
+        out +=
+          " } catch (e) { if (!(e instanceof ValidationError)) throw e; if (vErrors === null) vErrors = e.errors; else vErrors = vErrors.concat(e.errors); errors = vErrors.length; ";
         if ($breakOnError) {
           out += " " + $valid + " = false; ";
         }
@@ -2688,7 +3216,14 @@ var require_ref = __commonJS((exports, module) => {
           out += " if (" + $valid + ") { ";
         }
       } else {
-        out += " if (!" + __callValidate + ") { if (vErrors === null) vErrors = " + $refCode + ".errors; else vErrors = vErrors.concat(" + $refCode + ".errors); errors = vErrors.length; } ";
+        out +=
+          " if (!" +
+          __callValidate +
+          ") { if (vErrors === null) vErrors = " +
+          $refCode +
+          ".errors; else vErrors = vErrors.concat(" +
+          $refCode +
+          ".errors); errors = vErrors.length; } ";
         if ($breakOnError) {
           out += " else { ";
         }
@@ -2710,13 +3245,20 @@ var require_allOf = __commonJS((exports, module) => {
     var $closingBraces = "";
     $it.level++;
     var $nextValid = "valid" + $it.level;
-    var $currentBaseId = $it.baseId, $allSchemasEmpty = true;
+    var $currentBaseId = $it.baseId,
+      $allSchemasEmpty = true;
     var arr1 = $schema;
     if (arr1) {
-      var $sch, $i = -1, l1 = arr1.length - 1;
+      var $sch,
+        $i = -1,
+        l1 = arr1.length - 1;
       while ($i < l1) {
-        $sch = arr1[$i += 1];
-        if (it.opts.strictKeywords ? typeof $sch == "object" && Object.keys($sch).length > 0 || $sch === false : it.util.schemaHasRules($sch, it.RULES.all)) {
+        $sch = arr1[($i += 1)];
+        if (
+          it.opts.strictKeywords
+            ? (typeof $sch == "object" && Object.keys($sch).length > 0) || $sch === false
+            : it.util.schemaHasRules($sch, it.RULES.all)
+        ) {
           $allSchemasEmpty = false;
           $it.schema = $sch;
           $it.schemaPath = $schemaPath + "[" + $i + "]";
@@ -2758,8 +3300,10 @@ var require_anyOf = __commonJS((exports, module) => {
     var $closingBraces = "";
     $it.level++;
     var $nextValid = "valid" + $it.level;
-    var $noEmptySchema = $schema.every(function($sch2) {
-      return it.opts.strictKeywords ? typeof $sch2 == "object" && Object.keys($sch2).length > 0 || $sch2 === false : it.util.schemaHasRules($sch2, it.RULES.all);
+    var $noEmptySchema = $schema.every(function ($sch2) {
+      return it.opts.strictKeywords
+        ? (typeof $sch2 == "object" && Object.keys($sch2).length > 0) || $sch2 === false
+        : it.util.schemaHasRules($sch2, it.RULES.all);
     });
     if ($noEmptySchema) {
       var $currentBaseId = $it.baseId;
@@ -2768,9 +3312,11 @@ var require_anyOf = __commonJS((exports, module) => {
       it.compositeRule = $it.compositeRule = true;
       var arr1 = $schema;
       if (arr1) {
-        var $sch, $i = -1, l1 = arr1.length - 1;
+        var $sch,
+          $i = -1,
+          l1 = arr1.length - 1;
         while ($i < l1) {
-          $sch = arr1[$i += 1];
+          $sch = arr1[($i += 1)];
           $it.schema = $sch;
           $it.schemaPath = $schemaPath + "[" + $i + "]";
           $it.errSchemaPath = $errSchemaPath + "/" + $i;
@@ -2783,12 +3329,26 @@ var require_anyOf = __commonJS((exports, module) => {
       it.compositeRule = $it.compositeRule = $wasComposite;
       out += " " + $closingBraces + " if (!" + $valid + ") {   var err =   ";
       if (it.createErrors !== false) {
-        out += " { keyword: '" + "anyOf" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: {} ";
+        out +=
+          " { keyword: '" +
+          "anyOf" +
+          "' , dataPath: (dataPath || '') + " +
+          it.errorPath +
+          " , schemaPath: " +
+          it.util.toQuotedString($errSchemaPath) +
+          " , params: {} ";
         if (it.opts.messages !== false) {
           out += " , message: 'should match some schema in anyOf' ";
         }
         if (it.opts.verbose) {
-          out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+          out +=
+            " , schema: validate.schema" +
+            $schemaPath +
+            " , parentSchema: validate.schema" +
+            it.schemaPath +
+            " , data: " +
+            $data +
+            " ";
         }
         out += " } ";
       } else {
@@ -2802,7 +3362,14 @@ var require_anyOf = __commonJS((exports, module) => {
           out += " validate.errors = vErrors; return false; ";
         }
       }
-      out += " } else {  errors = " + $errs + "; if (vErrors !== null) { if (" + $errs + ") vErrors.length = " + $errs + "; else vErrors = null; } ";
+      out +=
+        " } else {  errors = " +
+        $errs +
+        "; if (vErrors !== null) { if (" +
+        $errs +
+        ") vErrors.length = " +
+        $errs +
+        "; else vErrors = null; } ";
       if (it.opts.allErrors) {
         out += " } ";
       }
@@ -2826,7 +3393,8 @@ var require_comment = __commonJS((exports, module) => {
     if (it.opts.$comment === true) {
       out += " console.log(" + $comment + ");";
     } else if (typeof it.opts.$comment == "function") {
-      out += " self._opts.$comment(" + $comment + ", " + it.util.toQuotedString($errSchemaPath) + ", validate.root.schema);";
+      out +=
+        " self._opts.$comment(" + $comment + ", " + it.util.toQuotedString($errSchemaPath) + ", validate.root.schema);";
     }
     return out;
   };
@@ -2844,7 +3412,8 @@ var require_const = __commonJS((exports, module) => {
     var $breakOnError = !it.opts.allErrors;
     var $data = "data" + ($dataLvl || "");
     var $valid = "valid" + $lvl;
-    var $isData = it.opts.$data && $schema && $schema.$data, $schemaValue;
+    var $isData = it.opts.$data && $schema && $schema.$data,
+      $schemaValue;
     if ($isData) {
       out += " var schema" + $lvl + " = " + it.util.getData($schema.$data, $dataLvl, it.dataPathArr) + "; ";
       $schemaValue = "schema" + $lvl;
@@ -2859,12 +3428,28 @@ var require_const = __commonJS((exports, module) => {
     $$outStack.push(out);
     out = "";
     if (it.createErrors !== false) {
-      out += " { keyword: '" + "const" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { allowedValue: schema" + $lvl + " } ";
+      out +=
+        " { keyword: '" +
+        "const" +
+        "' , dataPath: (dataPath || '') + " +
+        it.errorPath +
+        " , schemaPath: " +
+        it.util.toQuotedString($errSchemaPath) +
+        " , params: { allowedValue: schema" +
+        $lvl +
+        " } ";
       if (it.opts.messages !== false) {
         out += " , message: 'should be equal to constant' ";
       }
       if (it.opts.verbose) {
-        out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+        out +=
+          " , schema: validate.schema" +
+          $schemaPath +
+          " , parentSchema: validate.schema" +
+          it.schemaPath +
+          " , data: " +
+          $data +
+          " ";
       }
       out += " } ";
     } else {
@@ -2906,7 +3491,13 @@ var require_contains = __commonJS((exports, module) => {
     var $closingBraces = "";
     $it.level++;
     var $nextValid = "valid" + $it.level;
-    var $idx = "i" + $lvl, $dataNxt = $it.dataLevel = it.dataLevel + 1, $nextData = "data" + $dataNxt, $currentBaseId = it.baseId, $nonEmptySchema = it.opts.strictKeywords ? typeof $schema == "object" && Object.keys($schema).length > 0 || $schema === false : it.util.schemaHasRules($schema, it.RULES.all);
+    var $idx = "i" + $lvl,
+      $dataNxt = ($it.dataLevel = it.dataLevel + 1),
+      $nextData = "data" + $dataNxt,
+      $currentBaseId = it.baseId,
+      $nonEmptySchema = it.opts.strictKeywords
+        ? (typeof $schema == "object" && Object.keys($schema).length > 0) || $schema === false
+        : it.util.schemaHasRules($schema, it.RULES.all);
     out += "var " + $errs + " = errors;var " + $valid + ";";
     if ($nonEmptySchema) {
       var $wasComposite = it.compositeRule;
@@ -2914,7 +3505,18 @@ var require_contains = __commonJS((exports, module) => {
       $it.schema = $schema;
       $it.schemaPath = $schemaPath;
       $it.errSchemaPath = $errSchemaPath;
-      out += " var " + $nextValid + " = false; for (var " + $idx + " = 0; " + $idx + " < " + $data + ".length; " + $idx + "++) { ";
+      out +=
+        " var " +
+        $nextValid +
+        " = false; for (var " +
+        $idx +
+        " = 0; " +
+        $idx +
+        " < " +
+        $data +
+        ".length; " +
+        $idx +
+        "++) { ";
       $it.errorPath = it.util.getPathExpr(it.errorPath, $idx, it.opts.jsonPointers, true);
       var $passData = $data + "[" + $idx + "]";
       $it.dataPathArr[$dataNxt] = $idx;
@@ -2935,12 +3537,26 @@ var require_contains = __commonJS((exports, module) => {
     $$outStack.push(out);
     out = "";
     if (it.createErrors !== false) {
-      out += " { keyword: '" + "contains" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: {} ";
+      out +=
+        " { keyword: '" +
+        "contains" +
+        "' , dataPath: (dataPath || '') + " +
+        it.errorPath +
+        " , schemaPath: " +
+        it.util.toQuotedString($errSchemaPath) +
+        " , params: {} ";
       if (it.opts.messages !== false) {
         out += " , message: 'should contain a valid item' ";
       }
       if (it.opts.verbose) {
-        out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+        out +=
+          " , schema: validate.schema" +
+          $schemaPath +
+          " , parentSchema: validate.schema" +
+          it.schemaPath +
+          " , data: " +
+          $data +
+          " ";
       }
       out += " } ";
     } else {
@@ -2959,7 +3575,14 @@ var require_contains = __commonJS((exports, module) => {
     }
     out += " } else { ";
     if ($nonEmptySchema) {
-      out += "  errors = " + $errs + "; if (vErrors !== null) { if (" + $errs + ") vErrors.length = " + $errs + "; else vErrors = null; } ";
+      out +=
+        "  errors = " +
+        $errs +
+        "; if (vErrors !== null) { if (" +
+        $errs +
+        ") vErrors.length = " +
+        $errs +
+        "; else vErrors = null; } ";
     }
     if (it.opts.allErrors) {
       out += " } ";
@@ -2984,10 +3607,11 @@ var require_dependencies = __commonJS((exports, module) => {
     var $closingBraces = "";
     $it.level++;
     var $nextValid = "valid" + $it.level;
-    var $schemaDeps = {}, $propertyDeps = {}, $ownProperties = it.opts.ownProperties;
+    var $schemaDeps = {},
+      $propertyDeps = {},
+      $ownProperties = it.opts.ownProperties;
     for ($property in $schema) {
-      if ($property == "__proto__")
-        continue;
+      if ($property == "__proto__") continue;
       var $sch = $schema[$property];
       var $deps = Array.isArray($sch) ? $propertyDeps : $schemaDeps;
       $deps[$property] = $sch;
@@ -3006,30 +3630,61 @@ var require_dependencies = __commonJS((exports, module) => {
           out += " && ( ";
           var arr1 = $deps;
           if (arr1) {
-            var $propertyKey, $i = -1, l1 = arr1.length - 1;
+            var $propertyKey,
+              $i = -1,
+              l1 = arr1.length - 1;
             while ($i < l1) {
-              $propertyKey = arr1[$i += 1];
+              $propertyKey = arr1[($i += 1)];
               if ($i) {
                 out += " || ";
               }
-              var $prop = it.util.getProperty($propertyKey), $useData = $data + $prop;
+              var $prop = it.util.getProperty($propertyKey),
+                $useData = $data + $prop;
               out += " ( ( " + $useData + " === undefined ";
               if ($ownProperties) {
-                out += " || ! Object.prototype.hasOwnProperty.call(" + $data + ", '" + it.util.escapeQuotes($propertyKey) + "') ";
+                out +=
+                  " || ! Object.prototype.hasOwnProperty.call(" +
+                  $data +
+                  ", '" +
+                  it.util.escapeQuotes($propertyKey) +
+                  "') ";
               }
-              out += ") && (missing" + $lvl + " = " + it.util.toQuotedString(it.opts.jsonPointers ? $propertyKey : $prop) + ") ) ";
+              out +=
+                ") && (missing" +
+                $lvl +
+                " = " +
+                it.util.toQuotedString(it.opts.jsonPointers ? $propertyKey : $prop) +
+                ") ) ";
             }
           }
           out += ")) {  ";
-          var $propertyPath = "missing" + $lvl, $missingProperty = "' + " + $propertyPath + " + '";
+          var $propertyPath = "missing" + $lvl,
+            $missingProperty = "' + " + $propertyPath + " + '";
           if (it.opts._errorDataPathProperty) {
-            it.errorPath = it.opts.jsonPointers ? it.util.getPathExpr($currentErrorPath, $propertyPath, true) : $currentErrorPath + " + " + $propertyPath;
+            it.errorPath = it.opts.jsonPointers
+              ? it.util.getPathExpr($currentErrorPath, $propertyPath, true)
+              : $currentErrorPath + " + " + $propertyPath;
           }
           var $$outStack = $$outStack || [];
           $$outStack.push(out);
           out = "";
           if (it.createErrors !== false) {
-            out += " { keyword: '" + "dependencies" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { property: '" + it.util.escapeQuotes($property) + "', missingProperty: '" + $missingProperty + "', depsCount: " + $deps.length + ", deps: '" + it.util.escapeQuotes($deps.length == 1 ? $deps[0] : $deps.join(", ")) + "' } ";
+            out +=
+              " { keyword: '" +
+              "dependencies" +
+              "' , dataPath: (dataPath || '') + " +
+              it.errorPath +
+              " , schemaPath: " +
+              it.util.toQuotedString($errSchemaPath) +
+              " , params: { property: '" +
+              it.util.escapeQuotes($property) +
+              "', missingProperty: '" +
+              $missingProperty +
+              "', depsCount: " +
+              $deps.length +
+              ", deps: '" +
+              it.util.escapeQuotes($deps.length == 1 ? $deps[0] : $deps.join(", ")) +
+              "' } ";
             if (it.opts.messages !== false) {
               out += " , message: 'should have ";
               if ($deps.length == 1) {
@@ -3040,7 +3695,14 @@ var require_dependencies = __commonJS((exports, module) => {
               out += " when property " + it.util.escapeQuotes($property) + " is present' ";
             }
             if (it.opts.verbose) {
-              out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+              out +=
+                " , schema: validate.schema" +
+                $schemaPath +
+                " , parentSchema: validate.schema" +
+                it.schemaPath +
+                " , data: " +
+                $data +
+                " ";
             }
             out += " } ";
           } else {
@@ -3055,26 +3717,51 @@ var require_dependencies = __commonJS((exports, module) => {
               out += " validate.errors = [" + __err + "]; return false; ";
             }
           } else {
-            out += " var err = " + __err + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
+            out +=
+              " var err = " + __err + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
           }
         } else {
           out += " ) { ";
           var arr2 = $deps;
           if (arr2) {
-            var $propertyKey, i2 = -1, l2 = arr2.length - 1;
+            var $propertyKey,
+              i2 = -1,
+              l2 = arr2.length - 1;
             while (i2 < l2) {
-              $propertyKey = arr2[i2 += 1];
-              var $prop = it.util.getProperty($propertyKey), $missingProperty = it.util.escapeQuotes($propertyKey), $useData = $data + $prop;
+              $propertyKey = arr2[(i2 += 1)];
+              var $prop = it.util.getProperty($propertyKey),
+                $missingProperty = it.util.escapeQuotes($propertyKey),
+                $useData = $data + $prop;
               if (it.opts._errorDataPathProperty) {
                 it.errorPath = it.util.getPath($currentErrorPath, $propertyKey, it.opts.jsonPointers);
               }
               out += " if ( " + $useData + " === undefined ";
               if ($ownProperties) {
-                out += " || ! Object.prototype.hasOwnProperty.call(" + $data + ", '" + it.util.escapeQuotes($propertyKey) + "') ";
+                out +=
+                  " || ! Object.prototype.hasOwnProperty.call(" +
+                  $data +
+                  ", '" +
+                  it.util.escapeQuotes($propertyKey) +
+                  "') ";
               }
               out += ") {  var err =   ";
               if (it.createErrors !== false) {
-                out += " { keyword: '" + "dependencies" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { property: '" + it.util.escapeQuotes($property) + "', missingProperty: '" + $missingProperty + "', depsCount: " + $deps.length + ", deps: '" + it.util.escapeQuotes($deps.length == 1 ? $deps[0] : $deps.join(", ")) + "' } ";
+                out +=
+                  " { keyword: '" +
+                  "dependencies" +
+                  "' , dataPath: (dataPath || '') + " +
+                  it.errorPath +
+                  " , schemaPath: " +
+                  it.util.toQuotedString($errSchemaPath) +
+                  " , params: { property: '" +
+                  it.util.escapeQuotes($property) +
+                  "', missingProperty: '" +
+                  $missingProperty +
+                  "', depsCount: " +
+                  $deps.length +
+                  ", deps: '" +
+                  it.util.escapeQuotes($deps.length == 1 ? $deps[0] : $deps.join(", ")) +
+                  "' } ";
                 if (it.opts.messages !== false) {
                   out += " , message: 'should have ";
                   if ($deps.length == 1) {
@@ -3085,7 +3772,14 @@ var require_dependencies = __commonJS((exports, module) => {
                   out += " when property " + it.util.escapeQuotes($property) + " is present' ";
                 }
                 if (it.opts.verbose) {
-                  out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+                  out +=
+                    " , schema: validate.schema" +
+                    $schemaPath +
+                    " , parentSchema: validate.schema" +
+                    it.schemaPath +
+                    " , data: " +
+                    $data +
+                    " ";
                 }
                 out += " } ";
               } else {
@@ -3106,7 +3800,11 @@ var require_dependencies = __commonJS((exports, module) => {
     var $currentBaseId = $it.baseId;
     for (var $property in $schemaDeps) {
       var $sch = $schemaDeps[$property];
-      if (it.opts.strictKeywords ? typeof $sch == "object" && Object.keys($sch).length > 0 || $sch === false : it.util.schemaHasRules($sch, it.RULES.all)) {
+      if (
+        it.opts.strictKeywords
+          ? (typeof $sch == "object" && Object.keys($sch).length > 0) || $sch === false
+          : it.util.schemaHasRules($sch, it.RULES.all)
+      ) {
         out += " " + $nextValid + " = true; if ( " + $data + it.util.getProperty($property) + " !== undefined ";
         if ($ownProperties) {
           out += " && Object.prototype.hasOwnProperty.call(" + $data + ", '" + it.util.escapeQuotes($property) + "') ";
@@ -3143,22 +3841,52 @@ var require_enum = __commonJS((exports, module) => {
     var $breakOnError = !it.opts.allErrors;
     var $data = "data" + ($dataLvl || "");
     var $valid = "valid" + $lvl;
-    var $isData = it.opts.$data && $schema && $schema.$data, $schemaValue;
+    var $isData = it.opts.$data && $schema && $schema.$data,
+      $schemaValue;
     if ($isData) {
       out += " var schema" + $lvl + " = " + it.util.getData($schema.$data, $dataLvl, it.dataPathArr) + "; ";
       $schemaValue = "schema" + $lvl;
     } else {
       $schemaValue = $schema;
     }
-    var $i = "i" + $lvl, $vSchema = "schema" + $lvl;
+    var $i = "i" + $lvl,
+      $vSchema = "schema" + $lvl;
     if (!$isData) {
       out += " var " + $vSchema + " = validate.schema" + $schemaPath + ";";
     }
     out += "var " + $valid + ";";
     if ($isData) {
-      out += " if (schema" + $lvl + " === undefined) " + $valid + " = true; else if (!Array.isArray(schema" + $lvl + ")) " + $valid + " = false; else {";
+      out +=
+        " if (schema" +
+        $lvl +
+        " === undefined) " +
+        $valid +
+        " = true; else if (!Array.isArray(schema" +
+        $lvl +
+        ")) " +
+        $valid +
+        " = false; else {";
     }
-    out += "" + $valid + " = false;for (var " + $i + "=0; " + $i + "<" + $vSchema + ".length; " + $i + "++) if (equal(" + $data + ", " + $vSchema + "[" + $i + "])) { " + $valid + " = true; break; }";
+    out +=
+      "" +
+      $valid +
+      " = false;for (var " +
+      $i +
+      "=0; " +
+      $i +
+      "<" +
+      $vSchema +
+      ".length; " +
+      $i +
+      "++) if (equal(" +
+      $data +
+      ", " +
+      $vSchema +
+      "[" +
+      $i +
+      "])) { " +
+      $valid +
+      " = true; break; }";
     if ($isData) {
       out += "  }  ";
     }
@@ -3167,12 +3895,28 @@ var require_enum = __commonJS((exports, module) => {
     $$outStack.push(out);
     out = "";
     if (it.createErrors !== false) {
-      out += " { keyword: '" + "enum" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { allowedValues: schema" + $lvl + " } ";
+      out +=
+        " { keyword: '" +
+        "enum" +
+        "' , dataPath: (dataPath || '') + " +
+        it.errorPath +
+        " , schemaPath: " +
+        it.util.toQuotedString($errSchemaPath) +
+        " , params: { allowedValues: schema" +
+        $lvl +
+        " } ";
       if (it.opts.messages !== false) {
         out += " , message: 'should be equal to one of the allowed values' ";
       }
       if (it.opts.verbose) {
-        out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+        out +=
+          " , schema: validate.schema" +
+          $schemaPath +
+          " , parentSchema: validate.schema" +
+          it.schemaPath +
+          " , data: " +
+          $data +
+          " ";
       }
       out += " } ";
     } else {
@@ -3214,17 +3958,42 @@ var require_format = __commonJS((exports, module) => {
       }
       return out;
     }
-    var $isData = it.opts.$data && $schema && $schema.$data, $schemaValue;
+    var $isData = it.opts.$data && $schema && $schema.$data,
+      $schemaValue;
     if ($isData) {
       out += " var schema" + $lvl + " = " + it.util.getData($schema.$data, $dataLvl, it.dataPathArr) + "; ";
       $schemaValue = "schema" + $lvl;
     } else {
       $schemaValue = $schema;
     }
-    var $unknownFormats = it.opts.unknownFormats, $allowUnknown = Array.isArray($unknownFormats);
+    var $unknownFormats = it.opts.unknownFormats,
+      $allowUnknown = Array.isArray($unknownFormats);
     if ($isData) {
-      var $format = "format" + $lvl, $isObject = "isObject" + $lvl, $formatType = "formatType" + $lvl;
-      out += " var " + $format + " = formats[" + $schemaValue + "]; var " + $isObject + " = typeof " + $format + " == 'object' && !(" + $format + " instanceof RegExp) && " + $format + ".validate; var " + $formatType + " = " + $isObject + " && " + $format + ".type || 'string'; if (" + $isObject + ") { ";
+      var $format = "format" + $lvl,
+        $isObject = "isObject" + $lvl,
+        $formatType = "formatType" + $lvl;
+      out +=
+        " var " +
+        $format +
+        " = formats[" +
+        $schemaValue +
+        "]; var " +
+        $isObject +
+        " = typeof " +
+        $format +
+        " == 'object' && !(" +
+        $format +
+        " instanceof RegExp) && " +
+        $format +
+        ".validate; var " +
+        $formatType +
+        " = " +
+        $isObject +
+        " && " +
+        $format +
+        ".type || 'string'; if (" +
+        $isObject +
+        ") { ";
       if (it.async) {
         out += " var async" + $lvl + " = " + $format + ".async; ";
       }
@@ -3240,7 +4009,8 @@ var require_format = __commonJS((exports, module) => {
         }
         out += ") || ";
       }
-      out += " (" + $format + " && " + $formatType + " == '" + $ruleType + "' && !(typeof " + $format + " == 'function' ? ";
+      out +=
+        " (" + $format + " && " + $formatType + " == '" + $ruleType + "' && !(typeof " + $format + " == 'function' ? ";
       if (it.async) {
         out += " (async" + $lvl + " ? await " + $format + "(" + $data + ") : " + $format + "(" + $data + ")) ";
       } else {
@@ -3266,7 +4036,7 @@ var require_format = __commonJS((exports, module) => {
         }
       }
       var $isObject = typeof $format == "object" && !($format instanceof RegExp) && $format.validate;
-      var $formatType = $isObject && $format.type || "string";
+      var $formatType = ($isObject && $format.type) || "string";
       if ($isObject) {
         var $async = $format.async === true;
         $format = $format.validate;
@@ -3278,15 +4048,13 @@ var require_format = __commonJS((exports, module) => {
         return out;
       }
       if ($async) {
-        if (!it.async)
-          throw new Error("async format in sync schema");
+        if (!it.async) throw new Error("async format in sync schema");
         var $formatRef = "formats" + it.util.getProperty($schema) + ".validate";
         out += " if (!(await " + $formatRef + "(" + $data + "))) { ";
       } else {
         out += " if (! ";
         var $formatRef = "formats" + it.util.getProperty($schema);
-        if ($isObject)
-          $formatRef += ".validate";
+        if ($isObject) $formatRef += ".validate";
         if (typeof $format == "function") {
           out += " " + $formatRef + "(" + $data + ") ";
         } else {
@@ -3299,7 +4067,14 @@ var require_format = __commonJS((exports, module) => {
     $$outStack.push(out);
     out = "";
     if (it.createErrors !== false) {
-      out += " { keyword: '" + "format" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { format:  ";
+      out +=
+        " { keyword: '" +
+        "format" +
+        "' , dataPath: (dataPath || '') + " +
+        it.errorPath +
+        " , schemaPath: " +
+        it.util.toQuotedString($errSchemaPath) +
+        " , params: { format:  ";
       if ($isData) {
         out += "" + $schemaValue;
       } else {
@@ -3363,7 +4138,19 @@ var require_if = __commonJS((exports, module) => {
     var $it = it.util.copy(it);
     $it.level++;
     var $nextValid = "valid" + $it.level;
-    var $thenSch = it.schema["then"], $elseSch = it.schema["else"], $thenPresent = $thenSch !== undefined && (it.opts.strictKeywords ? typeof $thenSch == "object" && Object.keys($thenSch).length > 0 || $thenSch === false : it.util.schemaHasRules($thenSch, it.RULES.all)), $elsePresent = $elseSch !== undefined && (it.opts.strictKeywords ? typeof $elseSch == "object" && Object.keys($elseSch).length > 0 || $elseSch === false : it.util.schemaHasRules($elseSch, it.RULES.all)), $currentBaseId = $it.baseId;
+    var $thenSch = it.schema["then"],
+      $elseSch = it.schema["else"],
+      $thenPresent =
+        $thenSch !== undefined &&
+        (it.opts.strictKeywords
+          ? (typeof $thenSch == "object" && Object.keys($thenSch).length > 0) || $thenSch === false
+          : it.util.schemaHasRules($thenSch, it.RULES.all)),
+      $elsePresent =
+        $elseSch !== undefined &&
+        (it.opts.strictKeywords
+          ? (typeof $elseSch == "object" && Object.keys($elseSch).length > 0) || $elseSch === false
+          : it.util.schemaHasRules($elseSch, it.RULES.all)),
+      $currentBaseId = $it.baseId;
     if ($thenPresent || $elsePresent) {
       var $ifClause;
       $it.createErrors = false;
@@ -3376,7 +4163,14 @@ var require_if = __commonJS((exports, module) => {
       out += "  " + it.validate($it) + " ";
       $it.baseId = $currentBaseId;
       $it.createErrors = true;
-      out += "  errors = " + $errs + "; if (vErrors !== null) { if (" + $errs + ") vErrors.length = " + $errs + "; else vErrors = null; }  ";
+      out +=
+        "  errors = " +
+        $errs +
+        "; if (vErrors !== null) { if (" +
+        $errs +
+        ") vErrors.length = " +
+        $errs +
+        "; else vErrors = null; }  ";
       it.compositeRule = $it.compositeRule = $wasComposite;
       if ($thenPresent) {
         out += " if (" + $nextValid + ") {  ";
@@ -3416,12 +4210,28 @@ var require_if = __commonJS((exports, module) => {
       }
       out += " if (!" + $valid + ") {   var err =   ";
       if (it.createErrors !== false) {
-        out += " { keyword: '" + "if" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { failingKeyword: " + $ifClause + " } ";
+        out +=
+          " { keyword: '" +
+          "if" +
+          "' , dataPath: (dataPath || '') + " +
+          it.errorPath +
+          " , schemaPath: " +
+          it.util.toQuotedString($errSchemaPath) +
+          " , params: { failingKeyword: " +
+          $ifClause +
+          " } ";
         if (it.opts.messages !== false) {
           out += ` , message: 'should match "' + ` + $ifClause + ` + '" schema' `;
         }
         if (it.opts.verbose) {
-          out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+          out +=
+            " , schema: validate.schema" +
+            $schemaPath +
+            " , parentSchema: validate.schema" +
+            it.schemaPath +
+            " , data: " +
+            $data +
+            " ";
         }
         out += " } ";
       } else {
@@ -3465,7 +4275,10 @@ var require_items = __commonJS((exports, module) => {
     var $closingBraces = "";
     $it.level++;
     var $nextValid = "valid" + $it.level;
-    var $idx = "i" + $lvl, $dataNxt = $it.dataLevel = it.dataLevel + 1, $nextData = "data" + $dataNxt, $currentBaseId = it.baseId;
+    var $idx = "i" + $lvl,
+      $dataNxt = ($it.dataLevel = it.dataLevel + 1),
+      $nextData = "data" + $dataNxt,
+      $currentBaseId = it.baseId;
     out += "var " + $errs + " = errors;var " + $valid + ";";
     if (Array.isArray($schema)) {
       var $additionalItems = it.schema.additionalItems;
@@ -3478,7 +4291,16 @@ var require_items = __commonJS((exports, module) => {
         $$outStack.push(out);
         out = "";
         if (it.createErrors !== false) {
-          out += " { keyword: '" + "additionalItems" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { limit: " + $schema.length + " } ";
+          out +=
+            " { keyword: '" +
+            "additionalItems" +
+            "' , dataPath: (dataPath || '') + " +
+            it.errorPath +
+            " , schemaPath: " +
+            it.util.toQuotedString($errSchemaPath) +
+            " , params: { limit: " +
+            $schema.length +
+            " } ";
           if (it.opts.messages !== false) {
             out += " , message: 'should NOT have more than " + $schema.length + " items' ";
           }
@@ -3509,10 +4331,16 @@ var require_items = __commonJS((exports, module) => {
       }
       var arr1 = $schema;
       if (arr1) {
-        var $sch, $i = -1, l1 = arr1.length - 1;
+        var $sch,
+          $i = -1,
+          l1 = arr1.length - 1;
         while ($i < l1) {
-          $sch = arr1[$i += 1];
-          if (it.opts.strictKeywords ? typeof $sch == "object" && Object.keys($sch).length > 0 || $sch === false : it.util.schemaHasRules($sch, it.RULES.all)) {
+          $sch = arr1[($i += 1)];
+          if (
+            it.opts.strictKeywords
+              ? (typeof $sch == "object" && Object.keys($sch).length > 0) || $sch === false
+              : it.util.schemaHasRules($sch, it.RULES.all)
+          ) {
             out += " " + $nextValid + " = true; if (" + $data + ".length > " + $i + ") { ";
             var $passData = $data + "[" + $i + "]";
             $it.schema = $sch;
@@ -3535,11 +4363,34 @@ var require_items = __commonJS((exports, module) => {
           }
         }
       }
-      if (typeof $additionalItems == "object" && (it.opts.strictKeywords ? typeof $additionalItems == "object" && Object.keys($additionalItems).length > 0 || $additionalItems === false : it.util.schemaHasRules($additionalItems, it.RULES.all))) {
+      if (
+        typeof $additionalItems == "object" &&
+        (it.opts.strictKeywords
+          ? (typeof $additionalItems == "object" && Object.keys($additionalItems).length > 0) ||
+            $additionalItems === false
+          : it.util.schemaHasRules($additionalItems, it.RULES.all))
+      ) {
         $it.schema = $additionalItems;
         $it.schemaPath = it.schemaPath + ".additionalItems";
         $it.errSchemaPath = it.errSchemaPath + "/additionalItems";
-        out += " " + $nextValid + " = true; if (" + $data + ".length > " + $schema.length + ") {  for (var " + $idx + " = " + $schema.length + "; " + $idx + " < " + $data + ".length; " + $idx + "++) { ";
+        out +=
+          " " +
+          $nextValid +
+          " = true; if (" +
+          $data +
+          ".length > " +
+          $schema.length +
+          ") {  for (var " +
+          $idx +
+          " = " +
+          $schema.length +
+          "; " +
+          $idx +
+          " < " +
+          $data +
+          ".length; " +
+          $idx +
+          "++) { ";
         $it.errorPath = it.util.getPathExpr(it.errorPath, $idx, it.opts.jsonPointers, true);
         var $passData = $data + "[" + $idx + "]";
         $it.dataPathArr[$dataNxt] = $idx;
@@ -3559,7 +4410,11 @@ var require_items = __commonJS((exports, module) => {
           $closingBraces += "}";
         }
       }
-    } else if (it.opts.strictKeywords ? typeof $schema == "object" && Object.keys($schema).length > 0 || $schema === false : it.util.schemaHasRules($schema, it.RULES.all)) {
+    } else if (
+      it.opts.strictKeywords
+        ? (typeof $schema == "object" && Object.keys($schema).length > 0) || $schema === false
+        : it.util.schemaHasRules($schema, it.RULES.all)
+    ) {
       $it.schema = $schema;
       $it.schemaPath = $schemaPath;
       $it.errSchemaPath = $errSchemaPath;
@@ -3598,36 +4453,77 @@ var require__limit = __commonJS((exports, module) => {
     var $breakOnError = !it.opts.allErrors;
     var $errorKeyword;
     var $data = "data" + ($dataLvl || "");
-    var $isData = it.opts.$data && $schema && $schema.$data, $schemaValue;
+    var $isData = it.opts.$data && $schema && $schema.$data,
+      $schemaValue;
     if ($isData) {
       out += " var schema" + $lvl + " = " + it.util.getData($schema.$data, $dataLvl, it.dataPathArr) + "; ";
       $schemaValue = "schema" + $lvl;
     } else {
       $schemaValue = $schema;
     }
-    var $isMax = $keyword == "maximum", $exclusiveKeyword = $isMax ? "exclusiveMaximum" : "exclusiveMinimum", $schemaExcl = it.schema[$exclusiveKeyword], $isDataExcl = it.opts.$data && $schemaExcl && $schemaExcl.$data, $op = $isMax ? "<" : ">", $notOp = $isMax ? ">" : "<", $errorKeyword = undefined;
+    var $isMax = $keyword == "maximum",
+      $exclusiveKeyword = $isMax ? "exclusiveMaximum" : "exclusiveMinimum",
+      $schemaExcl = it.schema[$exclusiveKeyword],
+      $isDataExcl = it.opts.$data && $schemaExcl && $schemaExcl.$data,
+      $op = $isMax ? "<" : ">",
+      $notOp = $isMax ? ">" : "<",
+      $errorKeyword = undefined;
     if (!($isData || typeof $schema == "number" || $schema === undefined)) {
       throw new Error($keyword + " must be number");
     }
-    if (!($isDataExcl || $schemaExcl === undefined || typeof $schemaExcl == "number" || typeof $schemaExcl == "boolean")) {
+    if (
+      !($isDataExcl || $schemaExcl === undefined || typeof $schemaExcl == "number" || typeof $schemaExcl == "boolean")
+    ) {
       throw new Error($exclusiveKeyword + " must be number or boolean");
     }
     if ($isDataExcl) {
-      var $schemaValueExcl = it.util.getData($schemaExcl.$data, $dataLvl, it.dataPathArr), $exclusive = "exclusive" + $lvl, $exclType = "exclType" + $lvl, $exclIsNumber = "exclIsNumber" + $lvl, $opExpr = "op" + $lvl, $opStr = "' + " + $opExpr + " + '";
+      var $schemaValueExcl = it.util.getData($schemaExcl.$data, $dataLvl, it.dataPathArr),
+        $exclusive = "exclusive" + $lvl,
+        $exclType = "exclType" + $lvl,
+        $exclIsNumber = "exclIsNumber" + $lvl,
+        $opExpr = "op" + $lvl,
+        $opStr = "' + " + $opExpr + " + '";
       out += " var schemaExcl" + $lvl + " = " + $schemaValueExcl + "; ";
       $schemaValueExcl = "schemaExcl" + $lvl;
-      out += " var " + $exclusive + "; var " + $exclType + " = typeof " + $schemaValueExcl + "; if (" + $exclType + " != 'boolean' && " + $exclType + " != 'undefined' && " + $exclType + " != 'number') { ";
+      out +=
+        " var " +
+        $exclusive +
+        "; var " +
+        $exclType +
+        " = typeof " +
+        $schemaValueExcl +
+        "; if (" +
+        $exclType +
+        " != 'boolean' && " +
+        $exclType +
+        " != 'undefined' && " +
+        $exclType +
+        " != 'number') { ";
       var $errorKeyword = $exclusiveKeyword;
       var $$outStack = $$outStack || [];
       $$outStack.push(out);
       out = "";
       if (it.createErrors !== false) {
-        out += " { keyword: '" + ($errorKeyword || "_exclusiveLimit") + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: {} ";
+        out +=
+          " { keyword: '" +
+          ($errorKeyword || "_exclusiveLimit") +
+          "' , dataPath: (dataPath || '') + " +
+          it.errorPath +
+          " , schemaPath: " +
+          it.util.toQuotedString($errSchemaPath) +
+          " , params: {} ";
         if (it.opts.messages !== false) {
           out += " , message: '" + $exclusiveKeyword + " should be boolean' ";
         }
         if (it.opts.verbose) {
-          out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+          out +=
+            " , schema: validate.schema" +
+            $schemaPath +
+            " , parentSchema: validate.schema" +
+            it.schemaPath +
+            " , data: " +
+            $data +
+            " ";
         }
         out += " } ";
       } else {
@@ -3648,7 +4544,60 @@ var require__limit = __commonJS((exports, module) => {
       if ($isData) {
         out += " (" + $schemaValue + " !== undefined && typeof " + $schemaValue + " != 'number') || ";
       }
-      out += " " + $exclType + " == 'number' ? ( (" + $exclusive + " = " + $schemaValue + " === undefined || " + $schemaValueExcl + " " + $op + "= " + $schemaValue + ") ? " + $data + " " + $notOp + "= " + $schemaValueExcl + " : " + $data + " " + $notOp + " " + $schemaValue + " ) : ( (" + $exclusive + " = " + $schemaValueExcl + " === true) ? " + $data + " " + $notOp + "= " + $schemaValue + " : " + $data + " " + $notOp + " " + $schemaValue + " ) || " + $data + " !== " + $data + ") { var op" + $lvl + " = " + $exclusive + " ? '" + $op + "' : '" + $op + "='; ";
+      out +=
+        " " +
+        $exclType +
+        " == 'number' ? ( (" +
+        $exclusive +
+        " = " +
+        $schemaValue +
+        " === undefined || " +
+        $schemaValueExcl +
+        " " +
+        $op +
+        "= " +
+        $schemaValue +
+        ") ? " +
+        $data +
+        " " +
+        $notOp +
+        "= " +
+        $schemaValueExcl +
+        " : " +
+        $data +
+        " " +
+        $notOp +
+        " " +
+        $schemaValue +
+        " ) : ( (" +
+        $exclusive +
+        " = " +
+        $schemaValueExcl +
+        " === true) ? " +
+        $data +
+        " " +
+        $notOp +
+        "= " +
+        $schemaValue +
+        " : " +
+        $data +
+        " " +
+        $notOp +
+        " " +
+        $schemaValue +
+        " ) || " +
+        $data +
+        " !== " +
+        $data +
+        ") { var op" +
+        $lvl +
+        " = " +
+        $exclusive +
+        " ? '" +
+        $op +
+        "' : '" +
+        $op +
+        "='; ";
       if ($schema === undefined) {
         $errorKeyword = $exclusiveKeyword;
         $errSchemaPath = it.errSchemaPath + "/" + $exclusiveKeyword;
@@ -3656,14 +4605,40 @@ var require__limit = __commonJS((exports, module) => {
         $isData = $isDataExcl;
       }
     } else {
-      var $exclIsNumber = typeof $schemaExcl == "number", $opStr = $op;
+      var $exclIsNumber = typeof $schemaExcl == "number",
+        $opStr = $op;
       if ($exclIsNumber && $isData) {
         var $opExpr = "'" + $opStr + "'";
         out += " if ( ";
         if ($isData) {
           out += " (" + $schemaValue + " !== undefined && typeof " + $schemaValue + " != 'number') || ";
         }
-        out += " ( " + $schemaValue + " === undefined || " + $schemaExcl + " " + $op + "= " + $schemaValue + " ? " + $data + " " + $notOp + "= " + $schemaExcl + " : " + $data + " " + $notOp + " " + $schemaValue + " ) || " + $data + " !== " + $data + ") { ";
+        out +=
+          " ( " +
+          $schemaValue +
+          " === undefined || " +
+          $schemaExcl +
+          " " +
+          $op +
+          "= " +
+          $schemaValue +
+          " ? " +
+          $data +
+          " " +
+          $notOp +
+          "= " +
+          $schemaExcl +
+          " : " +
+          $data +
+          " " +
+          $notOp +
+          " " +
+          $schemaValue +
+          " ) || " +
+          $data +
+          " !== " +
+          $data +
+          ") { ";
       } else {
         if ($exclIsNumber && $schema === undefined) {
           $exclusive = true;
@@ -3672,8 +4647,7 @@ var require__limit = __commonJS((exports, module) => {
           $schemaValue = $schemaExcl;
           $notOp += "=";
         } else {
-          if ($exclIsNumber)
-            $schemaValue = Math[$isMax ? "min" : "max"]($schemaExcl, $schema);
+          if ($exclIsNumber) $schemaValue = Math[$isMax ? "min" : "max"]($schemaExcl, $schema);
           if ($schemaExcl === ($exclIsNumber ? $schemaValue : true)) {
             $exclusive = true;
             $errorKeyword = $exclusiveKeyword;
@@ -3697,7 +4671,20 @@ var require__limit = __commonJS((exports, module) => {
     $$outStack.push(out);
     out = "";
     if (it.createErrors !== false) {
-      out += " { keyword: '" + ($errorKeyword || "_limit") + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { comparison: " + $opExpr + ", limit: " + $schemaValue + ", exclusive: " + $exclusive + " } ";
+      out +=
+        " { keyword: '" +
+        ($errorKeyword || "_limit") +
+        "' , dataPath: (dataPath || '') + " +
+        it.errorPath +
+        " , schemaPath: " +
+        it.util.toQuotedString($errSchemaPath) +
+        " , params: { comparison: " +
+        $opExpr +
+        ", limit: " +
+        $schemaValue +
+        ", exclusive: " +
+        $exclusive +
+        " } ";
       if (it.opts.messages !== false) {
         out += " , message: 'should be " + $opStr + " ";
         if ($isData) {
@@ -3750,7 +4737,8 @@ var require__limitItems = __commonJS((exports, module) => {
     var $breakOnError = !it.opts.allErrors;
     var $errorKeyword;
     var $data = "data" + ($dataLvl || "");
-    var $isData = it.opts.$data && $schema && $schema.$data, $schemaValue;
+    var $isData = it.opts.$data && $schema && $schema.$data,
+      $schemaValue;
     if ($isData) {
       out += " var schema" + $lvl + " = " + it.util.getData($schema.$data, $dataLvl, it.dataPathArr) + "; ";
       $schemaValue = "schema" + $lvl;
@@ -3771,7 +4759,16 @@ var require__limitItems = __commonJS((exports, module) => {
     $$outStack.push(out);
     out = "";
     if (it.createErrors !== false) {
-      out += " { keyword: '" + ($errorKeyword || "_limitItems") + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { limit: " + $schemaValue + " } ";
+      out +=
+        " { keyword: '" +
+        ($errorKeyword || "_limitItems") +
+        "' , dataPath: (dataPath || '') + " +
+        it.errorPath +
+        " , schemaPath: " +
+        it.util.toQuotedString($errSchemaPath) +
+        " , params: { limit: " +
+        $schemaValue +
+        " } ";
       if (it.opts.messages !== false) {
         out += " , message: 'should NOT have ";
         if ($keyword == "maxItems") {
@@ -3831,7 +4828,8 @@ var require__limitLength = __commonJS((exports, module) => {
     var $breakOnError = !it.opts.allErrors;
     var $errorKeyword;
     var $data = "data" + ($dataLvl || "");
-    var $isData = it.opts.$data && $schema && $schema.$data, $schemaValue;
+    var $isData = it.opts.$data && $schema && $schema.$data,
+      $schemaValue;
     if ($isData) {
       out += " var schema" + $lvl + " = " + it.util.getData($schema.$data, $dataLvl, it.dataPathArr) + "; ";
       $schemaValue = "schema" + $lvl;
@@ -3857,7 +4855,16 @@ var require__limitLength = __commonJS((exports, module) => {
     $$outStack.push(out);
     out = "";
     if (it.createErrors !== false) {
-      out += " { keyword: '" + ($errorKeyword || "_limitLength") + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { limit: " + $schemaValue + " } ";
+      out +=
+        " { keyword: '" +
+        ($errorKeyword || "_limitLength") +
+        "' , dataPath: (dataPath || '') + " +
+        it.errorPath +
+        " , schemaPath: " +
+        it.util.toQuotedString($errSchemaPath) +
+        " , params: { limit: " +
+        $schemaValue +
+        " } ";
       if (it.opts.messages !== false) {
         out += " , message: 'should NOT be ";
         if ($keyword == "maxLength") {
@@ -3917,7 +4924,8 @@ var require__limitProperties = __commonJS((exports, module) => {
     var $breakOnError = !it.opts.allErrors;
     var $errorKeyword;
     var $data = "data" + ($dataLvl || "");
-    var $isData = it.opts.$data && $schema && $schema.$data, $schemaValue;
+    var $isData = it.opts.$data && $schema && $schema.$data,
+      $schemaValue;
     if ($isData) {
       out += " var schema" + $lvl + " = " + it.util.getData($schema.$data, $dataLvl, it.dataPathArr) + "; ";
       $schemaValue = "schema" + $lvl;
@@ -3938,7 +4946,16 @@ var require__limitProperties = __commonJS((exports, module) => {
     $$outStack.push(out);
     out = "";
     if (it.createErrors !== false) {
-      out += " { keyword: '" + ($errorKeyword || "_limitProperties") + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { limit: " + $schemaValue + " } ";
+      out +=
+        " { keyword: '" +
+        ($errorKeyword || "_limitProperties") +
+        "' , dataPath: (dataPath || '') + " +
+        it.errorPath +
+        " , schemaPath: " +
+        it.util.toQuotedString($errSchemaPath) +
+        " , params: { limit: " +
+        $schemaValue +
+        " } ";
       if (it.opts.messages !== false) {
         out += " , message: 'should NOT have ";
         if ($keyword == "maxProperties") {
@@ -3997,7 +5014,8 @@ var require_multipleOf = __commonJS((exports, module) => {
     var $errSchemaPath = it.errSchemaPath + "/" + $keyword;
     var $breakOnError = !it.opts.allErrors;
     var $data = "data" + ($dataLvl || "");
-    var $isData = it.opts.$data && $schema && $schema.$data, $schemaValue;
+    var $isData = it.opts.$data && $schema && $schema.$data,
+      $schemaValue;
     if ($isData) {
       out += " var schema" + $lvl + " = " + it.util.getData($schema.$data, $dataLvl, it.dataPathArr) + "; ";
       $schemaValue = "schema" + $lvl;
@@ -4013,7 +5031,8 @@ var require_multipleOf = __commonJS((exports, module) => {
     }
     out += " (division" + $lvl + " = " + $data + " / " + $schemaValue + ", ";
     if (it.opts.multipleOfPrecision) {
-      out += " Math.abs(Math.round(division" + $lvl + ") - division" + $lvl + ") > 1e-" + it.opts.multipleOfPrecision + " ";
+      out +=
+        " Math.abs(Math.round(division" + $lvl + ") - division" + $lvl + ") > 1e-" + it.opts.multipleOfPrecision + " ";
     } else {
       out += " division" + $lvl + " !== parseInt(division" + $lvl + ") ";
     }
@@ -4026,7 +5045,16 @@ var require_multipleOf = __commonJS((exports, module) => {
     $$outStack.push(out);
     out = "";
     if (it.createErrors !== false) {
-      out += " { keyword: '" + "multipleOf" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { multipleOf: " + $schemaValue + " } ";
+      out +=
+        " { keyword: '" +
+        "multipleOf" +
+        "' , dataPath: (dataPath || '') + " +
+        it.errorPath +
+        " , schemaPath: " +
+        it.util.toQuotedString($errSchemaPath) +
+        " , params: { multipleOf: " +
+        $schemaValue +
+        " } ";
       if (it.opts.messages !== false) {
         out += " , message: 'should be multiple of ";
         if ($isData) {
@@ -4082,7 +5110,11 @@ var require_not = __commonJS((exports, module) => {
     var $it = it.util.copy(it);
     $it.level++;
     var $nextValid = "valid" + $it.level;
-    if (it.opts.strictKeywords ? typeof $schema == "object" && Object.keys($schema).length > 0 || $schema === false : it.util.schemaHasRules($schema, it.RULES.all)) {
+    if (
+      it.opts.strictKeywords
+        ? (typeof $schema == "object" && Object.keys($schema).length > 0) || $schema === false
+        : it.util.schemaHasRules($schema, it.RULES.all)
+    ) {
       $it.schema = $schema;
       $it.schemaPath = $schemaPath;
       $it.errSchemaPath = $errSchemaPath;
@@ -4097,20 +5129,33 @@ var require_not = __commonJS((exports, module) => {
       }
       out += " " + it.validate($it) + " ";
       $it.createErrors = true;
-      if ($allErrorsOption)
-        $it.opts.allErrors = $allErrorsOption;
+      if ($allErrorsOption) $it.opts.allErrors = $allErrorsOption;
       it.compositeRule = $it.compositeRule = $wasComposite;
       out += " if (" + $nextValid + ") {   ";
       var $$outStack = $$outStack || [];
       $$outStack.push(out);
       out = "";
       if (it.createErrors !== false) {
-        out += " { keyword: '" + "not" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: {} ";
+        out +=
+          " { keyword: '" +
+          "not" +
+          "' , dataPath: (dataPath || '') + " +
+          it.errorPath +
+          " , schemaPath: " +
+          it.util.toQuotedString($errSchemaPath) +
+          " , params: {} ";
         if (it.opts.messages !== false) {
           out += " , message: 'should NOT be valid' ";
         }
         if (it.opts.verbose) {
-          out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+          out +=
+            " , schema: validate.schema" +
+            $schemaPath +
+            " , parentSchema: validate.schema" +
+            it.schemaPath +
+            " , data: " +
+            $data +
+            " ";
         }
         out += " } ";
       } else {
@@ -4127,19 +5172,40 @@ var require_not = __commonJS((exports, module) => {
       } else {
         out += " var err = " + __err + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
       }
-      out += " } else {  errors = " + $errs + "; if (vErrors !== null) { if (" + $errs + ") vErrors.length = " + $errs + "; else vErrors = null; } ";
+      out +=
+        " } else {  errors = " +
+        $errs +
+        "; if (vErrors !== null) { if (" +
+        $errs +
+        ") vErrors.length = " +
+        $errs +
+        "; else vErrors = null; } ";
       if (it.opts.allErrors) {
         out += " } ";
       }
     } else {
       out += "  var err =   ";
       if (it.createErrors !== false) {
-        out += " { keyword: '" + "not" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: {} ";
+        out +=
+          " { keyword: '" +
+          "not" +
+          "' , dataPath: (dataPath || '') + " +
+          it.errorPath +
+          " , schemaPath: " +
+          it.util.toQuotedString($errSchemaPath) +
+          " , params: {} ";
         if (it.opts.messages !== false) {
           out += " , message: 'should NOT be valid' ";
         }
         if (it.opts.verbose) {
-          out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+          out +=
+            " , schema: validate.schema" +
+            $schemaPath +
+            " , parentSchema: validate.schema" +
+            it.schemaPath +
+            " , data: " +
+            $data +
+            " ";
         }
         out += " } ";
       } else {
@@ -4171,16 +5237,33 @@ var require_oneOf = __commonJS((exports, module) => {
     var $closingBraces = "";
     $it.level++;
     var $nextValid = "valid" + $it.level;
-    var $currentBaseId = $it.baseId, $prevValid = "prevValid" + $lvl, $passingSchemas = "passingSchemas" + $lvl;
-    out += "var " + $errs + " = errors , " + $prevValid + " = false , " + $valid + " = false , " + $passingSchemas + " = null; ";
+    var $currentBaseId = $it.baseId,
+      $prevValid = "prevValid" + $lvl,
+      $passingSchemas = "passingSchemas" + $lvl;
+    out +=
+      "var " +
+      $errs +
+      " = errors , " +
+      $prevValid +
+      " = false , " +
+      $valid +
+      " = false , " +
+      $passingSchemas +
+      " = null; ";
     var $wasComposite = it.compositeRule;
     it.compositeRule = $it.compositeRule = true;
     var arr1 = $schema;
     if (arr1) {
-      var $sch, $i = -1, l1 = arr1.length - 1;
+      var $sch,
+        $i = -1,
+        l1 = arr1.length - 1;
       while ($i < l1) {
-        $sch = arr1[$i += 1];
-        if (it.opts.strictKeywords ? typeof $sch == "object" && Object.keys($sch).length > 0 || $sch === false : it.util.schemaHasRules($sch, it.RULES.all)) {
+        $sch = arr1[($i += 1)];
+        if (
+          it.opts.strictKeywords
+            ? (typeof $sch == "object" && Object.keys($sch).length > 0) || $sch === false
+            : it.util.schemaHasRules($sch, it.RULES.all)
+        ) {
           $it.schema = $sch;
           $it.schemaPath = $schemaPath + "[" + $i + "]";
           $it.errSchemaPath = $errSchemaPath + "/" + $i;
@@ -4190,21 +5273,61 @@ var require_oneOf = __commonJS((exports, module) => {
           out += " var " + $nextValid + " = true; ";
         }
         if ($i) {
-          out += " if (" + $nextValid + " && " + $prevValid + ") { " + $valid + " = false; " + $passingSchemas + " = [" + $passingSchemas + ", " + $i + "]; } else { ";
+          out +=
+            " if (" +
+            $nextValid +
+            " && " +
+            $prevValid +
+            ") { " +
+            $valid +
+            " = false; " +
+            $passingSchemas +
+            " = [" +
+            $passingSchemas +
+            ", " +
+            $i +
+            "]; } else { ";
           $closingBraces += "}";
         }
-        out += " if (" + $nextValid + ") { " + $valid + " = " + $prevValid + " = true; " + $passingSchemas + " = " + $i + "; }";
+        out +=
+          " if (" +
+          $nextValid +
+          ") { " +
+          $valid +
+          " = " +
+          $prevValid +
+          " = true; " +
+          $passingSchemas +
+          " = " +
+          $i +
+          "; }";
       }
     }
     it.compositeRule = $it.compositeRule = $wasComposite;
     out += "" + $closingBraces + "if (!" + $valid + ") {   var err =   ";
     if (it.createErrors !== false) {
-      out += " { keyword: '" + "oneOf" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { passingSchemas: " + $passingSchemas + " } ";
+      out +=
+        " { keyword: '" +
+        "oneOf" +
+        "' , dataPath: (dataPath || '') + " +
+        it.errorPath +
+        " , schemaPath: " +
+        it.util.toQuotedString($errSchemaPath) +
+        " , params: { passingSchemas: " +
+        $passingSchemas +
+        " } ";
       if (it.opts.messages !== false) {
         out += " , message: 'should match exactly one schema in oneOf' ";
       }
       if (it.opts.verbose) {
-        out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+        out +=
+          " , schema: validate.schema" +
+          $schemaPath +
+          " , parentSchema: validate.schema" +
+          it.schemaPath +
+          " , data: " +
+          $data +
+          " ";
       }
       out += " } ";
     } else {
@@ -4218,7 +5341,14 @@ var require_oneOf = __commonJS((exports, module) => {
         out += " validate.errors = vErrors; return false; ";
       }
     }
-    out += "} else {  errors = " + $errs + "; if (vErrors !== null) { if (" + $errs + ") vErrors.length = " + $errs + "; else vErrors = null; }";
+    out +=
+      "} else {  errors = " +
+      $errs +
+      "; if (vErrors !== null) { if (" +
+      $errs +
+      ") vErrors.length = " +
+      $errs +
+      "; else vErrors = null; }";
     if (it.opts.allErrors) {
       out += " } ";
     }
@@ -4237,7 +5367,8 @@ var require_pattern = __commonJS((exports, module) => {
     var $errSchemaPath = it.errSchemaPath + "/" + $keyword;
     var $breakOnError = !it.opts.allErrors;
     var $data = "data" + ($dataLvl || "");
-    var $isData = it.opts.$data && $schema && $schema.$data, $schemaValue;
+    var $isData = it.opts.$data && $schema && $schema.$data,
+      $schemaValue;
     if ($isData) {
       out += " var schema" + $lvl + " = " + it.util.getData($schema.$data, $dataLvl, it.dataPathArr) + "; ";
       $schemaValue = "schema" + $lvl;
@@ -4254,7 +5385,14 @@ var require_pattern = __commonJS((exports, module) => {
     $$outStack.push(out);
     out = "";
     if (it.createErrors !== false) {
-      out += " { keyword: '" + "pattern" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { pattern:  ";
+      out +=
+        " { keyword: '" +
+        "pattern" +
+        "' , dataPath: (dataPath || '') + " +
+        it.errorPath +
+        " , schemaPath: " +
+        it.util.toQuotedString($errSchemaPath) +
+        " , params: { pattern:  ";
       if ($isData) {
         out += "" + $schemaValue;
       } else {
@@ -4318,8 +5456,22 @@ var require_properties = __commonJS((exports, module) => {
     var $closingBraces = "";
     $it.level++;
     var $nextValid = "valid" + $it.level;
-    var $key = "key" + $lvl, $idx = "idx" + $lvl, $dataNxt = $it.dataLevel = it.dataLevel + 1, $nextData = "data" + $dataNxt, $dataProperties = "dataProperties" + $lvl;
-    var $schemaKeys = Object.keys($schema || {}).filter(notProto), $pProperties = it.schema.patternProperties || {}, $pPropertyKeys = Object.keys($pProperties).filter(notProto), $aProperties = it.schema.additionalProperties, $someProperties = $schemaKeys.length || $pPropertyKeys.length, $noAdditional = $aProperties === false, $additionalIsSchema = typeof $aProperties == "object" && Object.keys($aProperties).length, $removeAdditional = it.opts.removeAdditional, $checkAdditional = $noAdditional || $additionalIsSchema || $removeAdditional, $ownProperties = it.opts.ownProperties, $currentBaseId = it.baseId;
+    var $key = "key" + $lvl,
+      $idx = "idx" + $lvl,
+      $dataNxt = ($it.dataLevel = it.dataLevel + 1),
+      $nextData = "data" + $dataNxt,
+      $dataProperties = "dataProperties" + $lvl;
+    var $schemaKeys = Object.keys($schema || {}).filter(notProto),
+      $pProperties = it.schema.patternProperties || {},
+      $pPropertyKeys = Object.keys($pProperties).filter(notProto),
+      $aProperties = it.schema.additionalProperties,
+      $someProperties = $schemaKeys.length || $pPropertyKeys.length,
+      $noAdditional = $aProperties === false,
+      $additionalIsSchema = typeof $aProperties == "object" && Object.keys($aProperties).length,
+      $removeAdditional = it.opts.removeAdditional,
+      $checkAdditional = $noAdditional || $additionalIsSchema || $removeAdditional,
+      $ownProperties = it.opts.ownProperties,
+      $currentBaseId = it.baseId;
     var $required = it.schema.required;
     if ($required && !(it.opts.$data && $required.$data) && $required.length < it.opts.loopRequired) {
       var $requiredHash = it.util.toHash($required);
@@ -4333,7 +5485,28 @@ var require_properties = __commonJS((exports, module) => {
     }
     if ($checkAdditional) {
       if ($ownProperties) {
-        out += " " + $dataProperties + " = " + $dataProperties + " || Object.keys(" + $data + "); for (var " + $idx + "=0; " + $idx + "<" + $dataProperties + ".length; " + $idx + "++) { var " + $key + " = " + $dataProperties + "[" + $idx + "]; ";
+        out +=
+          " " +
+          $dataProperties +
+          " = " +
+          $dataProperties +
+          " || Object.keys(" +
+          $data +
+          "); for (var " +
+          $idx +
+          "=0; " +
+          $idx +
+          "<" +
+          $dataProperties +
+          ".length; " +
+          $idx +
+          "++) { var " +
+          $key +
+          " = " +
+          $dataProperties +
+          "[" +
+          $idx +
+          "]; ";
       } else {
         out += " for (var " + $key + " in " + $data + ") { ";
       }
@@ -4345,9 +5518,11 @@ var require_properties = __commonJS((exports, module) => {
           } else {
             var arr1 = $schemaKeys;
             if (arr1) {
-              var $propertyKey, i1 = -1, l1 = arr1.length - 1;
+              var $propertyKey,
+                i1 = -1,
+                l1 = arr1.length - 1;
               while (i1 < l1) {
-                $propertyKey = arr1[i1 += 1];
+                $propertyKey = arr1[(i1 += 1)];
                 out += " || " + $key + " == " + it.util.toQuotedString($propertyKey) + " ";
               }
             }
@@ -4356,9 +5531,11 @@ var require_properties = __commonJS((exports, module) => {
         if ($pPropertyKeys.length) {
           var arr2 = $pPropertyKeys;
           if (arr2) {
-            var $pProperty, $i = -1, l2 = arr2.length - 1;
+            var $pProperty,
+              $i = -1,
+              l2 = arr2.length - 1;
             while ($i < l2) {
-              $pProperty = arr2[$i += 1];
+              $pProperty = arr2[($i += 1)];
               out += " || " + it.usePattern($pProperty) + ".test(" + $key + ") ";
             }
           }
@@ -4384,7 +5561,16 @@ var require_properties = __commonJS((exports, module) => {
             $$outStack.push(out);
             out = "";
             if (it.createErrors !== false) {
-              out += " { keyword: '" + "additionalProperties" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { additionalProperty: '" + $additionalProperty + "' } ";
+              out +=
+                " { keyword: '" +
+                "additionalProperties" +
+                "' , dataPath: (dataPath || '') + " +
+                it.errorPath +
+                " , schemaPath: " +
+                it.util.toQuotedString($errSchemaPath) +
+                " , params: { additionalProperty: '" +
+                $additionalProperty +
+                "' } ";
               if (it.opts.messages !== false) {
                 out += " , message: '";
                 if (it.opts._errorDataPathProperty) {
@@ -4410,7 +5596,8 @@ var require_properties = __commonJS((exports, module) => {
                 out += " validate.errors = [" + __err + "]; return false; ";
               }
             } else {
-              out += " var err = " + __err + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
+              out +=
+                " var err = " + __err + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
             }
             $errSchemaPath = $currErrSchemaPath;
             if ($breakOnError) {
@@ -4425,7 +5612,9 @@ var require_properties = __commonJS((exports, module) => {
             $it.schema = $aProperties;
             $it.schemaPath = it.schemaPath + ".additionalProperties";
             $it.errSchemaPath = it.errSchemaPath + "/additionalProperties";
-            $it.errorPath = it.opts._errorDataPathProperty ? it.errorPath : it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
+            $it.errorPath = it.opts._errorDataPathProperty
+              ? it.errorPath
+              : it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
             var $passData = $data + "[" + $key + "]";
             $it.dataPathArr[$dataNxt] = $key;
             var $code = it.validate($it);
@@ -4435,13 +5624,24 @@ var require_properties = __commonJS((exports, module) => {
             } else {
               out += " var " + $nextData + " = " + $passData + "; " + $code + " ";
             }
-            out += " if (!" + $nextValid + ") { errors = " + $errs + "; if (validate.errors !== null) { if (errors) validate.errors.length = errors; else validate.errors = null; } delete " + $data + "[" + $key + "]; }  ";
+            out +=
+              " if (!" +
+              $nextValid +
+              ") { errors = " +
+              $errs +
+              "; if (validate.errors !== null) { if (errors) validate.errors.length = errors; else validate.errors = null; } delete " +
+              $data +
+              "[" +
+              $key +
+              "]; }  ";
             it.compositeRule = $it.compositeRule = $wasComposite;
           } else {
             $it.schema = $aProperties;
             $it.schemaPath = it.schemaPath + ".additionalProperties";
             $it.errSchemaPath = it.errSchemaPath + "/additionalProperties";
-            $it.errorPath = it.opts._errorDataPathProperty ? it.errorPath : it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
+            $it.errorPath = it.opts._errorDataPathProperty
+              ? it.errorPath
+              : it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
             var $passData = $data + "[" + $key + "]";
             $it.dataPathArr[$dataNxt] = $key;
             var $code = it.validate($it);
@@ -4471,12 +5671,20 @@ var require_properties = __commonJS((exports, module) => {
     if ($schemaKeys.length) {
       var arr3 = $schemaKeys;
       if (arr3) {
-        var $propertyKey, i3 = -1, l3 = arr3.length - 1;
+        var $propertyKey,
+          i3 = -1,
+          l3 = arr3.length - 1;
         while (i3 < l3) {
-          $propertyKey = arr3[i3 += 1];
+          $propertyKey = arr3[(i3 += 1)];
           var $sch = $schema[$propertyKey];
-          if (it.opts.strictKeywords ? typeof $sch == "object" && Object.keys($sch).length > 0 || $sch === false : it.util.schemaHasRules($sch, it.RULES.all)) {
-            var $prop = it.util.getProperty($propertyKey), $passData = $data + $prop, $hasDefault = $useDefaults && $sch.default !== undefined;
+          if (
+            it.opts.strictKeywords
+              ? (typeof $sch == "object" && Object.keys($sch).length > 0) || $sch === false
+              : it.util.schemaHasRules($sch, it.RULES.all)
+          ) {
+            var $prop = it.util.getProperty($propertyKey),
+              $passData = $data + $prop,
+              $hasDefault = $useDefaults && $sch.default !== undefined;
             $it.schema = $sch;
             $it.schemaPath = $schemaPath + $prop;
             $it.errSchemaPath = $errSchemaPath + "/" + it.util.escapeFragment($propertyKey);
@@ -4497,10 +5705,17 @@ var require_properties = __commonJS((exports, module) => {
               if ($requiredHash && $requiredHash[$propertyKey]) {
                 out += " if ( " + $useData + " === undefined ";
                 if ($ownProperties) {
-                  out += " || ! Object.prototype.hasOwnProperty.call(" + $data + ", '" + it.util.escapeQuotes($propertyKey) + "') ";
+                  out +=
+                    " || ! Object.prototype.hasOwnProperty.call(" +
+                    $data +
+                    ", '" +
+                    it.util.escapeQuotes($propertyKey) +
+                    "') ";
                 }
                 out += ") { " + $nextValid + " = false; ";
-                var $currentErrorPath = it.errorPath, $currErrSchemaPath = $errSchemaPath, $missingProperty = it.util.escapeQuotes($propertyKey);
+                var $currentErrorPath = it.errorPath,
+                  $currErrSchemaPath = $errSchemaPath,
+                  $missingProperty = it.util.escapeQuotes($propertyKey);
                 if (it.opts._errorDataPathProperty) {
                   it.errorPath = it.util.getPath($currentErrorPath, $propertyKey, it.opts.jsonPointers);
                 }
@@ -4509,7 +5724,16 @@ var require_properties = __commonJS((exports, module) => {
                 $$outStack.push(out);
                 out = "";
                 if (it.createErrors !== false) {
-                  out += " { keyword: '" + "required" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { missingProperty: '" + $missingProperty + "' } ";
+                  out +=
+                    " { keyword: '" +
+                    "required" +
+                    "' , dataPath: (dataPath || '') + " +
+                    it.errorPath +
+                    " , schemaPath: " +
+                    it.util.toQuotedString($errSchemaPath) +
+                    " , params: { missingProperty: '" +
+                    $missingProperty +
+                    "' } ";
                   if (it.opts.messages !== false) {
                     out += " , message: '";
                     if (it.opts._errorDataPathProperty) {
@@ -4520,7 +5744,14 @@ var require_properties = __commonJS((exports, module) => {
                     out += "' ";
                   }
                   if (it.opts.verbose) {
-                    out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+                    out +=
+                      " , schema: validate.schema" +
+                      $schemaPath +
+                      " , parentSchema: validate.schema" +
+                      it.schemaPath +
+                      " , data: " +
+                      $data +
+                      " ";
                   }
                   out += " } ";
                 } else {
@@ -4535,7 +5766,10 @@ var require_properties = __commonJS((exports, module) => {
                     out += " validate.errors = [" + __err + "]; return false; ";
                   }
                 } else {
-                  out += " var err = " + __err + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
+                  out +=
+                    " var err = " +
+                    __err +
+                    ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
                 }
                 $errSchemaPath = $currErrSchemaPath;
                 it.errorPath = $currentErrorPath;
@@ -4544,13 +5778,23 @@ var require_properties = __commonJS((exports, module) => {
                 if ($breakOnError) {
                   out += " if ( " + $useData + " === undefined ";
                   if ($ownProperties) {
-                    out += " || ! Object.prototype.hasOwnProperty.call(" + $data + ", '" + it.util.escapeQuotes($propertyKey) + "') ";
+                    out +=
+                      " || ! Object.prototype.hasOwnProperty.call(" +
+                      $data +
+                      ", '" +
+                      it.util.escapeQuotes($propertyKey) +
+                      "') ";
                   }
                   out += ") { " + $nextValid + " = true; } else { ";
                 } else {
                   out += " if (" + $useData + " !== undefined ";
                   if ($ownProperties) {
-                    out += " &&   Object.prototype.hasOwnProperty.call(" + $data + ", '" + it.util.escapeQuotes($propertyKey) + "') ";
+                    out +=
+                      " &&   Object.prototype.hasOwnProperty.call(" +
+                      $data +
+                      ", '" +
+                      it.util.escapeQuotes($propertyKey) +
+                      "') ";
                   }
                   out += " ) { ";
                 }
@@ -4568,16 +5812,43 @@ var require_properties = __commonJS((exports, module) => {
     if ($pPropertyKeys.length) {
       var arr4 = $pPropertyKeys;
       if (arr4) {
-        var $pProperty, i4 = -1, l4 = arr4.length - 1;
+        var $pProperty,
+          i4 = -1,
+          l4 = arr4.length - 1;
         while (i4 < l4) {
-          $pProperty = arr4[i4 += 1];
+          $pProperty = arr4[(i4 += 1)];
           var $sch = $pProperties[$pProperty];
-          if (it.opts.strictKeywords ? typeof $sch == "object" && Object.keys($sch).length > 0 || $sch === false : it.util.schemaHasRules($sch, it.RULES.all)) {
+          if (
+            it.opts.strictKeywords
+              ? (typeof $sch == "object" && Object.keys($sch).length > 0) || $sch === false
+              : it.util.schemaHasRules($sch, it.RULES.all)
+          ) {
             $it.schema = $sch;
             $it.schemaPath = it.schemaPath + ".patternProperties" + it.util.getProperty($pProperty);
             $it.errSchemaPath = it.errSchemaPath + "/patternProperties/" + it.util.escapeFragment($pProperty);
             if ($ownProperties) {
-              out += " " + $dataProperties + " = " + $dataProperties + " || Object.keys(" + $data + "); for (var " + $idx + "=0; " + $idx + "<" + $dataProperties + ".length; " + $idx + "++) { var " + $key + " = " + $dataProperties + "[" + $idx + "]; ";
+              out +=
+                " " +
+                $dataProperties +
+                " = " +
+                $dataProperties +
+                " || Object.keys(" +
+                $data +
+                "); for (var " +
+                $idx +
+                "=0; " +
+                $idx +
+                "<" +
+                $dataProperties +
+                ".length; " +
+                $idx +
+                "++) { var " +
+                $key +
+                " = " +
+                $dataProperties +
+                "[" +
+                $idx +
+                "]; ";
             } else {
               out += " for (var " + $key + " in " + $data + ") { ";
             }
@@ -4632,16 +5903,49 @@ var require_propertyNames = __commonJS((exports, module) => {
     $it.level++;
     var $nextValid = "valid" + $it.level;
     out += "var " + $errs + " = errors;";
-    if (it.opts.strictKeywords ? typeof $schema == "object" && Object.keys($schema).length > 0 || $schema === false : it.util.schemaHasRules($schema, it.RULES.all)) {
+    if (
+      it.opts.strictKeywords
+        ? (typeof $schema == "object" && Object.keys($schema).length > 0) || $schema === false
+        : it.util.schemaHasRules($schema, it.RULES.all)
+    ) {
       $it.schema = $schema;
       $it.schemaPath = $schemaPath;
       $it.errSchemaPath = $errSchemaPath;
-      var $key = "key" + $lvl, $idx = "idx" + $lvl, $i = "i" + $lvl, $invalidName = "' + " + $key + " + '", $dataNxt = $it.dataLevel = it.dataLevel + 1, $nextData = "data" + $dataNxt, $dataProperties = "dataProperties" + $lvl, $ownProperties = it.opts.ownProperties, $currentBaseId = it.baseId;
+      var $key = "key" + $lvl,
+        $idx = "idx" + $lvl,
+        $i = "i" + $lvl,
+        $invalidName = "' + " + $key + " + '",
+        $dataNxt = ($it.dataLevel = it.dataLevel + 1),
+        $nextData = "data" + $dataNxt,
+        $dataProperties = "dataProperties" + $lvl,
+        $ownProperties = it.opts.ownProperties,
+        $currentBaseId = it.baseId;
       if ($ownProperties) {
         out += " var " + $dataProperties + " = undefined; ";
       }
       if ($ownProperties) {
-        out += " " + $dataProperties + " = " + $dataProperties + " || Object.keys(" + $data + "); for (var " + $idx + "=0; " + $idx + "<" + $dataProperties + ".length; " + $idx + "++) { var " + $key + " = " + $dataProperties + "[" + $idx + "]; ";
+        out +=
+          " " +
+          $dataProperties +
+          " = " +
+          $dataProperties +
+          " || Object.keys(" +
+          $data +
+          "); for (var " +
+          $idx +
+          "=0; " +
+          $idx +
+          "<" +
+          $dataProperties +
+          ".length; " +
+          $idx +
+          "++) { var " +
+          $key +
+          " = " +
+          $dataProperties +
+          "[" +
+          $idx +
+          "]; ";
       } else {
         out += " for (var " + $key + " in " + $data + ") { ";
       }
@@ -4657,14 +5961,45 @@ var require_propertyNames = __commonJS((exports, module) => {
         out += " var " + $nextData + " = " + $passData + "; " + $code + " ";
       }
       it.compositeRule = $it.compositeRule = $wasComposite;
-      out += " if (!" + $nextValid + ") { for (var " + $i + "=startErrs" + $lvl + "; " + $i + "<errors; " + $i + "++) { vErrors[" + $i + "].propertyName = " + $key + "; }   var err =   ";
+      out +=
+        " if (!" +
+        $nextValid +
+        ") { for (var " +
+        $i +
+        "=startErrs" +
+        $lvl +
+        "; " +
+        $i +
+        "<errors; " +
+        $i +
+        "++) { vErrors[" +
+        $i +
+        "].propertyName = " +
+        $key +
+        "; }   var err =   ";
       if (it.createErrors !== false) {
-        out += " { keyword: '" + "propertyNames" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { propertyName: '" + $invalidName + "' } ";
+        out +=
+          " { keyword: '" +
+          "propertyNames" +
+          "' , dataPath: (dataPath || '') + " +
+          it.errorPath +
+          " , schemaPath: " +
+          it.util.toQuotedString($errSchemaPath) +
+          " , params: { propertyName: '" +
+          $invalidName +
+          "' } ";
         if (it.opts.messages !== false) {
           out += " , message: 'property name \\'" + $invalidName + "\\' is invalid' ";
         }
         if (it.opts.verbose) {
-          out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+          out +=
+            " , schema: validate.schema" +
+            $schemaPath +
+            " , parentSchema: validate.schema" +
+            it.schemaPath +
+            " , data: " +
+            $data +
+            " ";
         }
         out += " } ";
       } else {
@@ -4702,7 +6037,8 @@ var require_required = __commonJS((exports, module) => {
     var $breakOnError = !it.opts.allErrors;
     var $data = "data" + ($dataLvl || "");
     var $valid = "valid" + $lvl;
-    var $isData = it.opts.$data && $schema && $schema.$data, $schemaValue;
+    var $isData = it.opts.$data && $schema && $schema.$data,
+      $schemaValue;
     if ($isData) {
       out += " var schema" + $lvl + " = " + it.util.getData($schema.$data, $dataLvl, it.dataPathArr) + "; ";
       $schemaValue = "schema" + $lvl;
@@ -4715,11 +6051,20 @@ var require_required = __commonJS((exports, module) => {
         var $required = [];
         var arr1 = $schema;
         if (arr1) {
-          var $property, i1 = -1, l1 = arr1.length - 1;
+          var $property,
+            i1 = -1,
+            l1 = arr1.length - 1;
           while (i1 < l1) {
-            $property = arr1[i1 += 1];
+            $property = arr1[(i1 += 1)];
             var $propertySch = it.schema.properties[$property];
-            if (!($propertySch && (it.opts.strictKeywords ? typeof $propertySch == "object" && Object.keys($propertySch).length > 0 || $propertySch === false : it.util.schemaHasRules($propertySch, it.RULES.all)))) {
+            if (
+              !(
+                $propertySch &&
+                (it.opts.strictKeywords
+                  ? (typeof $propertySch == "object" && Object.keys($propertySch).length > 0) || $propertySch === false
+                  : it.util.schemaHasRules($propertySch, it.RULES.all))
+              )
+            ) {
               $required[$required.length] = $property;
             }
           }
@@ -4729,22 +6074,52 @@ var require_required = __commonJS((exports, module) => {
       }
     }
     if ($isData || $required.length) {
-      var $currentErrorPath = it.errorPath, $loopRequired = $isData || $required.length >= it.opts.loopRequired, $ownProperties = it.opts.ownProperties;
+      var $currentErrorPath = it.errorPath,
+        $loopRequired = $isData || $required.length >= it.opts.loopRequired,
+        $ownProperties = it.opts.ownProperties;
       if ($breakOnError) {
         out += " var missing" + $lvl + "; ";
         if ($loopRequired) {
           if (!$isData) {
             out += " var " + $vSchema + " = validate.schema" + $schemaPath + "; ";
           }
-          var $i = "i" + $lvl, $propertyPath = "schema" + $lvl + "[" + $i + "]", $missingProperty = "' + " + $propertyPath + " + '";
+          var $i = "i" + $lvl,
+            $propertyPath = "schema" + $lvl + "[" + $i + "]",
+            $missingProperty = "' + " + $propertyPath + " + '";
           if (it.opts._errorDataPathProperty) {
             it.errorPath = it.util.getPathExpr($currentErrorPath, $propertyPath, it.opts.jsonPointers);
           }
           out += " var " + $valid + " = true; ";
           if ($isData) {
-            out += " if (schema" + $lvl + " === undefined) " + $valid + " = true; else if (!Array.isArray(schema" + $lvl + ")) " + $valid + " = false; else {";
+            out +=
+              " if (schema" +
+              $lvl +
+              " === undefined) " +
+              $valid +
+              " = true; else if (!Array.isArray(schema" +
+              $lvl +
+              ")) " +
+              $valid +
+              " = false; else {";
           }
-          out += " for (var " + $i + " = 0; " + $i + " < " + $vSchema + ".length; " + $i + "++) { " + $valid + " = " + $data + "[" + $vSchema + "[" + $i + "]] !== undefined ";
+          out +=
+            " for (var " +
+            $i +
+            " = 0; " +
+            $i +
+            " < " +
+            $vSchema +
+            ".length; " +
+            $i +
+            "++) { " +
+            $valid +
+            " = " +
+            $data +
+            "[" +
+            $vSchema +
+            "[" +
+            $i +
+            "]] !== undefined ";
           if ($ownProperties) {
             out += " &&   Object.prototype.hasOwnProperty.call(" + $data + ", " + $vSchema + "[" + $i + "]) ";
           }
@@ -4757,7 +6132,16 @@ var require_required = __commonJS((exports, module) => {
           $$outStack.push(out);
           out = "";
           if (it.createErrors !== false) {
-            out += " { keyword: '" + "required" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { missingProperty: '" + $missingProperty + "' } ";
+            out +=
+              " { keyword: '" +
+              "required" +
+              "' , dataPath: (dataPath || '') + " +
+              it.errorPath +
+              " , schemaPath: " +
+              it.util.toQuotedString($errSchemaPath) +
+              " , params: { missingProperty: '" +
+              $missingProperty +
+              "' } ";
             if (it.opts.messages !== false) {
               out += " , message: '";
               if (it.opts._errorDataPathProperty) {
@@ -4768,7 +6152,14 @@ var require_required = __commonJS((exports, module) => {
               out += "' ";
             }
             if (it.opts.verbose) {
-              out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+              out +=
+                " , schema: validate.schema" +
+                $schemaPath +
+                " , parentSchema: validate.schema" +
+                it.schemaPath +
+                " , data: " +
+                $data +
+                " ";
             }
             out += " } ";
           } else {
@@ -4783,37 +6174,63 @@ var require_required = __commonJS((exports, module) => {
               out += " validate.errors = [" + __err + "]; return false; ";
             }
           } else {
-            out += " var err = " + __err + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
+            out +=
+              " var err = " + __err + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
           }
           out += " } else { ";
         } else {
           out += " if ( ";
           var arr2 = $required;
           if (arr2) {
-            var $propertyKey, $i = -1, l2 = arr2.length - 1;
+            var $propertyKey,
+              $i = -1,
+              l2 = arr2.length - 1;
             while ($i < l2) {
-              $propertyKey = arr2[$i += 1];
+              $propertyKey = arr2[($i += 1)];
               if ($i) {
                 out += " || ";
               }
-              var $prop = it.util.getProperty($propertyKey), $useData = $data + $prop;
+              var $prop = it.util.getProperty($propertyKey),
+                $useData = $data + $prop;
               out += " ( ( " + $useData + " === undefined ";
               if ($ownProperties) {
-                out += " || ! Object.prototype.hasOwnProperty.call(" + $data + ", '" + it.util.escapeQuotes($propertyKey) + "') ";
+                out +=
+                  " || ! Object.prototype.hasOwnProperty.call(" +
+                  $data +
+                  ", '" +
+                  it.util.escapeQuotes($propertyKey) +
+                  "') ";
               }
-              out += ") && (missing" + $lvl + " = " + it.util.toQuotedString(it.opts.jsonPointers ? $propertyKey : $prop) + ") ) ";
+              out +=
+                ") && (missing" +
+                $lvl +
+                " = " +
+                it.util.toQuotedString(it.opts.jsonPointers ? $propertyKey : $prop) +
+                ") ) ";
             }
           }
           out += ") {  ";
-          var $propertyPath = "missing" + $lvl, $missingProperty = "' + " + $propertyPath + " + '";
+          var $propertyPath = "missing" + $lvl,
+            $missingProperty = "' + " + $propertyPath + " + '";
           if (it.opts._errorDataPathProperty) {
-            it.errorPath = it.opts.jsonPointers ? it.util.getPathExpr($currentErrorPath, $propertyPath, true) : $currentErrorPath + " + " + $propertyPath;
+            it.errorPath = it.opts.jsonPointers
+              ? it.util.getPathExpr($currentErrorPath, $propertyPath, true)
+              : $currentErrorPath + " + " + $propertyPath;
           }
           var $$outStack = $$outStack || [];
           $$outStack.push(out);
           out = "";
           if (it.createErrors !== false) {
-            out += " { keyword: '" + "required" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { missingProperty: '" + $missingProperty + "' } ";
+            out +=
+              " { keyword: '" +
+              "required" +
+              "' , dataPath: (dataPath || '') + " +
+              it.errorPath +
+              " , schemaPath: " +
+              it.util.toQuotedString($errSchemaPath) +
+              " , params: { missingProperty: '" +
+              $missingProperty +
+              "' } ";
             if (it.opts.messages !== false) {
               out += " , message: '";
               if (it.opts._errorDataPathProperty) {
@@ -4824,7 +6241,14 @@ var require_required = __commonJS((exports, module) => {
               out += "' ";
             }
             if (it.opts.verbose) {
-              out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+              out +=
+                " , schema: validate.schema" +
+                $schemaPath +
+                " , parentSchema: validate.schema" +
+                it.schemaPath +
+                " , data: " +
+                $data +
+                " ";
             }
             out += " } ";
           } else {
@@ -4839,7 +6263,8 @@ var require_required = __commonJS((exports, module) => {
               out += " validate.errors = [" + __err + "]; return false; ";
             }
           } else {
-            out += " var err = " + __err + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
+            out +=
+              " var err = " + __err + ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ";
           }
           out += " } else { ";
         }
@@ -4848,14 +6273,25 @@ var require_required = __commonJS((exports, module) => {
           if (!$isData) {
             out += " var " + $vSchema + " = validate.schema" + $schemaPath + "; ";
           }
-          var $i = "i" + $lvl, $propertyPath = "schema" + $lvl + "[" + $i + "]", $missingProperty = "' + " + $propertyPath + " + '";
+          var $i = "i" + $lvl,
+            $propertyPath = "schema" + $lvl + "[" + $i + "]",
+            $missingProperty = "' + " + $propertyPath + " + '";
           if (it.opts._errorDataPathProperty) {
             it.errorPath = it.util.getPathExpr($currentErrorPath, $propertyPath, it.opts.jsonPointers);
           }
           if ($isData) {
             out += " if (" + $vSchema + " && !Array.isArray(" + $vSchema + ")) {  var err =   ";
             if (it.createErrors !== false) {
-              out += " { keyword: '" + "required" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { missingProperty: '" + $missingProperty + "' } ";
+              out +=
+                " { keyword: '" +
+                "required" +
+                "' , dataPath: (dataPath || '') + " +
+                it.errorPath +
+                " , schemaPath: " +
+                it.util.toQuotedString($errSchemaPath) +
+                " , params: { missingProperty: '" +
+                $missingProperty +
+                "' } ";
               if (it.opts.messages !== false) {
                 out += " , message: '";
                 if (it.opts._errorDataPathProperty) {
@@ -4866,21 +6302,55 @@ var require_required = __commonJS((exports, module) => {
                 out += "' ";
               }
               if (it.opts.verbose) {
-                out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+                out +=
+                  " , schema: validate.schema" +
+                  $schemaPath +
+                  " , parentSchema: validate.schema" +
+                  it.schemaPath +
+                  " , data: " +
+                  $data +
+                  " ";
               }
               out += " } ";
             } else {
               out += " {} ";
             }
-            out += ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; } else if (" + $vSchema + " !== undefined) { ";
+            out +=
+              ";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; } else if (" +
+              $vSchema +
+              " !== undefined) { ";
           }
-          out += " for (var " + $i + " = 0; " + $i + " < " + $vSchema + ".length; " + $i + "++) { if (" + $data + "[" + $vSchema + "[" + $i + "]] === undefined ";
+          out +=
+            " for (var " +
+            $i +
+            " = 0; " +
+            $i +
+            " < " +
+            $vSchema +
+            ".length; " +
+            $i +
+            "++) { if (" +
+            $data +
+            "[" +
+            $vSchema +
+            "[" +
+            $i +
+            "]] === undefined ";
           if ($ownProperties) {
             out += " || ! Object.prototype.hasOwnProperty.call(" + $data + ", " + $vSchema + "[" + $i + "]) ";
           }
           out += ") {  var err =   ";
           if (it.createErrors !== false) {
-            out += " { keyword: '" + "required" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { missingProperty: '" + $missingProperty + "' } ";
+            out +=
+              " { keyword: '" +
+              "required" +
+              "' , dataPath: (dataPath || '') + " +
+              it.errorPath +
+              " , schemaPath: " +
+              it.util.toQuotedString($errSchemaPath) +
+              " , params: { missingProperty: '" +
+              $missingProperty +
+              "' } ";
             if (it.opts.messages !== false) {
               out += " , message: '";
               if (it.opts._errorDataPathProperty) {
@@ -4891,7 +6361,14 @@ var require_required = __commonJS((exports, module) => {
               out += "' ";
             }
             if (it.opts.verbose) {
-              out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+              out +=
+                " , schema: validate.schema" +
+                $schemaPath +
+                " , parentSchema: validate.schema" +
+                it.schemaPath +
+                " , data: " +
+                $data +
+                " ";
             }
             out += " } ";
           } else {
@@ -4904,20 +6381,38 @@ var require_required = __commonJS((exports, module) => {
         } else {
           var arr3 = $required;
           if (arr3) {
-            var $propertyKey, i3 = -1, l3 = arr3.length - 1;
+            var $propertyKey,
+              i3 = -1,
+              l3 = arr3.length - 1;
             while (i3 < l3) {
-              $propertyKey = arr3[i3 += 1];
-              var $prop = it.util.getProperty($propertyKey), $missingProperty = it.util.escapeQuotes($propertyKey), $useData = $data + $prop;
+              $propertyKey = arr3[(i3 += 1)];
+              var $prop = it.util.getProperty($propertyKey),
+                $missingProperty = it.util.escapeQuotes($propertyKey),
+                $useData = $data + $prop;
               if (it.opts._errorDataPathProperty) {
                 it.errorPath = it.util.getPath($currentErrorPath, $propertyKey, it.opts.jsonPointers);
               }
               out += " if ( " + $useData + " === undefined ";
               if ($ownProperties) {
-                out += " || ! Object.prototype.hasOwnProperty.call(" + $data + ", '" + it.util.escapeQuotes($propertyKey) + "') ";
+                out +=
+                  " || ! Object.prototype.hasOwnProperty.call(" +
+                  $data +
+                  ", '" +
+                  it.util.escapeQuotes($propertyKey) +
+                  "') ";
               }
               out += ") {  var err =   ";
               if (it.createErrors !== false) {
-                out += " { keyword: '" + "required" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { missingProperty: '" + $missingProperty + "' } ";
+                out +=
+                  " { keyword: '" +
+                  "required" +
+                  "' , dataPath: (dataPath || '') + " +
+                  it.errorPath +
+                  " , schemaPath: " +
+                  it.util.toQuotedString($errSchemaPath) +
+                  " , params: { missingProperty: '" +
+                  $missingProperty +
+                  "' } ";
                 if (it.opts.messages !== false) {
                   out += " , message: '";
                   if (it.opts._errorDataPathProperty) {
@@ -4928,7 +6423,14 @@ var require_required = __commonJS((exports, module) => {
                   out += "' ";
                 }
                 if (it.opts.verbose) {
-                  out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+                  out +=
+                    " , schema: validate.schema" +
+                    $schemaPath +
+                    " , parentSchema: validate.schema" +
+                    it.schemaPath +
+                    " , data: " +
+                    $data +
+                    " ";
                 }
                 out += " } ";
               } else {
@@ -4959,7 +6461,8 @@ var require_uniqueItems = __commonJS((exports, module) => {
     var $breakOnError = !it.opts.allErrors;
     var $data = "data" + ($dataLvl || "");
     var $valid = "valid" + $lvl;
-    var $isData = it.opts.$data && $schema && $schema.$data, $schemaValue;
+    var $isData = it.opts.$data && $schema && $schema.$data,
+      $schemaValue;
     if ($isData) {
       out += " var schema" + $lvl + " = " + it.util.getData($schema.$data, $dataLvl, it.dataPathArr) + "; ";
       $schemaValue = "schema" + $lvl;
@@ -4968,12 +6471,38 @@ var require_uniqueItems = __commonJS((exports, module) => {
     }
     if (($schema || $isData) && it.opts.uniqueItems !== false) {
       if ($isData) {
-        out += " var " + $valid + "; if (" + $schemaValue + " === false || " + $schemaValue + " === undefined) " + $valid + " = true; else if (typeof " + $schemaValue + " != 'boolean') " + $valid + " = false; else { ";
+        out +=
+          " var " +
+          $valid +
+          "; if (" +
+          $schemaValue +
+          " === false || " +
+          $schemaValue +
+          " === undefined) " +
+          $valid +
+          " = true; else if (typeof " +
+          $schemaValue +
+          " != 'boolean') " +
+          $valid +
+          " = false; else { ";
       }
       out += " var i = " + $data + ".length , " + $valid + " = true , j; if (i > 1) { ";
-      var $itemType = it.schema.items && it.schema.items.type, $typeIsArray = Array.isArray($itemType);
-      if (!$itemType || $itemType == "object" || $itemType == "array" || $typeIsArray && ($itemType.indexOf("object") >= 0 || $itemType.indexOf("array") >= 0)) {
-        out += " outer: for (;i--;) { for (j = i; j--;) { if (equal(" + $data + "[i], " + $data + "[j])) { " + $valid + " = false; break outer; } } } ";
+      var $itemType = it.schema.items && it.schema.items.type,
+        $typeIsArray = Array.isArray($itemType);
+      if (
+        !$itemType ||
+        $itemType == "object" ||
+        $itemType == "array" ||
+        ($typeIsArray && ($itemType.indexOf("object") >= 0 || $itemType.indexOf("array") >= 0))
+      ) {
+        out +=
+          " outer: for (;i--;) { for (j = i; j--;) { if (equal(" +
+          $data +
+          "[i], " +
+          $data +
+          "[j])) { " +
+          $valid +
+          " = false; break outer; } } } ";
       } else {
         out += " var itemIndices = {}, item; for (;i--;) { var item = " + $data + "[i]; ";
         var $method = "checkDataType" + ($typeIsArray ? "s" : "");
@@ -4981,7 +6510,10 @@ var require_uniqueItems = __commonJS((exports, module) => {
         if ($typeIsArray) {
           out += ` if (typeof item == 'string') item = '"' + item; `;
         }
-        out += " if (typeof itemIndices[item] == 'number') { " + $valid + " = false; j = itemIndices[item]; break; } itemIndices[item] = i; } ";
+        out +=
+          " if (typeof itemIndices[item] == 'number') { " +
+          $valid +
+          " = false; j = itemIndices[item]; break; } itemIndices[item] = i; } ";
       }
       out += " } ";
       if ($isData) {
@@ -4992,7 +6524,14 @@ var require_uniqueItems = __commonJS((exports, module) => {
       $$outStack.push(out);
       out = "";
       if (it.createErrors !== false) {
-        out += " { keyword: '" + "uniqueItems" + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { i: i, j: j } ";
+        out +=
+          " { keyword: '" +
+          "uniqueItems" +
+          "' , dataPath: (dataPath || '') + " +
+          it.errorPath +
+          " , schemaPath: " +
+          it.util.toQuotedString($errSchemaPath) +
+          " , params: { i: i, j: j } ";
         if (it.opts.messages !== false) {
           out += " , message: 'should NOT have duplicate items (items ## ' + j + ' and ' + i + ' are identical)' ";
         }
@@ -5063,7 +6602,7 @@ var require_dotjs = __commonJS((exports, module) => {
     propertyNames: require_propertyNames(),
     required: require_required(),
     uniqueItems: require_uniqueItems(),
-    validate: require_validate()
+    validate: require_validate(),
   };
 });
 
@@ -5075,20 +6614,15 @@ var require_rules = __commonJS((exports, module) => {
     var RULES = [
       {
         type: "number",
-        rules: [
-          { maximum: ["exclusiveMaximum"] },
-          { minimum: ["exclusiveMinimum"] },
-          "multipleOf",
-          "format"
-        ]
+        rules: [{ maximum: ["exclusiveMaximum"] }, { minimum: ["exclusiveMinimum"] }, "multipleOf", "format"],
       },
       {
         type: "string",
-        rules: ["maxLength", "minLength", "pattern", "format"]
+        rules: ["maxLength", "minLength", "pattern", "format"],
       },
       {
         type: "array",
-        rules: ["maxItems", "minItems", "items", "contains", "uniqueItems"]
+        rules: ["maxItems", "minItems", "items", "contains", "uniqueItems"],
       },
       {
         type: "object",
@@ -5098,10 +6632,10 @@ var require_rules = __commonJS((exports, module) => {
           "required",
           "dependencies",
           "propertyNames",
-          { properties: ["additionalProperties", "patternProperties"] }
-        ]
+          { properties: ["additionalProperties", "patternProperties"] },
+        ],
       },
-      { rules: ["$ref", "const", "enum", "not", "anyOf", "oneOf", "allOf", "if"] }
+      { rules: ["$ref", "const", "enum", "not", "anyOf", "oneOf", "allOf", "if"] },
     ];
     var ALL = ["type", "$comment"];
     var KEYWORDS = [
@@ -5121,37 +6655,36 @@ var require_rules = __commonJS((exports, module) => {
       "contentEncoding",
       "additionalItems",
       "then",
-      "else"
+      "else",
     ];
     var TYPES = ["number", "integer", "string", "array", "object", "boolean", "null"];
     RULES.all = toHash(ALL);
     RULES.types = toHash(TYPES);
-    RULES.forEach(function(group) {
-      group.rules = group.rules.map(function(keyword) {
+    RULES.forEach(function (group) {
+      group.rules = group.rules.map(function (keyword) {
         var implKeywords;
         if (typeof keyword == "object") {
           var key = Object.keys(keyword)[0];
           implKeywords = keyword[key];
           keyword = key;
-          implKeywords.forEach(function(k) {
+          implKeywords.forEach(function (k) {
             ALL.push(k);
             RULES.all[k] = true;
           });
         }
         ALL.push(keyword);
-        var rule = RULES.all[keyword] = {
+        var rule = (RULES.all[keyword] = {
           keyword,
           code: ruleModules[keyword],
-          implements: implKeywords
-        };
+          implements: implKeywords,
+        });
         return rule;
       });
       RULES.all.$comment = {
         keyword: "$comment",
-        code: ruleModules.$comment
+        code: ruleModules.$comment,
       };
-      if (group.type)
-        RULES.types[group.type] = group;
+      if (group.type) RULES.types[group.type] = group;
     });
     RULES.keywords = toHash(ALL.concat(KEYWORDS));
     RULES.custom = {};
@@ -5180,25 +6713,21 @@ var require_data = __commonJS((exports, module) => {
     "additionalProperties",
     "enum",
     "format",
-    "const"
+    "const",
   ];
-  module.exports = function(metaSchema, keywordsJsonPointers) {
-    for (var i = 0;i < keywordsJsonPointers.length; i++) {
+  module.exports = function (metaSchema, keywordsJsonPointers) {
+    for (var i = 0; i < keywordsJsonPointers.length; i++) {
       metaSchema = JSON.parse(JSON.stringify(metaSchema));
       var segments = keywordsJsonPointers[i].split("/");
       var keywords = metaSchema;
       var j;
-      for (j = 1;j < segments.length; j++)
-        keywords = keywords[segments[j]];
-      for (j = 0;j < KEYWORDS.length; j++) {
+      for (j = 1; j < segments.length; j++) keywords = keywords[segments[j]];
+      for (j = 0; j < KEYWORDS.length; j++) {
         var key = KEYWORDS[j];
         var schema = keywords[key];
         if (schema) {
           keywords[key] = {
-            anyOf: [
-              schema,
-              { $ref: "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#" }
-            ]
+            anyOf: [schema, { $ref: "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#" }],
           };
         }
       }
@@ -5213,18 +6742,17 @@ var require_async = __commonJS((exports, module) => {
   module.exports = compileAsync;
   function compileAsync(schema, meta, callback) {
     var self = this;
-    if (typeof this._opts.loadSchema != "function")
-      throw new Error("options.loadSchema should be a function");
+    if (typeof this._opts.loadSchema != "function") throw new Error("options.loadSchema should be a function");
     if (typeof meta == "function") {
       callback = meta;
       meta = undefined;
     }
-    var p = loadMetaSchemaOf(schema).then(function() {
+    var p = loadMetaSchemaOf(schema).then(function () {
       var schemaObj = self._addSchema(schema, undefined, meta);
       return schemaObj.validate || _compileAsync(schemaObj);
     });
     if (callback) {
-      p.then(function(v) {
+      p.then(function (v) {
         callback(null, v);
       }, callback);
     }
@@ -5237,29 +6765,28 @@ var require_async = __commonJS((exports, module) => {
       try {
         return self._compile(schemaObj);
       } catch (e) {
-        if (e instanceof MissingRefError)
-          return loadMissingSchema(e);
+        if (e instanceof MissingRefError) return loadMissingSchema(e);
         throw e;
       }
       function loadMissingSchema(e) {
         var ref = e.missingSchema;
-        if (added(ref))
-          throw new Error("Schema " + ref + " is loaded but " + e.missingRef + " cannot be resolved");
+        if (added(ref)) throw new Error("Schema " + ref + " is loaded but " + e.missingRef + " cannot be resolved");
         var schemaPromise = self._loadingSchemas[ref];
         if (!schemaPromise) {
           schemaPromise = self._loadingSchemas[ref] = self._opts.loadSchema(ref);
           schemaPromise.then(removePromise, removePromise);
         }
-        return schemaPromise.then(function(sch) {
-          if (!added(ref)) {
-            return loadMetaSchemaOf(sch).then(function() {
-              if (!added(ref))
-                self.addSchema(sch, ref, undefined, meta);
-            });
-          }
-        }).then(function() {
-          return _compileAsync(schemaObj);
-        });
+        return schemaPromise
+          .then(function (sch) {
+            if (!added(ref)) {
+              return loadMetaSchemaOf(sch).then(function () {
+                if (!added(ref)) self.addSchema(sch, ref, undefined, meta);
+              });
+            }
+          })
+          .then(function () {
+            return _compileAsync(schemaObj);
+          });
         function removePromise() {
           delete self._loadingSchemas[ref];
         }
@@ -5285,32 +6812,46 @@ var require_custom = __commonJS((exports, module) => {
     var $data = "data" + ($dataLvl || "");
     var $valid = "valid" + $lvl;
     var $errs = "errs__" + $lvl;
-    var $isData = it.opts.$data && $schema && $schema.$data, $schemaValue;
+    var $isData = it.opts.$data && $schema && $schema.$data,
+      $schemaValue;
     if ($isData) {
       out += " var schema" + $lvl + " = " + it.util.getData($schema.$data, $dataLvl, it.dataPathArr) + "; ";
       $schemaValue = "schema" + $lvl;
     } else {
       $schemaValue = $schema;
     }
-    var $rule = this, $definition = "definition" + $lvl, $rDef = $rule.definition, $closingBraces = "";
+    var $rule = this,
+      $definition = "definition" + $lvl,
+      $rDef = $rule.definition,
+      $closingBraces = "";
     var $compile, $inline, $macro, $ruleValidate, $validateCode;
     if ($isData && $rDef.$data) {
       $validateCode = "keywordValidate" + $lvl;
       var $validateSchema = $rDef.validateSchema;
-      out += " var " + $definition + " = RULES.custom['" + $keyword + "'].definition; var " + $validateCode + " = " + $definition + ".validate;";
+      out +=
+        " var " +
+        $definition +
+        " = RULES.custom['" +
+        $keyword +
+        "'].definition; var " +
+        $validateCode +
+        " = " +
+        $definition +
+        ".validate;";
     } else {
       $ruleValidate = it.useCustomRule($rule, $schema, it.schema, it);
-      if (!$ruleValidate)
-        return;
+      if (!$ruleValidate) return;
       $schemaValue = "validate.schema" + $schemaPath;
       $validateCode = $ruleValidate.code;
       $compile = $rDef.compile;
       $inline = $rDef.inline;
       $macro = $rDef.macro;
     }
-    var $ruleErrs = $validateCode + ".errors", $i = "i" + $lvl, $ruleErr = "ruleErr" + $lvl, $asyncKeyword = $rDef.async;
-    if ($asyncKeyword && !it.async)
-      throw new Error("async keyword in sync schema");
+    var $ruleErrs = $validateCode + ".errors",
+      $i = "i" + $lvl,
+      $ruleErr = "ruleErr" + $lvl,
+      $asyncKeyword = $rDef.async;
+    if ($asyncKeyword && !it.async) throw new Error("async keyword in sync schema");
     if (!($inline || $macro)) {
       out += "" + $ruleErrs + " = null;";
     }
@@ -5360,7 +6901,8 @@ var require_custom = __commonJS((exports, module) => {
       if (it.errorPath != '""') {
         out += " + " + it.errorPath;
       }
-      var $parentData = $dataLvl ? "data" + ($dataLvl - 1 || "") : "parentData", $parentDataProperty = $dataLvl ? it.dataPathArr[$dataLvl] : "parentDataProperty";
+      var $parentData = $dataLvl ? "data" + ($dataLvl - 1 || "") : "parentData",
+        $parentDataProperty = $dataLvl ? it.dataPathArr[$dataLvl] : "parentDataProperty";
       out += " , " + $parentData + " , " + $parentDataProperty + " , rootData )  ";
       var def_callRuleValidate = out;
       out = $$outStack.pop();
@@ -5373,7 +6915,18 @@ var require_custom = __commonJS((exports, module) => {
       } else {
         if ($asyncKeyword) {
           $ruleErrs = "customErrors" + $lvl;
-          out += " var " + $ruleErrs + " = null; try { " + $valid + " = await " + def_callRuleValidate + "; } catch (e) { " + $valid + " = false; if (e instanceof ValidationError) " + $ruleErrs + " = e.errors; else throw e; } ";
+          out +=
+            " var " +
+            $ruleErrs +
+            " = null; try { " +
+            $valid +
+            " = await " +
+            def_callRuleValidate +
+            "; } catch (e) { " +
+            $valid +
+            " = false; if (e instanceof ValidationError) " +
+            $ruleErrs +
+            " = e.errors; else throw e; } ";
         } else {
           out += " " + $ruleErrs + " = null; " + $valid + " = " + def_callRuleValidate + "; ";
         }
@@ -5408,12 +6961,28 @@ var require_custom = __commonJS((exports, module) => {
       $$outStack.push(out);
       out = "";
       if (it.createErrors !== false) {
-        out += " { keyword: '" + ($errorKeyword || "custom") + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { keyword: '" + $rule.keyword + "' } ";
+        out +=
+          " { keyword: '" +
+          ($errorKeyword || "custom") +
+          "' , dataPath: (dataPath || '') + " +
+          it.errorPath +
+          " , schemaPath: " +
+          it.util.toQuotedString($errSchemaPath) +
+          " , params: { keyword: '" +
+          $rule.keyword +
+          "' } ";
         if (it.opts.messages !== false) {
           out += ` , message: 'should pass "` + $rule.keyword + `" keyword validation' `;
         }
         if (it.opts.verbose) {
-          out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+          out +=
+            " , schema: validate.schema" +
+            $schemaPath +
+            " , parentSchema: validate.schema" +
+            it.schemaPath +
+            " , data: " +
+            $data +
+            " ";
         }
         out += " } ";
       } else {
@@ -5435,7 +7004,32 @@ var require_custom = __commonJS((exports, module) => {
       if ($inline) {
         if ($rDef.errors) {
           if ($rDef.errors != "full") {
-            out += "  for (var " + $i + "=" + $errs + "; " + $i + "<errors; " + $i + "++) { var " + $ruleErr + " = vErrors[" + $i + "]; if (" + $ruleErr + ".dataPath === undefined) " + $ruleErr + ".dataPath = (dataPath || '') + " + it.errorPath + "; if (" + $ruleErr + ".schemaPath === undefined) { " + $ruleErr + '.schemaPath = "' + $errSchemaPath + '"; } ';
+            out +=
+              "  for (var " +
+              $i +
+              "=" +
+              $errs +
+              "; " +
+              $i +
+              "<errors; " +
+              $i +
+              "++) { var " +
+              $ruleErr +
+              " = vErrors[" +
+              $i +
+              "]; if (" +
+              $ruleErr +
+              ".dataPath === undefined) " +
+              $ruleErr +
+              ".dataPath = (dataPath || '') + " +
+              it.errorPath +
+              "; if (" +
+              $ruleErr +
+              ".schemaPath === undefined) { " +
+              $ruleErr +
+              '.schemaPath = "' +
+              $errSchemaPath +
+              '"; } ';
             if (it.opts.verbose) {
               out += " " + $ruleErr + ".schema = " + $schemaValue + "; " + $ruleErr + ".data = " + $data + "; ";
             }
@@ -5445,7 +7039,36 @@ var require_custom = __commonJS((exports, module) => {
           if ($rDef.errors === false) {
             out += " " + def_customError + " ";
           } else {
-            out += " if (" + $errs + " == errors) { " + def_customError + " } else {  for (var " + $i + "=" + $errs + "; " + $i + "<errors; " + $i + "++) { var " + $ruleErr + " = vErrors[" + $i + "]; if (" + $ruleErr + ".dataPath === undefined) " + $ruleErr + ".dataPath = (dataPath || '') + " + it.errorPath + "; if (" + $ruleErr + ".schemaPath === undefined) { " + $ruleErr + '.schemaPath = "' + $errSchemaPath + '"; } ';
+            out +=
+              " if (" +
+              $errs +
+              " == errors) { " +
+              def_customError +
+              " } else {  for (var " +
+              $i +
+              "=" +
+              $errs +
+              "; " +
+              $i +
+              "<errors; " +
+              $i +
+              "++) { var " +
+              $ruleErr +
+              " = vErrors[" +
+              $i +
+              "]; if (" +
+              $ruleErr +
+              ".dataPath === undefined) " +
+              $ruleErr +
+              ".dataPath = (dataPath || '') + " +
+              it.errorPath +
+              "; if (" +
+              $ruleErr +
+              ".schemaPath === undefined) { " +
+              $ruleErr +
+              '.schemaPath = "' +
+              $errSchemaPath +
+              '"; } ';
             if (it.opts.verbose) {
               out += " " + $ruleErr + ".schema = " + $schemaValue + "; " + $ruleErr + ".data = " + $data + "; ";
             }
@@ -5455,12 +7078,28 @@ var require_custom = __commonJS((exports, module) => {
       } else if ($macro) {
         out += "   var err =   ";
         if (it.createErrors !== false) {
-          out += " { keyword: '" + ($errorKeyword || "custom") + "' , dataPath: (dataPath || '') + " + it.errorPath + " , schemaPath: " + it.util.toQuotedString($errSchemaPath) + " , params: { keyword: '" + $rule.keyword + "' } ";
+          out +=
+            " { keyword: '" +
+            ($errorKeyword || "custom") +
+            "' , dataPath: (dataPath || '') + " +
+            it.errorPath +
+            " , schemaPath: " +
+            it.util.toQuotedString($errSchemaPath) +
+            " , params: { keyword: '" +
+            $rule.keyword +
+            "' } ";
           if (it.opts.messages !== false) {
             out += ` , message: 'should pass "` + $rule.keyword + `" keyword validation' `;
           }
           if (it.opts.verbose) {
-            out += " , schema: validate.schema" + $schemaPath + " , parentSchema: validate.schema" + it.schemaPath + " , data: " + $data + " ";
+            out +=
+              " , schema: validate.schema" +
+              $schemaPath +
+              " , parentSchema: validate.schema" +
+              it.schemaPath +
+              " , data: " +
+              $data +
+              " ";
           }
           out += " } ";
         } else {
@@ -5478,7 +7117,36 @@ var require_custom = __commonJS((exports, module) => {
         if ($rDef.errors === false) {
           out += " " + def_customError + " ";
         } else {
-          out += " if (Array.isArray(" + $ruleErrs + ")) { if (vErrors === null) vErrors = " + $ruleErrs + "; else vErrors = vErrors.concat(" + $ruleErrs + "); errors = vErrors.length;  for (var " + $i + "=" + $errs + "; " + $i + "<errors; " + $i + "++) { var " + $ruleErr + " = vErrors[" + $i + "]; if (" + $ruleErr + ".dataPath === undefined) " + $ruleErr + ".dataPath = (dataPath || '') + " + it.errorPath + ";  " + $ruleErr + '.schemaPath = "' + $errSchemaPath + '";  ';
+          out +=
+            " if (Array.isArray(" +
+            $ruleErrs +
+            ")) { if (vErrors === null) vErrors = " +
+            $ruleErrs +
+            "; else vErrors = vErrors.concat(" +
+            $ruleErrs +
+            "); errors = vErrors.length;  for (var " +
+            $i +
+            "=" +
+            $errs +
+            "; " +
+            $i +
+            "<errors; " +
+            $i +
+            "++) { var " +
+            $ruleErr +
+            " = vErrors[" +
+            $i +
+            "]; if (" +
+            $ruleErr +
+            ".dataPath === undefined) " +
+            $ruleErr +
+            ".dataPath = (dataPath || '') + " +
+            it.errorPath +
+            ";  " +
+            $ruleErr +
+            '.schemaPath = "' +
+            $errSchemaPath +
+            '";  ';
           if (it.opts.verbose) {
             out += " " + $ruleErr + ".schema = " + $schemaValue + "; " + $ruleErr + ".data = " + $data + "; ";
           }
@@ -5504,103 +7172,89 @@ var require_json_schema_draft_07 = __commonJS((exports, module) => {
       schemaArray: {
         type: "array",
         minItems: 1,
-        items: { $ref: "#" }
+        items: { $ref: "#" },
       },
       nonNegativeInteger: {
         type: "integer",
-        minimum: 0
+        minimum: 0,
       },
       nonNegativeIntegerDefault0: {
-        allOf: [
-          { $ref: "#/definitions/nonNegativeInteger" },
-          { default: 0 }
-        ]
+        allOf: [{ $ref: "#/definitions/nonNegativeInteger" }, { default: 0 }],
       },
       simpleTypes: {
-        enum: [
-          "array",
-          "boolean",
-          "integer",
-          "null",
-          "number",
-          "object",
-          "string"
-        ]
+        enum: ["array", "boolean", "integer", "null", "number", "object", "string"],
       },
       stringArray: {
         type: "array",
         items: { type: "string" },
         uniqueItems: true,
-        default: []
-      }
+        default: [],
+      },
     },
     type: ["object", "boolean"],
     properties: {
       $id: {
         type: "string",
-        format: "uri-reference"
+        format: "uri-reference",
       },
       $schema: {
         type: "string",
-        format: "uri"
+        format: "uri",
       },
       $ref: {
         type: "string",
-        format: "uri-reference"
+        format: "uri-reference",
       },
       $comment: {
-        type: "string"
+        type: "string",
       },
       title: {
-        type: "string"
+        type: "string",
       },
       description: {
-        type: "string"
+        type: "string",
       },
       default: true,
       readOnly: {
         type: "boolean",
-        default: false
+        default: false,
       },
       examples: {
         type: "array",
-        items: true
+        items: true,
       },
       multipleOf: {
         type: "number",
-        exclusiveMinimum: 0
+        exclusiveMinimum: 0,
       },
       maximum: {
-        type: "number"
+        type: "number",
       },
       exclusiveMaximum: {
-        type: "number"
+        type: "number",
       },
       minimum: {
-        type: "number"
+        type: "number",
       },
       exclusiveMinimum: {
-        type: "number"
+        type: "number",
       },
       maxLength: { $ref: "#/definitions/nonNegativeInteger" },
       minLength: { $ref: "#/definitions/nonNegativeIntegerDefault0" },
       pattern: {
         type: "string",
-        format: "regex"
+        format: "regex",
       },
       additionalItems: { $ref: "#" },
       items: {
-        anyOf: [
-          { $ref: "#" },
-          { $ref: "#/definitions/schemaArray" }
-        ],
-        default: true
+        anyOf: [{ $ref: "#" }, { $ref: "#/definitions/schemaArray" }],
+        default: true,
       },
       maxItems: { $ref: "#/definitions/nonNegativeInteger" },
       minItems: { $ref: "#/definitions/nonNegativeIntegerDefault0" },
       uniqueItems: {
         type: "boolean",
-        default: false
+        default: false,
       },
       contains: { $ref: "#" },
       maxProperties: { $ref: "#/definitions/nonNegativeInteger" },
@@ -5610,27 +7264,24 @@ var require_json_schema_draft_07 = __commonJS((exports, module) => {
       definitions: {
         type: "object",
         additionalProperties: { $ref: "#" },
-        default: {}
+        default: {},
       },
       properties: {
         type: "object",
         additionalProperties: { $ref: "#" },
-        default: {}
+        default: {},
       },
       patternProperties: {
         type: "object",
         additionalProperties: { $ref: "#" },
         propertyNames: { format: "regex" },
-        default: {}
+        default: {},
       },
       dependencies: {
         type: "object",
         additionalProperties: {
-          anyOf: [
-            { $ref: "#" },
-            { $ref: "#/definitions/stringArray" }
-          ]
-        }
+          anyOf: [{ $ref: "#" }, { $ref: "#/definitions/stringArray" }],
+        },
       },
       propertyNames: { $ref: "#" },
       const: true,
@@ -5638,7 +7289,7 @@ var require_json_schema_draft_07 = __commonJS((exports, module) => {
         type: "array",
         items: true,
         minItems: 1,
-        uniqueItems: true
+        uniqueItems: true,
       },
       type: {
         anyOf: [
@@ -5647,9 +7298,9 @@ var require_json_schema_draft_07 = __commonJS((exports, module) => {
             type: "array",
             items: { $ref: "#/definitions/simpleTypes" },
             minItems: 1,
-            uniqueItems: true
-          }
-        ]
+            uniqueItems: true,
+          },
+        ],
       },
       format: { type: "string" },
       contentMediaType: { type: "string" },
@@ -5660,9 +7311,9 @@ var require_json_schema_draft_07 = __commonJS((exports, module) => {
       allOf: { $ref: "#/definitions/schemaArray" },
       anyOf: { $ref: "#/definitions/schemaArray" },
       oneOf: { $ref: "#/definitions/schemaArray" },
-      not: { $ref: "#" }
+      not: { $ref: "#" },
     },
-    default: true
+    default: true,
   };
 });
 
@@ -5672,14 +7323,14 @@ var require_definition_schema = __commonJS((exports, module) => {
   module.exports = {
     $id: "https://github.com/ajv-validator/ajv/blob/master/lib/definition_schema.js",
     definitions: {
-      simpleTypes: metaSchema.definitions.simpleTypes
+      simpleTypes: metaSchema.definitions.simpleTypes,
     },
     type: "object",
     dependencies: {
       schema: ["validate"],
       $data: ["validate"],
       statements: ["inline"],
-      valid: { not: { required: ["macro"] } }
+      valid: { not: { required: ["macro"] } },
     },
     properties: {
       type: metaSchema.properties.type,
@@ -5687,7 +7338,7 @@ var require_definition_schema = __commonJS((exports, module) => {
       statements: { type: "boolean" },
       dependencies: {
         type: "array",
-        items: { type: "string" }
+        items: { type: "string" },
       },
       metaSchema: { type: "object" },
       modifying: { type: "boolean" },
@@ -5695,12 +7346,9 @@ var require_definition_schema = __commonJS((exports, module) => {
       $data: { type: "boolean" },
       async: { type: "boolean" },
       errors: {
-        anyOf: [
-          { type: "boolean" },
-          { const: "full" }
-        ]
-      }
-    }
+        anyOf: [{ type: "boolean" }, { const: "full" }],
+      },
+    },
   };
 });
 
@@ -5713,20 +7361,17 @@ var require_keyword = __commonJS((exports, module) => {
     add: addKeyword,
     get: getKeyword,
     remove: removeKeyword,
-    validate: validateKeyword
+    validate: validateKeyword,
   };
   function addKeyword(keyword, definition) {
     var RULES = this.RULES;
-    if (RULES.keywords[keyword])
-      throw new Error("Keyword " + keyword + " is already defined");
-    if (!IDENTIFIER.test(keyword))
-      throw new Error("Keyword " + keyword + " is not a valid identifier");
+    if (RULES.keywords[keyword]) throw new Error("Keyword " + keyword + " is already defined");
+    if (!IDENTIFIER.test(keyword)) throw new Error("Keyword " + keyword + " is not a valid identifier");
     if (definition) {
       this.validateKeyword(definition, true);
       var dataType = definition.type;
       if (Array.isArray(dataType)) {
-        for (var i = 0;i < dataType.length; i++)
-          _addRule(keyword, dataType[i], definition);
+        for (var i = 0; i < dataType.length; i++) _addRule(keyword, dataType[i], definition);
       } else {
         _addRule(keyword, dataType, definition);
       }
@@ -5736,8 +7381,8 @@ var require_keyword = __commonJS((exports, module) => {
           metaSchema = {
             anyOf: [
               metaSchema,
-              { $ref: "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#" }
-            ]
+              { $ref: "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#" },
+            ],
           };
         }
         definition.validateSchema = this.compile(metaSchema, true);
@@ -5746,7 +7391,7 @@ var require_keyword = __commonJS((exports, module) => {
     RULES.keywords[keyword] = RULES.all[keyword] = true;
     function _addRule(keyword2, dataType2, definition2) {
       var ruleGroup;
-      for (var i2 = 0;i2 < RULES.length; i2++) {
+      for (var i2 = 0; i2 < RULES.length; i2++) {
         var rg = RULES[i2];
         if (rg.type == dataType2) {
           ruleGroup = rg;
@@ -5762,7 +7407,7 @@ var require_keyword = __commonJS((exports, module) => {
         definition: definition2,
         custom: true,
         code: customRuleCode,
-        implements: definition2.implements
+        implements: definition2.implements,
       };
       ruleGroup.rules.push(rule);
       RULES.custom[keyword2] = rule;
@@ -5778,9 +7423,9 @@ var require_keyword = __commonJS((exports, module) => {
     delete RULES.keywords[keyword];
     delete RULES.all[keyword];
     delete RULES.custom[keyword];
-    for (var i = 0;i < RULES.length; i++) {
+    for (var i = 0; i < RULES.length; i++) {
       var rules = RULES[i].rules;
-      for (var j = 0;j < rules.length; j++) {
+      for (var j = 0; j < rules.length; j++) {
         if (rules[j].keyword == keyword) {
           rules.splice(j, 1);
           break;
@@ -5791,14 +7436,11 @@ var require_keyword = __commonJS((exports, module) => {
   }
   function validateKeyword(definition, throwError) {
     validateKeyword.errors = null;
-    var v = this._validateKeyword = this._validateKeyword || this.compile(definitionSchema, true);
-    if (v(definition))
-      return true;
+    var v = (this._validateKeyword = this._validateKeyword || this.compile(definitionSchema, true));
+    if (v(definition)) return true;
     validateKeyword.errors = v.errors;
-    if (throwError)
-      throw new Error("custom keyword definition is invalid: " + this.errorsText(v.errors));
-    else
-      return false;
+    if (throwError) throw new Error("custom keyword definition is invalid: " + this.errorsText(v.errors));
+    else return false;
   }
 });
 
@@ -5813,13 +7455,10 @@ var require_data2 = __commonJS((exports, module) => {
     properties: {
       $data: {
         type: "string",
-        anyOf: [
-          { format: "relative-json-pointer" },
-          { format: "json-pointer" }
-        ]
-      }
+        anyOf: [{ format: "relative-json-pointer" }, { format: "json-pointer" }],
+      },
     },
-    additionalProperties: false
+    additionalProperties: false,
   };
 });
 
@@ -5860,49 +7499,40 @@ var require_ajv = __commonJS((exports, module) => {
   var META_IGNORE_OPTIONS = ["removeAdditional", "useDefaults", "coerceTypes", "strictDefaults"];
   var META_SUPPORT_DATA = ["/properties"];
   function Ajv(opts) {
-    if (!(this instanceof Ajv))
-      return new Ajv(opts);
+    if (!(this instanceof Ajv)) return new Ajv(opts);
     opts = this._opts = util3.copy(opts) || {};
     setLogger(this);
     this._schemas = {};
     this._refs = {};
     this._fragments = {};
     this._formats = formats(opts.format);
-    this._cache = opts.cache || new Cache;
+    this._cache = opts.cache || new Cache();
     this._loadingSchemas = {};
     this._compilations = [];
     this.RULES = rules();
     this._getId = chooseGetId(opts);
     opts.loopRequired = opts.loopRequired || Infinity;
-    if (opts.errorDataPath == "property")
-      opts._errorDataPathProperty = true;
-    if (opts.serialize === undefined)
-      opts.serialize = stableStringify;
+    if (opts.errorDataPath == "property") opts._errorDataPathProperty = true;
+    if (opts.serialize === undefined) opts.serialize = stableStringify;
     this._metaOpts = getMetaSchemaOptions(this);
-    if (opts.formats)
-      addInitialFormats(this);
-    if (opts.keywords)
-      addInitialKeywords(this);
+    if (opts.formats) addInitialFormats(this);
+    if (opts.keywords) addInitialKeywords(this);
     addDefaultMetaSchema(this);
-    if (typeof opts.meta == "object")
-      this.addMetaSchema(opts.meta);
-    if (opts.nullable)
-      this.addKeyword("nullable", { metaSchema: { type: "boolean" } });
+    if (typeof opts.meta == "object") this.addMetaSchema(opts.meta);
+    if (opts.nullable) this.addKeyword("nullable", { metaSchema: { type: "boolean" } });
     addInitialSchemas(this);
   }
   function validate(schemaKeyRef, data) {
     var v;
     if (typeof schemaKeyRef == "string") {
       v = this.getSchema(schemaKeyRef);
-      if (!v)
-        throw new Error('no schema with key or ref "' + schemaKeyRef + '"');
+      if (!v) throw new Error('no schema with key or ref "' + schemaKeyRef + '"');
     } else {
       var schemaObj = this._addSchema(schemaKeyRef);
       v = schemaObj.validate || this._compile(schemaObj);
     }
     var valid = v(data);
-    if (v.$async !== true)
-      this.errors = v.errors;
+    if (v.$async !== true) this.errors = v.errors;
     return valid;
   }
   function compile(schema, _meta) {
@@ -5911,13 +7541,11 @@ var require_ajv = __commonJS((exports, module) => {
   }
   function addSchema(schema, key, _skipValidation, _meta) {
     if (Array.isArray(schema)) {
-      for (var i = 0;i < schema.length; i++)
-        this.addSchema(schema[i], undefined, _skipValidation, _meta);
+      for (var i = 0; i < schema.length; i++) this.addSchema(schema[i], undefined, _skipValidation, _meta);
       return this;
     }
     var id = this._getId(schema);
-    if (id !== undefined && typeof id != "string")
-      throw new Error("schema id must be string");
+    if (id !== undefined && typeof id != "string") throw new Error("schema id must be string");
     key = resolve.normalizeId(key || id);
     checkUnique(this, key);
     this._schemas[key] = this._addSchema(schema, _skipValidation, _meta, true);
@@ -5929,8 +7557,7 @@ var require_ajv = __commonJS((exports, module) => {
   }
   function validateSchema(schema, throwOrLogError) {
     var $schema = schema.$schema;
-    if ($schema !== undefined && typeof $schema != "string")
-      throw new Error("$schema must be a string");
+    if ($schema !== undefined && typeof $schema != "string") throw new Error("$schema must be a string");
     $schema = $schema || this._opts.defaultMeta || defaultMeta(this);
     if (!$schema) {
       this.logger.warn("meta-schema not available");
@@ -5940,16 +7567,15 @@ var require_ajv = __commonJS((exports, module) => {
     var valid = this.validate($schema, schema);
     if (!valid && throwOrLogError) {
       var message = "schema is invalid: " + this.errorsText();
-      if (this._opts.validateSchema == "log")
-        this.logger.error(message);
-      else
-        throw new Error(message);
+      if (this._opts.validateSchema == "log") this.logger.error(message);
+      else throw new Error(message);
     }
     return valid;
   }
   function defaultMeta(self) {
     var meta = self._opts.meta;
-    self._opts.defaultMeta = typeof meta == "object" ? self._getId(meta) || meta : self.getSchema(META_SCHEMA_ID) ? META_SCHEMA_ID : undefined;
+    self._opts.defaultMeta =
+      typeof meta == "object" ? self._getId(meta) || meta : self.getSchema(META_SCHEMA_ID) ? META_SCHEMA_ID : undefined;
     return self._opts.defaultMeta;
   }
   function getSchema(keyRef) {
@@ -5974,7 +7600,7 @@ var require_ajv = __commonJS((exports, module) => {
         schema,
         root,
         baseId,
-        validate: v
+        validate: v,
       });
       return v;
     }
@@ -5997,8 +7623,7 @@ var require_ajv = __commonJS((exports, module) => {
         return this;
       case "string":
         var schemaObj = _getSchemaObj(this, schemaKeyRef);
-        if (schemaObj)
-          this._cache.del(schemaObj.cacheKey);
+        if (schemaObj) this._cache.del(schemaObj.cacheKey);
         delete this._schemas[schemaKeyRef];
         delete this._refs[schemaKeyRef];
         return this;
@@ -6025,17 +7650,14 @@ var require_ajv = __commonJS((exports, module) => {
     }
   }
   function _addSchema(schema, skipValidation, meta, shouldAddSchema) {
-    if (typeof schema != "object" && typeof schema != "boolean")
-      throw new Error("schema should be object or boolean");
+    if (typeof schema != "object" && typeof schema != "boolean") throw new Error("schema should be object or boolean");
     var serialize = this._opts.serialize;
     var cacheKey = serialize ? serialize(schema) : schema;
     var cached = this._cache.get(cacheKey);
-    if (cached)
-      return cached;
+    if (cached) return cached;
     shouldAddSchema = shouldAddSchema || this._opts.addUsedSchema !== false;
     var id = resolve.normalizeId(this._getId(schema));
-    if (id && shouldAddSchema)
-      checkUnique(this, id);
+    if (id && shouldAddSchema) checkUnique(this, id);
     var willValidate = this._opts.validateSchema !== false && !skipValidation;
     var recursiveMeta;
     if (willValidate && !(recursiveMeta = id && id == resolve.normalizeId(schema.$schema)))
@@ -6046,13 +7668,11 @@ var require_ajv = __commonJS((exports, module) => {
       schema,
       localRefs,
       cacheKey,
-      meta
+      meta,
     });
-    if (id[0] != "#" && shouldAddSchema)
-      this._refs[id] = schemaObj;
+    if (id[0] != "#" && shouldAddSchema) this._refs[id] = schemaObj;
     this._cache.put(cacheKey, schemaObj);
-    if (willValidate && recursiveMeta)
-      this.validateSchema(schema, true);
+    if (willValidate && recursiveMeta) this.validateSchema(schema, true);
     return schemaObj;
   }
   function _compile(schemaObj, root) {
@@ -6061,8 +7681,7 @@ var require_ajv = __commonJS((exports, module) => {
       callValidate.schema = schemaObj.schema;
       callValidate.errors = null;
       callValidate.root = root ? root : callValidate;
-      if (schemaObj.schema.$async === true)
-        callValidate.$async = true;
+      if (schemaObj.schema.$async === true) callValidate.$async = true;
       return callValidate;
     }
     schemaObj.compiling = true;
@@ -6079,8 +7698,7 @@ var require_ajv = __commonJS((exports, module) => {
       throw e;
     } finally {
       schemaObj.compiling = false;
-      if (schemaObj.meta)
-        this._opts = currentOpts;
+      if (schemaObj.meta) this._opts = currentOpts;
     }
     schemaObj.validate = v;
     schemaObj.refs = v.refs;
@@ -6105,38 +7723,32 @@ var require_ajv = __commonJS((exports, module) => {
     }
   }
   function _getId(schema) {
-    if (schema.$id)
-      this.logger.warn("schema $id ignored", schema.$id);
+    if (schema.$id) this.logger.warn("schema $id ignored", schema.$id);
     return schema.id;
   }
   function _get$Id(schema) {
-    if (schema.id)
-      this.logger.warn("schema id ignored", schema.id);
+    if (schema.id) this.logger.warn("schema id ignored", schema.id);
     return schema.$id;
   }
   function _get$IdOrId(schema) {
-    if (schema.$id && schema.id && schema.$id != schema.id)
-      throw new Error("schema $id is different from id");
+    if (schema.$id && schema.id && schema.$id != schema.id) throw new Error("schema $id is different from id");
     return schema.$id || schema.id;
   }
   function errorsText(errors2, options) {
     errors2 = errors2 || this.errors;
-    if (!errors2)
-      return "No errors";
+    if (!errors2) return "No errors";
     options = options || {};
     var separator = options.separator === undefined ? ", " : options.separator;
     var dataVar = options.dataVar === undefined ? "data" : options.dataVar;
     var text = "";
-    for (var i = 0;i < errors2.length; i++) {
+    for (var i = 0; i < errors2.length; i++) {
       var e = errors2[i];
-      if (e)
-        text += dataVar + e.dataPath + " " + e.message + separator;
+      if (e) text += dataVar + e.dataPath + " " + e.message + separator;
     }
     return text.slice(0, -separator.length);
   }
   function addFormat(name, format) {
-    if (typeof format == "string")
-      format = new RegExp(format);
+    if (typeof format == "string") format = new RegExp(format);
     this._formats[name] = format;
     return this;
   }
@@ -6146,23 +7758,17 @@ var require_ajv = __commonJS((exports, module) => {
       $dataSchema = require_data2();
       self.addMetaSchema($dataSchema, $dataSchema.$id, true);
     }
-    if (self._opts.meta === false)
-      return;
+    if (self._opts.meta === false) return;
     var metaSchema = require_json_schema_draft_07();
-    if (self._opts.$data)
-      metaSchema = $dataMetaSchema(metaSchema, META_SUPPORT_DATA);
+    if (self._opts.$data) metaSchema = $dataMetaSchema(metaSchema, META_SUPPORT_DATA);
     self.addMetaSchema(metaSchema, META_SCHEMA_ID, true);
     self._refs["http://json-schema.org/schema"] = META_SCHEMA_ID;
   }
   function addInitialSchemas(self) {
     var optsSchemas = self._opts.schemas;
-    if (!optsSchemas)
-      return;
-    if (Array.isArray(optsSchemas))
-      self.addSchema(optsSchemas);
-    else
-      for (var key in optsSchemas)
-        self.addSchema(optsSchemas[key], key);
+    if (!optsSchemas) return;
+    if (Array.isArray(optsSchemas)) self.addSchema(optsSchemas);
+    else for (var key in optsSchemas) self.addSchema(optsSchemas[key], key);
   }
   function addInitialFormats(self) {
     for (var name in self._opts.formats) {
@@ -6177,13 +7783,11 @@ var require_ajv = __commonJS((exports, module) => {
     }
   }
   function checkUnique(self, id) {
-    if (self._schemas[id] || self._refs[id])
-      throw new Error('schema with key or id "' + id + '" already exists');
+    if (self._schemas[id] || self._refs[id]) throw new Error('schema with key or id "' + id + '" already exists');
   }
   function getMetaSchemaOptions(self) {
     var metaOpts = util3.copy(self._opts);
-    for (var i = 0;i < META_IGNORE_OPTIONS.length; i++)
-      delete metaOpts[META_IGNORE_OPTIONS[i]];
+    for (var i = 0; i < META_IGNORE_OPTIONS.length; i++) delete metaOpts[META_IGNORE_OPTIONS[i]];
     return metaOpts;
   }
   function setLogger(self) {
@@ -6191,8 +7795,7 @@ var require_ajv = __commonJS((exports, module) => {
     if (logger === false) {
       self.logger = { log: noop, warn: noop, error: noop };
     } else {
-      if (logger === undefined)
-        logger = console;
+      if (logger === undefined) logger = console;
       if (!(typeof logger == "object" && logger.log && logger.warn && logger.error))
         throw new Error("logger must implement log, warn and error methods");
       self.logger = logger;
@@ -6209,7 +7812,7 @@ import { fileURLToPath } from "url";
 import { setMaxListeners } from "events";
 var DEFAULT_MAX_LISTENERS = 50;
 function createAbortController(maxListeners = DEFAULT_MAX_LISTENERS) {
-  const controller = new AbortController;
+  const controller = new AbortController();
   setMaxListeners(maxListeners, controller.signal);
   return controller;
 }
@@ -6254,14 +7857,13 @@ var NodeFsOperations = {
       const bytesRead = fs.readSync(fd, buffer, 0, options.length, 0);
       return { buffer, bytesRead };
     } finally {
-      if (fd)
-        fs.closeSync(fd);
+      if (fd) fs.closeSync(fd);
     }
   },
   writeFileSync(fsPath, data, options) {
     if (!options.flush) {
       const writeOptions = {
-        encoding: options.encoding
+        encoding: options.encoding,
       };
       if (options.mode !== undefined) {
         writeOptions.mode = options.mode;
@@ -6328,7 +7930,7 @@ var NodeFsOperations = {
   },
   createWriteStream(path) {
     return fs.createWriteStream(path);
-  }
+  },
 };
 var activeFs = NodeFsOperations;
 function getFsImplementation() {
@@ -6336,8 +7938,7 @@ function getFsImplementation() {
 }
 
 // src/entrypoints/sdkTypes.ts
-class AbortError extends Error {
-}
+class AbortError extends Error {}
 
 // src/utils/bundledMode.ts
 function isRunningWithBun() {
@@ -6387,34 +7988,31 @@ class ProcessTransport {
         mcpServers,
         strictMcpConfig,
         canUseTool,
-        includePartialMessages
+        includePartialMessages,
       } = this.options;
       const args = ["--output-format", "stream-json", "--verbose"];
-      if (customSystemPrompt)
-        args.push("--system-prompt", customSystemPrompt);
-      if (appendSystemPrompt)
-        args.push("--append-system-prompt", appendSystemPrompt);
-      if (maxTurns)
-        args.push("--max-turns", maxTurns.toString());
-      if (model)
-        args.push("--model", model);
-      if (env.DEBUG)
-        args.push("--debug-to-stderr");
+      if (customSystemPrompt) args.push("--system-prompt", customSystemPrompt);
+      if (appendSystemPrompt) args.push("--append-system-prompt", appendSystemPrompt);
+      if (maxTurns) args.push("--max-turns", maxTurns.toString());
+      if (model) args.push("--model", model);
+      if (env.DEBUG) args.push("--debug-to-stderr");
       if (canUseTool) {
         if (typeof prompt === "string") {
-          throw new Error("canUseTool callback requires --input-format stream-json. Please set prompt as an AsyncIterable.");
+          throw new Error(
+            "canUseTool callback requires --input-format stream-json. Please set prompt as an AsyncIterable."
+          );
         }
         if (permissionPromptToolName) {
-          throw new Error("canUseTool callback cannot be used with permissionPromptToolName. Please use one or the other.");
+          throw new Error(
+            "canUseTool callback cannot be used with permissionPromptToolName. Please use one or the other."
+          );
         }
         args.push("--permission-prompt-tool", "stdio");
       } else if (permissionPromptToolName) {
         args.push("--permission-prompt-tool", permissionPromptToolName);
       }
-      if (continueConversation)
-        args.push("--continue");
-      if (resume)
-        args.push("--resume", resume);
+      if (continueConversation) args.push("--continue");
+      if (resume) args.push("--resume", resume);
       if (allowedTools.length > 0) {
         args.push("--allowedTools", allowedTools.join(","));
       }
@@ -6432,7 +8030,9 @@ class ProcessTransport {
       }
       if (fallbackModel) {
         if (model && fallbackModel === model) {
-          throw new Error("Fallback model cannot be the same as the main model. Please specify a different model for fallbackModel option.");
+          throw new Error(
+            "Fallback model cannot be the same as the main model. Please specify a different model for fallbackModel option."
+          );
         }
         args.push("--fallback-model", fallbackModel);
       }
@@ -6460,19 +8060,25 @@ class ProcessTransport {
       }
       const fs2 = getFsImplementation();
       if (!fs2.existsSync(pathToClaudeCodeExecutable)) {
-        const errorMessage = isNativeBinary(pathToClaudeCodeExecutable) ? `Claude Code native binary not found at ${pathToClaudeCodeExecutable}. Please ensure Claude Code is installed via native installer or specify a valid path with options.pathToClaudeCodeExecutable.` : `Claude Code executable not found at ${pathToClaudeCodeExecutable}. Is options.pathToClaudeCodeExecutable set?`;
+        const errorMessage = isNativeBinary(pathToClaudeCodeExecutable)
+          ? `Claude Code native binary not found at ${pathToClaudeCodeExecutable}. Please ensure Claude Code is installed via native installer or specify a valid path with options.pathToClaudeCodeExecutable.`
+          : `Claude Code executable not found at ${pathToClaudeCodeExecutable}. Is options.pathToClaudeCodeExecutable set?`;
         throw new ReferenceError(errorMessage);
       }
       const isNative = isNativeBinary(pathToClaudeCodeExecutable);
       const spawnCommand = isNative ? pathToClaudeCodeExecutable : executable;
       const spawnArgs = isNative ? args : [...executableArgs, pathToClaudeCodeExecutable, ...args];
-      this.logDebug(isNative ? `Spawning Claude Code native binary: ${pathToClaudeCodeExecutable} ${args.join(" ")}` : `Spawning Claude Code process: ${executable} ${[...executableArgs, pathToClaudeCodeExecutable, ...args].join(" ")}`);
+      this.logDebug(
+        isNative
+          ? `Spawning Claude Code native binary: ${pathToClaudeCodeExecutable} ${args.join(" ")}`
+          : `Spawning Claude Code process: ${executable} ${[...executableArgs, pathToClaudeCodeExecutable, ...args].join(" ")}`
+      );
       const stderrMode = env.DEBUG || stderr ? "pipe" : "ignore";
       this.child = spawn(spawnCommand, spawnArgs, {
         cwd,
         stdio: ["pipe", "pipe", stderrMode],
         signal: this.abortController.signal,
-        env
+        env,
       });
       this.childStdin = this.child.stdin;
       this.childStdout = this.child.stdout;
@@ -6598,7 +8204,7 @@ class ProcessTransport {
   isReady() {
     return this.ready;
   }
-  async* readMessages() {
+  async *readMessages() {
     if (!this.childStdout) {
       throw new Error("ProcessTransport output stream not available");
     }
@@ -6626,8 +8232,7 @@ class ProcessTransport {
     return this.childStdin;
   }
   onExit(callback) {
-    if (!this.child)
-      return () => {};
+    if (!this.child) return () => {};
     const handler = (code, signal) => {
       const error = this.getProcessExitError(code, signal);
       callback(error);
@@ -6710,7 +8315,7 @@ class Stream {
     if (this.queue.length > 0) {
       return Promise.resolve({
         done: false,
-        value: this.queue.shift()
+        value: this.queue.shift(),
       });
     }
     if (this.isDone) {
@@ -6794,17 +8399,17 @@ class Query {
   canUseTool;
   hooks;
   abortController;
-  pendingControlResponses = new Map;
+  pendingControlResponses = new Map();
   cleanupPerformed = false;
   sdkMessages;
-  inputStream = new Stream;
+  inputStream = new Stream();
   initialization;
-  cancelControllers = new Map;
-  hookCallbacks = new Map;
+  cancelControllers = new Map();
+  hookCallbacks = new Map();
   nextCallbackId = 0;
-  sdkMcpTransports = new Map;
-  pendingMcpResponses = new Map;
-  constructor(transport, isStreamingMode, canUseTool, hooks, abortController, sdkMcpServers = new Map) {
+  sdkMcpTransports = new Map();
+  pendingMcpResponses = new Map();
+  constructor(transport, isStreamingMode, canUseTool, hooks, abortController, sdkMcpServers = new Map()) {
     this.transport = transport;
     this.isStreamingMode = isStreamingMode;
     this.canUseTool = canUseTool;
@@ -6825,8 +8430,7 @@ class Query {
     this.inputStream.error(error);
   }
   cleanup(error) {
-    if (this.cleanupPerformed)
-      return;
+    if (this.cleanupPerformed) return;
     this.cleanupPerformed = true;
     try {
       this.transport.close();
@@ -6880,7 +8484,7 @@ class Query {
     }
   }
   async handleControlRequest(request) {
-    const controller = new AbortController;
+    const controller = new AbortController();
     this.cancelControllers.set(request.request_id, controller);
     try {
       const response = await this.processControlRequest(request, controller.signal);
@@ -6889,22 +8493,32 @@ class Query {
         response: {
           subtype: "success",
           request_id: request.request_id,
-          response
-        }
+          response,
+        },
       };
-      await Promise.resolve(this.transport.write(JSON.stringify(controlResponse) + `
-`));
+      await Promise.resolve(
+        this.transport.write(
+          JSON.stringify(controlResponse) +
+            `
+`
+        )
+      );
     } catch (error) {
       const controlErrorResponse = {
         type: "control_response",
         response: {
           subtype: "error",
           request_id: request.request_id,
-          error: error.message || String(error)
-        }
+          error: error.message || String(error),
+        },
       };
-      await Promise.resolve(this.transport.write(JSON.stringify(controlErrorResponse) + `
-`));
+      await Promise.resolve(
+        this.transport.write(
+          JSON.stringify(controlErrorResponse) +
+            `
+`
+        )
+      );
     } finally {
       this.cancelControllers.delete(request.request_id);
     }
@@ -6923,10 +8537,15 @@ class Query {
       }
       return this.canUseTool(request.request.tool_name, request.request.input, {
         signal,
-        suggestions: request.request.permission_suggestions
+        suggestions: request.request.permission_suggestions,
       });
     } else if (request.request.subtype === "hook_callback") {
-      const result = await this.handleHookCallbacks(request.request.callback_id, request.request.input, request.request.tool_use_id, signal);
+      const result = await this.handleHookCallbacks(
+        request.request.callback_id,
+        request.request.input,
+        request.request.tool_use_id,
+        signal
+      );
       return result;
     } else if (request.request.subtype === "mcp_message") {
       const mcpRequest = request.request;
@@ -6946,7 +8565,7 @@ class Query {
     }
     throw new Error("Unsupported control request subtype: " + request.request.subtype);
   }
-  async* readSdkMessages() {
+  async *readSdkMessages() {
     for await (const message of this.inputStream) {
       yield message;
     }
@@ -6966,7 +8585,7 @@ class Query {
             }
             return {
               matcher: matcher.matcher,
-              hookCallbackIds: callbackIds
+              hookCallbackIds: callbackIds,
             };
           });
         }
@@ -6976,26 +8595,26 @@ class Query {
     const initRequest = {
       subtype: "initialize",
       hooks,
-      sdkMcpServers
+      sdkMcpServers,
     };
     const response = await this.request(initRequest);
     return response.response;
   }
   async interrupt() {
     await this.request({
-      subtype: "interrupt"
+      subtype: "interrupt",
     });
   }
   async setPermissionMode(mode) {
     await this.request({
       subtype: "set_permission_mode",
-      mode
+      mode,
     });
   }
   async setModel(model) {
     await this.request({
       subtype: "set_model",
-      model
+      model,
     });
   }
   request(request) {
@@ -7006,7 +8625,7 @@ class Query {
     const sdkRequest = {
       request_id: requestId,
       type: "control_request",
-      request
+      request,
     };
     return new Promise((resolve, reject) => {
       this.pendingControlResponses.set(requestId, (response) => {
@@ -7016,8 +8635,13 @@ class Query {
           reject(new Error(response.error));
         }
       });
-      Promise.resolve(this.transport.write(JSON.stringify(sdkRequest) + `
-`));
+      Promise.resolve(
+        this.transport.write(
+          JSON.stringify(sdkRequest) +
+            `
+`
+        )
+      );
     });
   }
   async supportedCommands() {
@@ -7035,10 +8659,14 @@ class Query {
   async streamInput(stream) {
     try {
       for await (const message of stream) {
-        if (this.abortController?.signal.aborted)
-          break;
-        await Promise.resolve(this.transport.write(JSON.stringify(message) + `
-`));
+        if (this.abortController?.signal.aborted) break;
+        await Promise.resolve(
+          this.transport.write(
+            JSON.stringify(message) +
+              `
+`
+          )
+        );
       }
       this.transport.endInput();
     } catch (error) {
@@ -7053,7 +8681,7 @@ class Query {
       throw new Error(`No hook callback found for ID: ${callbackId}`);
     }
     return callback(input, toolUseID, {
-      signal: abortSignal
+      signal: abortSignal,
     });
   }
   sendMcpServerMessageToCli(serverName, message) {
@@ -7089,7 +8717,7 @@ class Query {
       };
       this.pendingMcpResponses.set(key, {
         resolve: resolveAndCleanup,
-        reject: rejectAndCleanup
+        reject: rejectAndCleanup,
       });
       if (transport.onmessage) {
         transport.onmessage(mcpRequest.message);
@@ -7217,17 +8845,17 @@ __export(exports_external, {
   INVALID: () => INVALID,
   EMPTY_PATH: () => EMPTY_PATH,
   DIRTY: () => DIRTY,
-  BRAND: () => BRAND
+  BRAND: () => BRAND,
 });
 
 // node_modules/zod/v3/helpers/util.js
 var util;
-(function(util2) {
+(function (util2) {
   util2.assertEqual = (_) => {};
   function assertIs(_arg) {}
   util2.assertIs = assertIs;
   function assertNever(_x) {
-    throw new Error;
+    throw new Error();
   }
   util2.assertNever = assertNever;
   util2.arrayToEnum = (items) => {
@@ -7246,29 +8874,34 @@ var util;
     return util2.objectValues(filtered);
   };
   util2.objectValues = (obj) => {
-    return util2.objectKeys(obj).map(function(e) {
+    return util2.objectKeys(obj).map(function (e) {
       return obj[e];
     });
   };
-  util2.objectKeys = typeof Object.keys === "function" ? (obj) => Object.keys(obj) : (object) => {
-    const keys = [];
-    for (const key in object) {
-      if (Object.prototype.hasOwnProperty.call(object, key)) {
-        keys.push(key);
-      }
-    }
-    return keys;
-  };
+  util2.objectKeys =
+    typeof Object.keys === "function"
+      ? (obj) => Object.keys(obj)
+      : (object) => {
+          const keys = [];
+          for (const key in object) {
+            if (Object.prototype.hasOwnProperty.call(object, key)) {
+              keys.push(key);
+            }
+          }
+          return keys;
+        };
   util2.find = (arr, checker) => {
     for (const item of arr) {
-      if (checker(item))
-        return item;
+      if (checker(item)) return item;
     }
     return;
   };
-  util2.isInteger = typeof Number.isInteger === "function" ? (val) => Number.isInteger(val) : (val) => typeof val === "number" && Number.isFinite(val) && Math.floor(val) === val;
+  util2.isInteger =
+    typeof Number.isInteger === "function"
+      ? (val) => Number.isInteger(val)
+      : (val) => typeof val === "number" && Number.isFinite(val) && Math.floor(val) === val;
   function joinValues(array, separator = " | ") {
-    return array.map((val) => typeof val === "string" ? `'${val}'` : val).join(separator);
+    return array.map((val) => (typeof val === "string" ? `'${val}'` : val)).join(separator);
   }
   util2.joinValues = joinValues;
   util2.jsonStringifyReplacer = (_, value) => {
@@ -7279,11 +8912,11 @@ var util;
   };
 })(util || (util = {}));
 var objectUtil;
-(function(objectUtil2) {
+(function (objectUtil2) {
   objectUtil2.mergeShapes = (first, second) => {
     return {
       ...first,
-      ...second
+      ...second,
     };
   };
 })(objectUtil || (objectUtil = {}));
@@ -7307,7 +8940,7 @@ var ZodParsedType = util.arrayToEnum([
   "void",
   "never",
   "map",
-  "set"
+  "set",
 ]);
 var getParsedType = (data) => {
   const t = typeof data;
@@ -7368,7 +9001,7 @@ var ZodIssueCode = util.arrayToEnum([
   "too_big",
   "invalid_intersection_types",
   "not_multiple_of",
-  "not_finite"
+  "not_finite",
 ]);
 var quotelessJson = (obj) => {
   const json = JSON.stringify(obj, null, 2);
@@ -7398,9 +9031,11 @@ class ZodError extends Error {
     this.issues = issues;
   }
   format(_mapper) {
-    const mapper = _mapper || function(issue) {
-      return issue.message;
-    };
+    const mapper =
+      _mapper ||
+      function (issue) {
+        return issue.message;
+      };
     const fieldErrors = { _errors: [] };
     const processError = (error) => {
       for (const issue of error.issues) {
@@ -7536,8 +9171,7 @@ var errorMap = (issue, _ctx) => {
         message = `Number must be ${issue.exact ? `exactly equal to ` : issue.inclusive ? `greater than or equal to ` : `greater than `}${issue.minimum}`;
       else if (issue.type === "date")
         message = `Date must be ${issue.exact ? `exactly equal to ` : issue.inclusive ? `greater than or equal to ` : `greater than `}${new Date(Number(issue.minimum))}`;
-      else
-        message = "Invalid input";
+      else message = "Invalid input";
       break;
     case ZodIssueCode.too_big:
       if (issue.type === "array")
@@ -7550,8 +9184,7 @@ var errorMap = (issue, _ctx) => {
         message = `BigInt must be ${issue.exact ? `exactly` : issue.inclusive ? `less than or equal to` : `less than`} ${issue.maximum}`;
       else if (issue.type === "date")
         message = `Date must be ${issue.exact ? `exactly` : issue.inclusive ? `smaller than or equal to` : `smaller than`} ${new Date(Number(issue.maximum))}`;
-      else
-        message = "Invalid input";
+      else message = "Invalid input";
       break;
     case ZodIssueCode.custom:
       message = `Invalid input`;
@@ -7584,27 +9217,30 @@ function getErrorMap() {
 // node_modules/zod/v3/helpers/parseUtil.js
 var makeIssue = (params) => {
   const { data, path, errorMaps, issueData } = params;
-  const fullPath = [...path, ...issueData.path || []];
+  const fullPath = [...path, ...(issueData.path || [])];
   const fullIssue = {
     ...issueData,
-    path: fullPath
+    path: fullPath,
   };
   if (issueData.message !== undefined) {
     return {
       ...issueData,
       path: fullPath,
-      message: issueData.message
+      message: issueData.message,
     };
   }
   let errorMessage = "";
-  const maps = errorMaps.filter((m) => !!m).slice().reverse();
+  const maps = errorMaps
+    .filter((m) => !!m)
+    .slice()
+    .reverse();
   for (const map of maps) {
     errorMessage = map(fullIssue, { data, defaultError: errorMessage }).message;
   }
   return {
     ...issueData,
     path: fullPath,
-    message: errorMessage
+    message: errorMessage,
   };
 };
 var EMPTY_PATH = [];
@@ -7618,8 +9254,8 @@ function addIssueToContext(ctx, issueData) {
       ctx.common.contextualErrorMap,
       ctx.schemaErrorMap,
       overrideMap,
-      overrideMap === en_default ? undefined : en_default
-    ].filter((x) => !!x)
+      overrideMap === en_default ? undefined : en_default,
+    ].filter((x) => !!x),
   });
   ctx.common.issues.push(issue);
 }
@@ -7629,20 +9265,16 @@ class ParseStatus {
     this.value = "valid";
   }
   dirty() {
-    if (this.value === "valid")
-      this.value = "dirty";
+    if (this.value === "valid") this.value = "dirty";
   }
   abort() {
-    if (this.value !== "aborted")
-      this.value = "aborted";
+    if (this.value !== "aborted") this.value = "aborted";
   }
   static mergeArray(status, results) {
     const arrayValue = [];
     for (const s of results) {
-      if (s.status === "aborted")
-        return INVALID;
-      if (s.status === "dirty")
-        status.dirty();
+      if (s.status === "aborted") return INVALID;
+      if (s.status === "dirty") status.dirty();
       arrayValue.push(s.value);
     }
     return { status: status.value, value: arrayValue };
@@ -7654,7 +9286,7 @@ class ParseStatus {
       const value = await pair.value;
       syncPairs.push({
         key,
-        value
+        value,
       });
     }
     return ParseStatus.mergeObjectSync(status, syncPairs);
@@ -7663,14 +9295,10 @@ class ParseStatus {
     const finalObject = {};
     for (const pair of pairs) {
       const { key, value } = pair;
-      if (key.status === "aborted")
-        return INVALID;
-      if (value.status === "aborted")
-        return INVALID;
-      if (key.status === "dirty")
-        status.dirty();
-      if (value.status === "dirty")
-        status.dirty();
+      if (key.status === "aborted") return INVALID;
+      if (value.status === "aborted") return INVALID;
+      if (key.status === "dirty") status.dirty();
+      if (value.status === "dirty") status.dirty();
       if (key.value !== "__proto__" && (typeof value.value !== "undefined" || pair.alwaysSet)) {
         finalObject[key.value] = value.value;
       }
@@ -7679,7 +9307,7 @@ class ParseStatus {
   }
 }
 var INVALID = Object.freeze({
-  status: "aborted"
+  status: "aborted",
 });
 var DIRTY = (value) => ({ status: "dirty", value });
 var OK = (value) => ({ status: "valid", value });
@@ -7689,9 +9317,9 @@ var isValid = (x) => x.status === "valid";
 var isAsync = (x) => typeof Promise !== "undefined" && x instanceof Promise;
 // node_modules/zod/v3/helpers/errorUtil.js
 var errorUtil;
-(function(errorUtil2) {
-  errorUtil2.errToObj = (message) => typeof message === "string" ? { message } : message || {};
-  errorUtil2.toString = (message) => typeof message === "string" ? message : message?.message;
+(function (errorUtil2) {
+  errorUtil2.errToObj = (message) => (typeof message === "string" ? { message } : message || {});
+  errorUtil2.toString = (message) => (typeof message === "string" ? message : message?.message);
 })(errorUtil || (errorUtil = {}));
 
 // node_modules/zod/v3/types.js
@@ -7724,24 +9352,21 @@ var handleResult = (ctx, result) => {
     return {
       success: false,
       get error() {
-        if (this._error)
-          return this._error;
+        if (this._error) return this._error;
         const error = new ZodError(ctx.common.issues);
         this._error = error;
         return this._error;
-      }
+      },
     };
   }
 };
 function processCreateParams(params) {
-  if (!params)
-    return {};
+  if (!params) return {};
   const { errorMap: errorMap2, invalid_type_error, required_error, description } = params;
   if (errorMap2 && (invalid_type_error || required_error)) {
     throw new Error(`Can't use "invalid_type_error" or "required_error" in conjunction with custom error map.`);
   }
-  if (errorMap2)
-    return { errorMap: errorMap2, description };
+  if (errorMap2) return { errorMap: errorMap2, description };
   const customMap = (iss, ctx) => {
     const { message } = params;
     if (iss.code === "invalid_enum_value") {
@@ -7750,8 +9375,7 @@ function processCreateParams(params) {
     if (typeof ctx.data === "undefined") {
       return { message: message ?? required_error ?? ctx.defaultError };
     }
-    if (iss.code !== "invalid_type")
-      return { message: ctx.defaultError };
+    if (iss.code !== "invalid_type") return { message: ctx.defaultError };
     return { message: message ?? invalid_type_error ?? ctx.defaultError };
   };
   return { errorMap: customMap, description };
@@ -7765,26 +9389,28 @@ class ZodType {
     return getParsedType(input.data);
   }
   _getOrReturnCtx(input, ctx) {
-    return ctx || {
-      common: input.parent.common,
-      data: input.data,
-      parsedType: getParsedType(input.data),
-      schemaErrorMap: this._def.errorMap,
-      path: input.path,
-      parent: input.parent
-    };
+    return (
+      ctx || {
+        common: input.parent.common,
+        data: input.data,
+        parsedType: getParsedType(input.data),
+        schemaErrorMap: this._def.errorMap,
+        path: input.path,
+        parent: input.parent,
+      }
+    );
   }
   _processInputParams(input) {
     return {
-      status: new ParseStatus,
+      status: new ParseStatus(),
       ctx: {
         common: input.parent.common,
         data: input.data,
         parsedType: getParsedType(input.data),
         schemaErrorMap: this._def.errorMap,
         path: input.path,
-        parent: input.parent
-      }
+        parent: input.parent,
+      },
     };
   }
   _parseSync(input) {
@@ -7800,8 +9426,7 @@ class ZodType {
   }
   parse(data, params) {
     const result = this.safeParse(data, params);
-    if (result.success)
-      return result.data;
+    if (result.success) return result.data;
     throw result.error;
   }
   safeParse(data, params) {
@@ -7809,13 +9434,13 @@ class ZodType {
       common: {
         issues: [],
         async: params?.async ?? false,
-        contextualErrorMap: params?.errorMap
+        contextualErrorMap: params?.errorMap,
       },
       path: params?.path || [],
       schemaErrorMap: this._def.errorMap,
       parent: null,
       data,
-      parsedType: getParsedType(data)
+      parsedType: getParsedType(data),
     };
     const result = this._parseSync({ data, path: ctx.path, parent: ctx });
     return handleResult(ctx, result);
@@ -7824,42 +9449,47 @@ class ZodType {
     const ctx = {
       common: {
         issues: [],
-        async: !!this["~standard"].async
+        async: !!this["~standard"].async,
       },
       path: [],
       schemaErrorMap: this._def.errorMap,
       parent: null,
       data,
-      parsedType: getParsedType(data)
+      parsedType: getParsedType(data),
     };
     if (!this["~standard"].async) {
       try {
         const result = this._parseSync({ data, path: [], parent: ctx });
-        return isValid(result) ? {
-          value: result.value
-        } : {
-          issues: ctx.common.issues
-        };
+        return isValid(result)
+          ? {
+              value: result.value,
+            }
+          : {
+              issues: ctx.common.issues,
+            };
       } catch (err) {
         if (err?.message?.toLowerCase()?.includes("encountered")) {
           this["~standard"].async = true;
         }
         ctx.common = {
           issues: [],
-          async: true
+          async: true,
         };
       }
     }
-    return this._parseAsync({ data, path: [], parent: ctx }).then((result) => isValid(result) ? {
-      value: result.value
-    } : {
-      issues: ctx.common.issues
-    });
+    return this._parseAsync({ data, path: [], parent: ctx }).then((result) =>
+      isValid(result)
+        ? {
+            value: result.value,
+          }
+        : {
+            issues: ctx.common.issues,
+          }
+    );
   }
   async parseAsync(data, params) {
     const result = await this.safeParseAsync(data, params);
-    if (result.success)
-      return result.data;
+    if (result.success) return result.data;
     throw result.error;
   }
   async safeParseAsync(data, params) {
@@ -7867,13 +9497,13 @@ class ZodType {
       common: {
         issues: [],
         contextualErrorMap: params?.errorMap,
-        async: true
+        async: true,
       },
       path: params?.path || [],
       schemaErrorMap: this._def.errorMap,
       parent: null,
       data,
-      parsedType: getParsedType(data)
+      parsedType: getParsedType(data),
     };
     const maybeAsyncResult = this._parse({ data, path: ctx.path, parent: ctx });
     const result = await (isAsync(maybeAsyncResult) ? maybeAsyncResult : Promise.resolve(maybeAsyncResult));
@@ -7891,10 +9521,11 @@ class ZodType {
     };
     return this._refinement((val, ctx) => {
       const result = check(val);
-      const setError = () => ctx.addIssue({
-        code: ZodIssueCode.custom,
-        ...getIssueProperties(val)
-      });
+      const setError = () =>
+        ctx.addIssue({
+          code: ZodIssueCode.custom,
+          ...getIssueProperties(val),
+        });
       if (typeof Promise !== "undefined" && result instanceof Promise) {
         return result.then((data) => {
           if (!data) {
@@ -7927,7 +9558,7 @@ class ZodType {
     return new ZodEffects({
       schema: this,
       typeName: ZodFirstPartyTypeKind.ZodEffects,
-      effect: { type: "refinement", refinement }
+      effect: { type: "refinement", refinement },
     });
   }
   superRefine(refinement) {
@@ -7963,7 +9594,7 @@ class ZodType {
     this["~standard"] = {
       version: 1,
       vendor: "zod",
-      validate: (data) => this["~validate"](data)
+      validate: (data) => this["~validate"](data),
     };
   }
   optional() {
@@ -7992,7 +9623,7 @@ class ZodType {
       ...processCreateParams(this._def),
       schema: this,
       typeName: ZodFirstPartyTypeKind.ZodEffects,
-      effect: { type: "transform", transform }
+      effect: { type: "transform", transform },
     });
   }
   default(def) {
@@ -8001,14 +9632,14 @@ class ZodType {
       ...processCreateParams(this._def),
       innerType: this,
       defaultValue: defaultValueFunc,
-      typeName: ZodFirstPartyTypeKind.ZodDefault
+      typeName: ZodFirstPartyTypeKind.ZodDefault,
     });
   }
   brand() {
     return new ZodBranded({
       typeName: ZodFirstPartyTypeKind.ZodBranded,
       type: this,
-      ...processCreateParams(this._def)
+      ...processCreateParams(this._def),
     });
   }
   catch(def) {
@@ -8017,14 +9648,14 @@ class ZodType {
       ...processCreateParams(this._def),
       innerType: this,
       catchValue: catchValueFunc,
-      typeName: ZodFirstPartyTypeKind.ZodCatch
+      typeName: ZodFirstPartyTypeKind.ZodCatch,
     });
   }
   describe(description) {
     const This = this.constructor;
     return new This({
       ...this._def,
-      description
+      description,
     });
   }
   pipe(target) {
@@ -8046,14 +9677,19 @@ var ulidRegex = /^[0-9A-HJKMNP-TV-Z]{26}$/i;
 var uuidRegex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/i;
 var nanoidRegex = /^[a-z0-9_-]{21}$/i;
 var jwtRegex = /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$/;
-var durationRegex = /^[-+]?P(?!$)(?:(?:[-+]?\d+Y)|(?:[-+]?\d+[.,]\d+Y$))?(?:(?:[-+]?\d+M)|(?:[-+]?\d+[.,]\d+M$))?(?:(?:[-+]?\d+W)|(?:[-+]?\d+[.,]\d+W$))?(?:(?:[-+]?\d+D)|(?:[-+]?\d+[.,]\d+D$))?(?:T(?=[\d+-])(?:(?:[-+]?\d+H)|(?:[-+]?\d+[.,]\d+H$))?(?:(?:[-+]?\d+M)|(?:[-+]?\d+[.,]\d+M$))?(?:[-+]?\d+(?:[.,]\d+)?S)?)??$/;
+var durationRegex =
+  /^[-+]?P(?!$)(?:(?:[-+]?\d+Y)|(?:[-+]?\d+[.,]\d+Y$))?(?:(?:[-+]?\d+M)|(?:[-+]?\d+[.,]\d+M$))?(?:(?:[-+]?\d+W)|(?:[-+]?\d+[.,]\d+W$))?(?:(?:[-+]?\d+D)|(?:[-+]?\d+[.,]\d+D$))?(?:T(?=[\d+-])(?:(?:[-+]?\d+H)|(?:[-+]?\d+[.,]\d+H$))?(?:(?:[-+]?\d+M)|(?:[-+]?\d+[.,]\d+M$))?(?:[-+]?\d+(?:[.,]\d+)?S)?)??$/;
 var emailRegex = /^(?!\.)(?!.*\.\.)([A-Z0-9_'+\-\.]*)[A-Z0-9_+-]@([A-Z0-9][A-Z0-9\-]*\.)+[A-Z]{2,}$/i;
 var _emojiRegex = `^(\\p{Extended_Pictographic}|\\p{Emoji_Component})+$`;
 var emojiRegex;
-var ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$/;
-var ipv4CidrRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\/(3[0-2]|[12]?[0-9])$/;
-var ipv6Regex = /^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/;
-var ipv6CidrRegex = /^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/;
+var ipv4Regex =
+  /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$/;
+var ipv4CidrRegex =
+  /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\/(3[0-2]|[12]?[0-9])$/;
+var ipv6Regex =
+  /^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/;
+var ipv6CidrRegex =
+  /^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/;
 var base64Regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
 var base64urlRegex = /^([0-9a-zA-Z-_]{4})*(([0-9a-zA-Z-_]{2}(==)?)|([0-9a-zA-Z-_]{3}(=)?))?$/;
 var dateRegexSource = `((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))`;
@@ -8075,8 +9711,7 @@ function datetimeRegex(args) {
   let regex = `${dateRegexSource}T${timeRegexSource(args)}`;
   const opts = [];
   opts.push(args.local ? `Z?` : `Z`);
-  if (args.offset)
-    opts.push(`([+-]\\d{2}:?\\d{2})`);
+  if (args.offset) opts.push(`([+-]\\d{2}:?\\d{2})`);
   regex = `${regex}(${opts.join("|")})`;
   return new RegExp(`^${regex}$`);
 }
@@ -8090,22 +9725,19 @@ function isValidIP(ip, version) {
   return false;
 }
 function isValidJWT(jwt, alg) {
-  if (!jwtRegex.test(jwt))
-    return false;
+  if (!jwtRegex.test(jwt)) return false;
   try {
     const [header] = jwt.split(".");
-    if (!header)
-      return false;
-    const base64 = header.replace(/-/g, "+").replace(/_/g, "/").padEnd(header.length + (4 - header.length % 4) % 4, "=");
+    if (!header) return false;
+    const base64 = header
+      .replace(/-/g, "+")
+      .replace(/_/g, "/")
+      .padEnd(header.length + ((4 - (header.length % 4)) % 4), "=");
     const decoded = JSON.parse(atob(base64));
-    if (typeof decoded !== "object" || decoded === null)
-      return false;
-    if ("typ" in decoded && decoded?.typ !== "JWT")
-      return false;
-    if (!decoded.alg)
-      return false;
-    if (alg && decoded.alg !== alg)
-      return false;
+    if (typeof decoded !== "object" || decoded === null) return false;
+    if ("typ" in decoded && decoded?.typ !== "JWT") return false;
+    if (!decoded.alg) return false;
+    if (alg && decoded.alg !== alg) return false;
     return true;
   } catch {
     return false;
@@ -8132,11 +9764,11 @@ class ZodString extends ZodType {
       addIssueToContext(ctx2, {
         code: ZodIssueCode.invalid_type,
         expected: ZodParsedType.string,
-        received: ctx2.parsedType
+        received: ctx2.parsedType,
       });
       return INVALID;
     }
-    const status = new ParseStatus;
+    const status = new ParseStatus();
     let ctx = undefined;
     for (const check of this._def.checks) {
       if (check.kind === "min") {
@@ -8148,7 +9780,7 @@ class ZodString extends ZodType {
             type: "string",
             inclusive: true,
             exact: false,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8161,7 +9793,7 @@ class ZodString extends ZodType {
             type: "string",
             inclusive: true,
             exact: false,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8177,7 +9809,7 @@ class ZodString extends ZodType {
               type: "string",
               inclusive: true,
               exact: true,
-              message: check.message
+              message: check.message,
             });
           } else if (tooSmall) {
             addIssueToContext(ctx, {
@@ -8186,7 +9818,7 @@ class ZodString extends ZodType {
               type: "string",
               inclusive: true,
               exact: true,
-              message: check.message
+              message: check.message,
             });
           }
           status.dirty();
@@ -8197,7 +9829,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             validation: "email",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8210,7 +9842,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             validation: "emoji",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8220,7 +9852,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             validation: "uuid",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8230,7 +9862,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             validation: "nanoid",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8240,7 +9872,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             validation: "cuid",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8250,7 +9882,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             validation: "cuid2",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8260,7 +9892,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             validation: "ulid",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8272,7 +9904,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             validation: "url",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8284,7 +9916,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             validation: "regex",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8296,7 +9928,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             code: ZodIssueCode.invalid_string,
             validation: { includes: check.value, position: check.position },
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8310,7 +9942,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             code: ZodIssueCode.invalid_string,
             validation: { startsWith: check.value },
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8320,7 +9952,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             code: ZodIssueCode.invalid_string,
             validation: { endsWith: check.value },
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8331,7 +9963,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             code: ZodIssueCode.invalid_string,
             validation: "datetime",
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8342,7 +9974,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             code: ZodIssueCode.invalid_string,
             validation: "date",
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8353,7 +9985,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             code: ZodIssueCode.invalid_string,
             validation: "time",
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8363,7 +9995,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             validation: "duration",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8373,7 +10005,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             validation: "ip",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8383,7 +10015,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             validation: "jwt",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8393,7 +10025,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             validation: "cidr",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8403,7 +10035,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             validation: "base64",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8413,7 +10045,7 @@ class ZodString extends ZodType {
           addIssueToContext(ctx, {
             validation: "base64url",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8427,13 +10059,13 @@ class ZodString extends ZodType {
     return this.refinement((data) => regex.test(data), {
       validation,
       code: ZodIssueCode.invalid_string,
-      ...errorUtil.errToObj(message)
+      ...errorUtil.errToObj(message),
     });
   }
   _addCheck(check) {
     return new ZodString({
       ...this._def,
-      checks: [...this._def.checks, check]
+      checks: [...this._def.checks, check],
     });
   }
   email(message) {
@@ -8466,7 +10098,7 @@ class ZodString extends ZodType {
   base64url(message) {
     return this._addCheck({
       kind: "base64url",
-      ...errorUtil.errToObj(message)
+      ...errorUtil.errToObj(message),
     });
   }
   jwt(options) {
@@ -8485,7 +10117,7 @@ class ZodString extends ZodType {
         precision: null,
         offset: false,
         local: false,
-        message: options
+        message: options,
       });
     }
     return this._addCheck({
@@ -8493,7 +10125,7 @@ class ZodString extends ZodType {
       precision: typeof options?.precision === "undefined" ? null : options?.precision,
       offset: options?.offset ?? false,
       local: options?.local ?? false,
-      ...errorUtil.errToObj(options?.message)
+      ...errorUtil.errToObj(options?.message),
     });
   }
   date(message) {
@@ -8504,13 +10136,13 @@ class ZodString extends ZodType {
       return this._addCheck({
         kind: "time",
         precision: null,
-        message: options
+        message: options,
       });
     }
     return this._addCheck({
       kind: "time",
       precision: typeof options?.precision === "undefined" ? null : options?.precision,
-      ...errorUtil.errToObj(options?.message)
+      ...errorUtil.errToObj(options?.message),
     });
   }
   duration(message) {
@@ -8520,7 +10152,7 @@ class ZodString extends ZodType {
     return this._addCheck({
       kind: "regex",
       regex,
-      ...errorUtil.errToObj(message)
+      ...errorUtil.errToObj(message),
     });
   }
   includes(value, options) {
@@ -8528,42 +10160,42 @@ class ZodString extends ZodType {
       kind: "includes",
       value,
       position: options?.position,
-      ...errorUtil.errToObj(options?.message)
+      ...errorUtil.errToObj(options?.message),
     });
   }
   startsWith(value, message) {
     return this._addCheck({
       kind: "startsWith",
       value,
-      ...errorUtil.errToObj(message)
+      ...errorUtil.errToObj(message),
     });
   }
   endsWith(value, message) {
     return this._addCheck({
       kind: "endsWith",
       value,
-      ...errorUtil.errToObj(message)
+      ...errorUtil.errToObj(message),
     });
   }
   min(minLength, message) {
     return this._addCheck({
       kind: "min",
       value: minLength,
-      ...errorUtil.errToObj(message)
+      ...errorUtil.errToObj(message),
     });
   }
   max(maxLength, message) {
     return this._addCheck({
       kind: "max",
       value: maxLength,
-      ...errorUtil.errToObj(message)
+      ...errorUtil.errToObj(message),
     });
   }
   length(len, message) {
     return this._addCheck({
       kind: "length",
       value: len,
-      ...errorUtil.errToObj(message)
+      ...errorUtil.errToObj(message),
     });
   }
   nonempty(message) {
@@ -8572,19 +10204,19 @@ class ZodString extends ZodType {
   trim() {
     return new ZodString({
       ...this._def,
-      checks: [...this._def.checks, { kind: "trim" }]
+      checks: [...this._def.checks, { kind: "trim" }],
     });
   }
   toLowerCase() {
     return new ZodString({
       ...this._def,
-      checks: [...this._def.checks, { kind: "toLowerCase" }]
+      checks: [...this._def.checks, { kind: "toLowerCase" }],
     });
   }
   toUpperCase() {
     return new ZodString({
       ...this._def,
-      checks: [...this._def.checks, { kind: "toUpperCase" }]
+      checks: [...this._def.checks, { kind: "toUpperCase" }],
     });
   }
   get isDatetime() {
@@ -8639,8 +10271,7 @@ class ZodString extends ZodType {
     let min = null;
     for (const ch of this._def.checks) {
       if (ch.kind === "min") {
-        if (min === null || ch.value > min)
-          min = ch.value;
+        if (min === null || ch.value > min) min = ch.value;
       }
     }
     return min;
@@ -8649,8 +10280,7 @@ class ZodString extends ZodType {
     let max = null;
     for (const ch of this._def.checks) {
       if (ch.kind === "max") {
-        if (max === null || ch.value < max)
-          max = ch.value;
+        if (max === null || ch.value < max) max = ch.value;
       }
     }
     return max;
@@ -8661,7 +10291,7 @@ ZodString.create = (params) => {
     checks: [],
     typeName: ZodFirstPartyTypeKind.ZodString,
     coerce: params?.coerce ?? false,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 function floatSafeRemainder(val, step) {
@@ -8670,7 +10300,7 @@ function floatSafeRemainder(val, step) {
   const decCount = valDecCount > stepDecCount ? valDecCount : stepDecCount;
   const valInt = Number.parseInt(val.toFixed(decCount).replace(".", ""));
   const stepInt = Number.parseInt(step.toFixed(decCount).replace(".", ""));
-  return valInt % stepInt / 10 ** decCount;
+  return (valInt % stepInt) / 10 ** decCount;
 }
 
 class ZodNumber extends ZodType {
@@ -8690,12 +10320,12 @@ class ZodNumber extends ZodType {
       addIssueToContext(ctx2, {
         code: ZodIssueCode.invalid_type,
         expected: ZodParsedType.number,
-        received: ctx2.parsedType
+        received: ctx2.parsedType,
       });
       return INVALID;
     }
     let ctx = undefined;
-    const status = new ParseStatus;
+    const status = new ParseStatus();
     for (const check of this._def.checks) {
       if (check.kind === "int") {
         if (!util.isInteger(input.data)) {
@@ -8704,7 +10334,7 @@ class ZodNumber extends ZodType {
             code: ZodIssueCode.invalid_type,
             expected: "integer",
             received: "float",
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8718,7 +10348,7 @@ class ZodNumber extends ZodType {
             type: "number",
             inclusive: check.inclusive,
             exact: false,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8732,7 +10362,7 @@ class ZodNumber extends ZodType {
             type: "number",
             inclusive: check.inclusive,
             exact: false,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8742,7 +10372,7 @@ class ZodNumber extends ZodType {
           addIssueToContext(ctx, {
             code: ZodIssueCode.not_multiple_of,
             multipleOf: check.value,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8751,7 +10381,7 @@ class ZodNumber extends ZodType {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             code: ZodIssueCode.not_finite,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8782,21 +10412,21 @@ class ZodNumber extends ZodType {
           kind,
           value,
           inclusive,
-          message: errorUtil.toString(message)
-        }
-      ]
+          message: errorUtil.toString(message),
+        },
+      ],
     });
   }
   _addCheck(check) {
     return new ZodNumber({
       ...this._def,
-      checks: [...this._def.checks, check]
+      checks: [...this._def.checks, check],
     });
   }
   int(message) {
     return this._addCheck({
       kind: "int",
-      message: errorUtil.toString(message)
+      message: errorUtil.toString(message),
     });
   }
   positive(message) {
@@ -8804,7 +10434,7 @@ class ZodNumber extends ZodType {
       kind: "min",
       value: 0,
       inclusive: false,
-      message: errorUtil.toString(message)
+      message: errorUtil.toString(message),
     });
   }
   negative(message) {
@@ -8812,7 +10442,7 @@ class ZodNumber extends ZodType {
       kind: "max",
       value: 0,
       inclusive: false,
-      message: errorUtil.toString(message)
+      message: errorUtil.toString(message),
     });
   }
   nonpositive(message) {
@@ -8820,7 +10450,7 @@ class ZodNumber extends ZodType {
       kind: "max",
       value: 0,
       inclusive: true,
-      message: errorUtil.toString(message)
+      message: errorUtil.toString(message),
     });
   }
   nonnegative(message) {
@@ -8828,20 +10458,20 @@ class ZodNumber extends ZodType {
       kind: "min",
       value: 0,
       inclusive: true,
-      message: errorUtil.toString(message)
+      message: errorUtil.toString(message),
     });
   }
   multipleOf(value, message) {
     return this._addCheck({
       kind: "multipleOf",
       value,
-      message: errorUtil.toString(message)
+      message: errorUtil.toString(message),
     });
   }
   finite(message) {
     return this._addCheck({
       kind: "finite",
-      message: errorUtil.toString(message)
+      message: errorUtil.toString(message),
     });
   }
   safe(message) {
@@ -8849,20 +10479,19 @@ class ZodNumber extends ZodType {
       kind: "min",
       inclusive: true,
       value: Number.MIN_SAFE_INTEGER,
-      message: errorUtil.toString(message)
+      message: errorUtil.toString(message),
     })._addCheck({
       kind: "max",
       inclusive: true,
       value: Number.MAX_SAFE_INTEGER,
-      message: errorUtil.toString(message)
+      message: errorUtil.toString(message),
     });
   }
   get minValue() {
     let min = null;
     for (const ch of this._def.checks) {
       if (ch.kind === "min") {
-        if (min === null || ch.value > min)
-          min = ch.value;
+        if (min === null || ch.value > min) min = ch.value;
       }
     }
     return min;
@@ -8871,14 +10500,13 @@ class ZodNumber extends ZodType {
     let max = null;
     for (const ch of this._def.checks) {
       if (ch.kind === "max") {
-        if (max === null || ch.value < max)
-          max = ch.value;
+        if (max === null || ch.value < max) max = ch.value;
       }
     }
     return max;
   }
   get isInt() {
-    return !!this._def.checks.find((ch) => ch.kind === "int" || ch.kind === "multipleOf" && util.isInteger(ch.value));
+    return !!this._def.checks.find((ch) => ch.kind === "int" || (ch.kind === "multipleOf" && util.isInteger(ch.value)));
   }
   get isFinite() {
     let max = null;
@@ -8887,11 +10515,9 @@ class ZodNumber extends ZodType {
       if (ch.kind === "finite" || ch.kind === "int" || ch.kind === "multipleOf") {
         return true;
       } else if (ch.kind === "min") {
-        if (min === null || ch.value > min)
-          min = ch.value;
+        if (min === null || ch.value > min) min = ch.value;
       } else if (ch.kind === "max") {
-        if (max === null || ch.value < max)
-          max = ch.value;
+        if (max === null || ch.value < max) max = ch.value;
       }
     }
     return Number.isFinite(min) && Number.isFinite(max);
@@ -8902,7 +10528,7 @@ ZodNumber.create = (params) => {
     checks: [],
     typeName: ZodFirstPartyTypeKind.ZodNumber,
     coerce: params?.coerce || false,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -8925,7 +10551,7 @@ class ZodBigInt extends ZodType {
       return this._getInvalidInput(input);
     }
     let ctx = undefined;
-    const status = new ParseStatus;
+    const status = new ParseStatus();
     for (const check of this._def.checks) {
       if (check.kind === "min") {
         const tooSmall = check.inclusive ? input.data < check.value : input.data <= check.value;
@@ -8936,7 +10562,7 @@ class ZodBigInt extends ZodType {
             type: "bigint",
             minimum: check.value,
             inclusive: check.inclusive,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8949,7 +10575,7 @@ class ZodBigInt extends ZodType {
             type: "bigint",
             maximum: check.value,
             inclusive: check.inclusive,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8959,7 +10585,7 @@ class ZodBigInt extends ZodType {
           addIssueToContext(ctx, {
             code: ZodIssueCode.not_multiple_of,
             multipleOf: check.value,
-            message: check.message
+            message: check.message,
           });
           status.dirty();
         }
@@ -8974,7 +10600,7 @@ class ZodBigInt extends ZodType {
     addIssueToContext(ctx, {
       code: ZodIssueCode.invalid_type,
       expected: ZodParsedType.bigint,
-      received: ctx.parsedType
+      received: ctx.parsedType,
     });
     return INVALID;
   }
@@ -8999,15 +10625,15 @@ class ZodBigInt extends ZodType {
           kind,
           value,
           inclusive,
-          message: errorUtil.toString(message)
-        }
-      ]
+          message: errorUtil.toString(message),
+        },
+      ],
     });
   }
   _addCheck(check) {
     return new ZodBigInt({
       ...this._def,
-      checks: [...this._def.checks, check]
+      checks: [...this._def.checks, check],
     });
   }
   positive(message) {
@@ -9015,7 +10641,7 @@ class ZodBigInt extends ZodType {
       kind: "min",
       value: BigInt(0),
       inclusive: false,
-      message: errorUtil.toString(message)
+      message: errorUtil.toString(message),
     });
   }
   negative(message) {
@@ -9023,7 +10649,7 @@ class ZodBigInt extends ZodType {
       kind: "max",
       value: BigInt(0),
       inclusive: false,
-      message: errorUtil.toString(message)
+      message: errorUtil.toString(message),
     });
   }
   nonpositive(message) {
@@ -9031,7 +10657,7 @@ class ZodBigInt extends ZodType {
       kind: "max",
       value: BigInt(0),
       inclusive: true,
-      message: errorUtil.toString(message)
+      message: errorUtil.toString(message),
     });
   }
   nonnegative(message) {
@@ -9039,22 +10665,21 @@ class ZodBigInt extends ZodType {
       kind: "min",
       value: BigInt(0),
       inclusive: true,
-      message: errorUtil.toString(message)
+      message: errorUtil.toString(message),
     });
   }
   multipleOf(value, message) {
     return this._addCheck({
       kind: "multipleOf",
       value,
-      message: errorUtil.toString(message)
+      message: errorUtil.toString(message),
     });
   }
   get minValue() {
     let min = null;
     for (const ch of this._def.checks) {
       if (ch.kind === "min") {
-        if (min === null || ch.value > min)
-          min = ch.value;
+        if (min === null || ch.value > min) min = ch.value;
       }
     }
     return min;
@@ -9063,8 +10688,7 @@ class ZodBigInt extends ZodType {
     let max = null;
     for (const ch of this._def.checks) {
       if (ch.kind === "max") {
-        if (max === null || ch.value < max)
-          max = ch.value;
+        if (max === null || ch.value < max) max = ch.value;
       }
     }
     return max;
@@ -9075,7 +10699,7 @@ ZodBigInt.create = (params) => {
     checks: [],
     typeName: ZodFirstPartyTypeKind.ZodBigInt,
     coerce: params?.coerce ?? false,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -9090,7 +10714,7 @@ class ZodBoolean extends ZodType {
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_type,
         expected: ZodParsedType.boolean,
-        received: ctx.parsedType
+        received: ctx.parsedType,
       });
       return INVALID;
     }
@@ -9101,7 +10725,7 @@ ZodBoolean.create = (params) => {
   return new ZodBoolean({
     typeName: ZodFirstPartyTypeKind.ZodBoolean,
     coerce: params?.coerce || false,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -9116,18 +10740,18 @@ class ZodDate extends ZodType {
       addIssueToContext(ctx2, {
         code: ZodIssueCode.invalid_type,
         expected: ZodParsedType.date,
-        received: ctx2.parsedType
+        received: ctx2.parsedType,
       });
       return INVALID;
     }
     if (Number.isNaN(input.data.getTime())) {
       const ctx2 = this._getOrReturnCtx(input);
       addIssueToContext(ctx2, {
-        code: ZodIssueCode.invalid_date
+        code: ZodIssueCode.invalid_date,
       });
       return INVALID;
     }
-    const status = new ParseStatus;
+    const status = new ParseStatus();
     let ctx = undefined;
     for (const check of this._def.checks) {
       if (check.kind === "min") {
@@ -9139,7 +10763,7 @@ class ZodDate extends ZodType {
             inclusive: true,
             exact: false,
             minimum: check.value,
-            type: "date"
+            type: "date",
           });
           status.dirty();
         }
@@ -9152,7 +10776,7 @@ class ZodDate extends ZodType {
             inclusive: true,
             exact: false,
             maximum: check.value,
-            type: "date"
+            type: "date",
           });
           status.dirty();
         }
@@ -9162,35 +10786,34 @@ class ZodDate extends ZodType {
     }
     return {
       status: status.value,
-      value: new Date(input.data.getTime())
+      value: new Date(input.data.getTime()),
     };
   }
   _addCheck(check) {
     return new ZodDate({
       ...this._def,
-      checks: [...this._def.checks, check]
+      checks: [...this._def.checks, check],
     });
   }
   min(minDate, message) {
     return this._addCheck({
       kind: "min",
       value: minDate.getTime(),
-      message: errorUtil.toString(message)
+      message: errorUtil.toString(message),
     });
   }
   max(maxDate, message) {
     return this._addCheck({
       kind: "max",
       value: maxDate.getTime(),
-      message: errorUtil.toString(message)
+      message: errorUtil.toString(message),
     });
   }
   get minDate() {
     let min = null;
     for (const ch of this._def.checks) {
       if (ch.kind === "min") {
-        if (min === null || ch.value > min)
-          min = ch.value;
+        if (min === null || ch.value > min) min = ch.value;
       }
     }
     return min != null ? new Date(min) : null;
@@ -9199,8 +10822,7 @@ class ZodDate extends ZodType {
     let max = null;
     for (const ch of this._def.checks) {
       if (ch.kind === "max") {
-        if (max === null || ch.value < max)
-          max = ch.value;
+        if (max === null || ch.value < max) max = ch.value;
       }
     }
     return max != null ? new Date(max) : null;
@@ -9211,7 +10833,7 @@ ZodDate.create = (params) => {
     checks: [],
     coerce: params?.coerce || false,
     typeName: ZodFirstPartyTypeKind.ZodDate,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -9223,7 +10845,7 @@ class ZodSymbol extends ZodType {
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_type,
         expected: ZodParsedType.symbol,
-        received: ctx.parsedType
+        received: ctx.parsedType,
       });
       return INVALID;
     }
@@ -9233,7 +10855,7 @@ class ZodSymbol extends ZodType {
 ZodSymbol.create = (params) => {
   return new ZodSymbol({
     typeName: ZodFirstPartyTypeKind.ZodSymbol,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -9245,7 +10867,7 @@ class ZodUndefined extends ZodType {
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_type,
         expected: ZodParsedType.undefined,
-        received: ctx.parsedType
+        received: ctx.parsedType,
       });
       return INVALID;
     }
@@ -9255,7 +10877,7 @@ class ZodUndefined extends ZodType {
 ZodUndefined.create = (params) => {
   return new ZodUndefined({
     typeName: ZodFirstPartyTypeKind.ZodUndefined,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -9267,7 +10889,7 @@ class ZodNull extends ZodType {
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_type,
         expected: ZodParsedType.null,
-        received: ctx.parsedType
+        received: ctx.parsedType,
       });
       return INVALID;
     }
@@ -9277,7 +10899,7 @@ class ZodNull extends ZodType {
 ZodNull.create = (params) => {
   return new ZodNull({
     typeName: ZodFirstPartyTypeKind.ZodNull,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -9293,7 +10915,7 @@ class ZodAny extends ZodType {
 ZodAny.create = (params) => {
   return new ZodAny({
     typeName: ZodFirstPartyTypeKind.ZodAny,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -9309,7 +10931,7 @@ class ZodUnknown extends ZodType {
 ZodUnknown.create = (params) => {
   return new ZodUnknown({
     typeName: ZodFirstPartyTypeKind.ZodUnknown,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -9319,7 +10941,7 @@ class ZodNever extends ZodType {
     addIssueToContext(ctx, {
       code: ZodIssueCode.invalid_type,
       expected: ZodParsedType.never,
-      received: ctx.parsedType
+      received: ctx.parsedType,
     });
     return INVALID;
   }
@@ -9327,7 +10949,7 @@ class ZodNever extends ZodType {
 ZodNever.create = (params) => {
   return new ZodNever({
     typeName: ZodFirstPartyTypeKind.ZodNever,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -9339,7 +10961,7 @@ class ZodVoid extends ZodType {
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_type,
         expected: ZodParsedType.void,
-        received: ctx.parsedType
+        received: ctx.parsedType,
       });
       return INVALID;
     }
@@ -9349,7 +10971,7 @@ class ZodVoid extends ZodType {
 ZodVoid.create = (params) => {
   return new ZodVoid({
     typeName: ZodFirstPartyTypeKind.ZodVoid,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -9361,7 +10983,7 @@ class ZodArray extends ZodType {
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_type,
         expected: ZodParsedType.array,
-        received: ctx.parsedType
+        received: ctx.parsedType,
       });
       return INVALID;
     }
@@ -9376,7 +10998,7 @@ class ZodArray extends ZodType {
           type: "array",
           inclusive: true,
           exact: true,
-          message: def.exactLength.message
+          message: def.exactLength.message,
         });
         status.dirty();
       }
@@ -9389,7 +11011,7 @@ class ZodArray extends ZodType {
           type: "array",
           inclusive: true,
           exact: false,
-          message: def.minLength.message
+          message: def.minLength.message,
         });
         status.dirty();
       }
@@ -9402,15 +11024,17 @@ class ZodArray extends ZodType {
           type: "array",
           inclusive: true,
           exact: false,
-          message: def.maxLength.message
+          message: def.maxLength.message,
         });
         status.dirty();
       }
     }
     if (ctx.common.async) {
-      return Promise.all([...ctx.data].map((item, i) => {
-        return def.type._parseAsync(new ParseInputLazyPath(ctx, item, ctx.path, i));
-      })).then((result2) => {
+      return Promise.all(
+        [...ctx.data].map((item, i) => {
+          return def.type._parseAsync(new ParseInputLazyPath(ctx, item, ctx.path, i));
+        })
+      ).then((result2) => {
         return ParseStatus.mergeArray(status, result2);
       });
     }
@@ -9425,19 +11049,19 @@ class ZodArray extends ZodType {
   min(minLength, message) {
     return new ZodArray({
       ...this._def,
-      minLength: { value: minLength, message: errorUtil.toString(message) }
+      minLength: { value: minLength, message: errorUtil.toString(message) },
     });
   }
   max(maxLength, message) {
     return new ZodArray({
       ...this._def,
-      maxLength: { value: maxLength, message: errorUtil.toString(message) }
+      maxLength: { value: maxLength, message: errorUtil.toString(message) },
     });
   }
   length(len, message) {
     return new ZodArray({
       ...this._def,
-      exactLength: { value: len, message: errorUtil.toString(message) }
+      exactLength: { value: len, message: errorUtil.toString(message) },
     });
   }
   nonempty(message) {
@@ -9451,7 +11075,7 @@ ZodArray.create = (schema, params) => {
     maxLength: null,
     exactLength: null,
     typeName: ZodFirstPartyTypeKind.ZodArray,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 function deepPartialify(schema) {
@@ -9463,12 +11087,12 @@ function deepPartialify(schema) {
     }
     return new ZodObject({
       ...schema._def,
-      shape: () => newShape
+      shape: () => newShape,
     });
   } else if (schema instanceof ZodArray) {
     return new ZodArray({
       ...schema._def,
-      type: deepPartialify(schema.element)
+      type: deepPartialify(schema.element),
     });
   } else if (schema instanceof ZodOptional) {
     return ZodOptional.create(deepPartialify(schema.unwrap()));
@@ -9489,8 +11113,7 @@ class ZodObject extends ZodType {
     this.augment = this.extend;
   }
   _getCached() {
-    if (this._cached !== null)
-      return this._cached;
+    if (this._cached !== null) return this._cached;
     const shape = this._def.shape();
     const keys = util.objectKeys(shape);
     this._cached = { shape, keys };
@@ -9503,7 +11126,7 @@ class ZodObject extends ZodType {
       addIssueToContext(ctx2, {
         code: ZodIssueCode.invalid_type,
         expected: ZodParsedType.object,
-        received: ctx2.parsedType
+        received: ctx2.parsedType,
       });
       return INVALID;
     }
@@ -9524,7 +11147,7 @@ class ZodObject extends ZodType {
       pairs.push({
         key: { status: "valid", value: key },
         value: keyValidator._parse(new ParseInputLazyPath(ctx, value, ctx.path, key)),
-        alwaysSet: key in ctx.data
+        alwaysSet: key in ctx.data,
       });
     }
     if (this._def.catchall instanceof ZodNever) {
@@ -9533,18 +11156,19 @@ class ZodObject extends ZodType {
         for (const key of extraKeys) {
           pairs.push({
             key: { status: "valid", value: key },
-            value: { status: "valid", value: ctx.data[key] }
+            value: { status: "valid", value: ctx.data[key] },
           });
         }
       } else if (unknownKeys === "strict") {
         if (extraKeys.length > 0) {
           addIssueToContext(ctx, {
             code: ZodIssueCode.unrecognized_keys,
-            keys: extraKeys
+            keys: extraKeys,
           });
           status.dirty();
         }
-      } else if (unknownKeys === "strip") {} else {
+      } else if (unknownKeys === "strip") {
+      } else {
         throw new Error(`Internal ZodObject error: invalid unknownKeys value.`);
       }
     } else {
@@ -9554,26 +11178,28 @@ class ZodObject extends ZodType {
         pairs.push({
           key: { status: "valid", value: key },
           value: catchall._parse(new ParseInputLazyPath(ctx, value, ctx.path, key)),
-          alwaysSet: key in ctx.data
+          alwaysSet: key in ctx.data,
         });
       }
     }
     if (ctx.common.async) {
-      return Promise.resolve().then(async () => {
-        const syncPairs = [];
-        for (const pair of pairs) {
-          const key = await pair.key;
-          const value = await pair.value;
-          syncPairs.push({
-            key,
-            value,
-            alwaysSet: pair.alwaysSet
-          });
-        }
-        return syncPairs;
-      }).then((syncPairs) => {
-        return ParseStatus.mergeObjectSync(status, syncPairs);
-      });
+      return Promise.resolve()
+        .then(async () => {
+          const syncPairs = [];
+          for (const pair of pairs) {
+            const key = await pair.key;
+            const value = await pair.value;
+            syncPairs.push({
+              key,
+              value,
+              alwaysSet: pair.alwaysSet,
+            });
+          }
+          return syncPairs;
+        })
+        .then((syncPairs) => {
+          return ParseStatus.mergeObjectSync(status, syncPairs);
+        });
     } else {
       return ParseStatus.mergeObjectSync(status, pairs);
     }
@@ -9586,30 +11212,32 @@ class ZodObject extends ZodType {
     return new ZodObject({
       ...this._def,
       unknownKeys: "strict",
-      ...message !== undefined ? {
-        errorMap: (issue, ctx) => {
-          const defaultError = this._def.errorMap?.(issue, ctx).message ?? ctx.defaultError;
-          if (issue.code === "unrecognized_keys")
-            return {
-              message: errorUtil.errToObj(message).message ?? defaultError
-            };
-          return {
-            message: defaultError
-          };
-        }
-      } : {}
+      ...(message !== undefined
+        ? {
+            errorMap: (issue, ctx) => {
+              const defaultError = this._def.errorMap?.(issue, ctx).message ?? ctx.defaultError;
+              if (issue.code === "unrecognized_keys")
+                return {
+                  message: errorUtil.errToObj(message).message ?? defaultError,
+                };
+              return {
+                message: defaultError,
+              };
+            },
+          }
+        : {}),
     });
   }
   strip() {
     return new ZodObject({
       ...this._def,
-      unknownKeys: "strip"
+      unknownKeys: "strip",
     });
   }
   passthrough() {
     return new ZodObject({
       ...this._def,
-      unknownKeys: "passthrough"
+      unknownKeys: "passthrough",
     });
   }
   extend(augmentation) {
@@ -9617,8 +11245,8 @@ class ZodObject extends ZodType {
       ...this._def,
       shape: () => ({
         ...this._def.shape(),
-        ...augmentation
-      })
+        ...augmentation,
+      }),
     });
   }
   merge(merging) {
@@ -9627,9 +11255,9 @@ class ZodObject extends ZodType {
       catchall: merging._def.catchall,
       shape: () => ({
         ...this._def.shape(),
-        ...merging._def.shape()
+        ...merging._def.shape(),
       }),
-      typeName: ZodFirstPartyTypeKind.ZodObject
+      typeName: ZodFirstPartyTypeKind.ZodObject,
     });
     return merged;
   }
@@ -9639,7 +11267,7 @@ class ZodObject extends ZodType {
   catchall(index) {
     return new ZodObject({
       ...this._def,
-      catchall: index
+      catchall: index,
     });
   }
   pick(mask) {
@@ -9651,7 +11279,7 @@ class ZodObject extends ZodType {
     }
     return new ZodObject({
       ...this._def,
-      shape: () => shape
+      shape: () => shape,
     });
   }
   omit(mask) {
@@ -9663,7 +11291,7 @@ class ZodObject extends ZodType {
     }
     return new ZodObject({
       ...this._def,
-      shape: () => shape
+      shape: () => shape,
     });
   }
   deepPartial() {
@@ -9681,7 +11309,7 @@ class ZodObject extends ZodType {
     }
     return new ZodObject({
       ...this._def,
-      shape: () => newShape
+      shape: () => newShape,
     });
   }
   required(mask) {
@@ -9700,7 +11328,7 @@ class ZodObject extends ZodType {
     }
     return new ZodObject({
       ...this._def,
-      shape: () => newShape
+      shape: () => newShape,
     });
   }
   keyof() {
@@ -9713,7 +11341,7 @@ ZodObject.create = (shape, params) => {
     unknownKeys: "strip",
     catchall: ZodNever.create(),
     typeName: ZodFirstPartyTypeKind.ZodObject,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 ZodObject.strictCreate = (shape, params) => {
@@ -9722,7 +11350,7 @@ ZodObject.strictCreate = (shape, params) => {
     unknownKeys: "strict",
     catchall: ZodNever.create(),
     typeName: ZodFirstPartyTypeKind.ZodObject,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 ZodObject.lazycreate = (shape, params) => {
@@ -9731,7 +11359,7 @@ ZodObject.lazycreate = (shape, params) => {
     unknownKeys: "strip",
     catchall: ZodNever.create(),
     typeName: ZodFirstPartyTypeKind.ZodObject,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -9754,29 +11382,31 @@ class ZodUnion extends ZodType {
       const unionErrors = results.map((result) => new ZodError(result.ctx.common.issues));
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_union,
-        unionErrors
+        unionErrors,
       });
       return INVALID;
     }
     if (ctx.common.async) {
-      return Promise.all(options.map(async (option) => {
-        const childCtx = {
-          ...ctx,
-          common: {
-            ...ctx.common,
-            issues: []
-          },
-          parent: null
-        };
-        return {
-          result: await option._parseAsync({
-            data: ctx.data,
-            path: ctx.path,
-            parent: childCtx
-          }),
-          ctx: childCtx
-        };
-      })).then(handleResults);
+      return Promise.all(
+        options.map(async (option) => {
+          const childCtx = {
+            ...ctx,
+            common: {
+              ...ctx.common,
+              issues: [],
+            },
+            parent: null,
+          };
+          return {
+            result: await option._parseAsync({
+              data: ctx.data,
+              path: ctx.path,
+              parent: childCtx,
+            }),
+            ctx: childCtx,
+          };
+        })
+      ).then(handleResults);
     } else {
       let dirty = undefined;
       const issues = [];
@@ -9785,14 +11415,14 @@ class ZodUnion extends ZodType {
           ...ctx,
           common: {
             ...ctx.common,
-            issues: []
+            issues: [],
           },
-          parent: null
+          parent: null,
         };
         const result = option._parseSync({
           data: ctx.data,
           path: ctx.path,
-          parent: childCtx
+          parent: childCtx,
         });
         if (result.status === "valid") {
           return result;
@@ -9810,7 +11440,7 @@ class ZodUnion extends ZodType {
       const unionErrors = issues.map((issues2) => new ZodError(issues2));
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_union,
-        unionErrors
+        unionErrors,
       });
       return INVALID;
     }
@@ -9823,7 +11453,7 @@ ZodUnion.create = (types, params) => {
   return new ZodUnion({
     options: types,
     typeName: ZodFirstPartyTypeKind.ZodUnion,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 var getDiscriminator = (type) => {
@@ -9865,7 +11495,7 @@ class ZodDiscriminatedUnion extends ZodType {
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_type,
         expected: ZodParsedType.object,
-        received: ctx.parsedType
+        received: ctx.parsedType,
       });
       return INVALID;
     }
@@ -9876,7 +11506,7 @@ class ZodDiscriminatedUnion extends ZodType {
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_union_discriminator,
         options: Array.from(this.optionsMap.keys()),
-        path: [discriminator]
+        path: [discriminator],
       });
       return INVALID;
     }
@@ -9884,13 +11514,13 @@ class ZodDiscriminatedUnion extends ZodType {
       return option._parseAsync({
         data: ctx.data,
         path: ctx.path,
-        parent: ctx
+        parent: ctx,
       });
     } else {
       return option._parseSync({
         data: ctx.data,
         path: ctx.path,
-        parent: ctx
+        parent: ctx,
       });
     }
   }
@@ -9904,11 +11534,13 @@ class ZodDiscriminatedUnion extends ZodType {
     return this._def.optionsMap;
   }
   static create(discriminator, options, params) {
-    const optionsMap = new Map;
+    const optionsMap = new Map();
     for (const type of options) {
       const discriminatorValues = getDiscriminator(type.shape[discriminator]);
       if (!discriminatorValues.length) {
-        throw new Error(`A discriminator value for key \`${discriminator}\` could not be extracted from all schema options`);
+        throw new Error(
+          `A discriminator value for key \`${discriminator}\` could not be extracted from all schema options`
+        );
       }
       for (const value of discriminatorValues) {
         if (optionsMap.has(value)) {
@@ -9922,7 +11554,7 @@ class ZodDiscriminatedUnion extends ZodType {
       discriminator,
       options,
       optionsMap,
-      ...processCreateParams(params)
+      ...processCreateParams(params),
     });
   }
 }
@@ -9948,7 +11580,7 @@ function mergeValues(a, b) {
       return { valid: false };
     }
     const newArray = [];
-    for (let index = 0;index < a.length; index++) {
+    for (let index = 0; index < a.length; index++) {
       const itemA = a[index];
       const itemB = b[index];
       const sharedValue = mergeValues(itemA, itemB);
@@ -9975,7 +11607,7 @@ class ZodIntersection extends ZodType {
       const merged = mergeValues(parsedLeft.value, parsedRight.value);
       if (!merged.valid) {
         addIssueToContext(ctx, {
-          code: ZodIssueCode.invalid_intersection_types
+          code: ZodIssueCode.invalid_intersection_types,
         });
         return INVALID;
       }
@@ -9989,24 +11621,27 @@ class ZodIntersection extends ZodType {
         this._def.left._parseAsync({
           data: ctx.data,
           path: ctx.path,
-          parent: ctx
+          parent: ctx,
         }),
         this._def.right._parseAsync({
           data: ctx.data,
           path: ctx.path,
-          parent: ctx
-        })
+          parent: ctx,
+        }),
       ]).then(([left, right]) => handleParsed(left, right));
     } else {
-      return handleParsed(this._def.left._parseSync({
-        data: ctx.data,
-        path: ctx.path,
-        parent: ctx
-      }), this._def.right._parseSync({
-        data: ctx.data,
-        path: ctx.path,
-        parent: ctx
-      }));
+      return handleParsed(
+        this._def.left._parseSync({
+          data: ctx.data,
+          path: ctx.path,
+          parent: ctx,
+        }),
+        this._def.right._parseSync({
+          data: ctx.data,
+          path: ctx.path,
+          parent: ctx,
+        })
+      );
     }
   }
 }
@@ -10015,7 +11650,7 @@ ZodIntersection.create = (left, right, params) => {
     left,
     right,
     typeName: ZodFirstPartyTypeKind.ZodIntersection,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -10026,7 +11661,7 @@ class ZodTuple extends ZodType {
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_type,
         expected: ZodParsedType.array,
-        received: ctx.parsedType
+        received: ctx.parsedType,
       });
       return INVALID;
     }
@@ -10036,7 +11671,7 @@ class ZodTuple extends ZodType {
         minimum: this._def.items.length,
         inclusive: true,
         exact: false,
-        type: "array"
+        type: "array",
       });
       return INVALID;
     }
@@ -10047,16 +11682,17 @@ class ZodTuple extends ZodType {
         maximum: this._def.items.length,
         inclusive: true,
         exact: false,
-        type: "array"
+        type: "array",
       });
       status.dirty();
     }
-    const items = [...ctx.data].map((item, itemIndex) => {
-      const schema = this._def.items[itemIndex] || this._def.rest;
-      if (!schema)
-        return null;
-      return schema._parse(new ParseInputLazyPath(ctx, item, ctx.path, itemIndex));
-    }).filter((x) => !!x);
+    const items = [...ctx.data]
+      .map((item, itemIndex) => {
+        const schema = this._def.items[itemIndex] || this._def.rest;
+        if (!schema) return null;
+        return schema._parse(new ParseInputLazyPath(ctx, item, ctx.path, itemIndex));
+      })
+      .filter((x) => !!x);
     if (ctx.common.async) {
       return Promise.all(items).then((results) => {
         return ParseStatus.mergeArray(status, results);
@@ -10071,7 +11707,7 @@ class ZodTuple extends ZodType {
   rest(rest) {
     return new ZodTuple({
       ...this._def,
-      rest
+      rest,
     });
   }
 }
@@ -10083,7 +11719,7 @@ ZodTuple.create = (schemas, params) => {
     items: schemas,
     typeName: ZodFirstPartyTypeKind.ZodTuple,
     rest: null,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -10100,7 +11736,7 @@ class ZodRecord extends ZodType {
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_type,
         expected: ZodParsedType.object,
-        received: ctx.parsedType
+        received: ctx.parsedType,
       });
       return INVALID;
     }
@@ -10111,7 +11747,7 @@ class ZodRecord extends ZodType {
       pairs.push({
         key: keyType._parse(new ParseInputLazyPath(ctx, key, ctx.path, key)),
         value: valueType._parse(new ParseInputLazyPath(ctx, ctx.data[key], ctx.path, key)),
-        alwaysSet: key in ctx.data
+        alwaysSet: key in ctx.data,
       });
     }
     if (ctx.common.async) {
@@ -10129,14 +11765,14 @@ class ZodRecord extends ZodType {
         keyType: first,
         valueType: second,
         typeName: ZodFirstPartyTypeKind.ZodRecord,
-        ...processCreateParams(third)
+        ...processCreateParams(third),
       });
     }
     return new ZodRecord({
       keyType: ZodString.create(),
       valueType: first,
       typeName: ZodFirstPartyTypeKind.ZodRecord,
-      ...processCreateParams(second)
+      ...processCreateParams(second),
     });
   }
 }
@@ -10154,7 +11790,7 @@ class ZodMap extends ZodType {
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_type,
         expected: ZodParsedType.map,
-        received: ctx.parsedType
+        received: ctx.parsedType,
       });
       return INVALID;
     }
@@ -10163,11 +11799,11 @@ class ZodMap extends ZodType {
     const pairs = [...ctx.data.entries()].map(([key, value], index) => {
       return {
         key: keyType._parse(new ParseInputLazyPath(ctx, key, ctx.path, [index, "key"])),
-        value: valueType._parse(new ParseInputLazyPath(ctx, value, ctx.path, [index, "value"]))
+        value: valueType._parse(new ParseInputLazyPath(ctx, value, ctx.path, [index, "value"])),
       };
     });
     if (ctx.common.async) {
-      const finalMap = new Map;
+      const finalMap = new Map();
       return Promise.resolve().then(async () => {
         for (const pair of pairs) {
           const key = await pair.key;
@@ -10183,7 +11819,7 @@ class ZodMap extends ZodType {
         return { status: status.value, value: finalMap };
       });
     } else {
-      const finalMap = new Map;
+      const finalMap = new Map();
       for (const pair of pairs) {
         const key = pair.key;
         const value = pair.value;
@@ -10204,7 +11840,7 @@ ZodMap.create = (keyType, valueType, params) => {
     valueType,
     keyType,
     typeName: ZodFirstPartyTypeKind.ZodMap,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -10215,7 +11851,7 @@ class ZodSet extends ZodType {
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_type,
         expected: ZodParsedType.set,
-        received: ctx.parsedType
+        received: ctx.parsedType,
       });
       return INVALID;
     }
@@ -10228,7 +11864,7 @@ class ZodSet extends ZodType {
           type: "set",
           inclusive: true,
           exact: false,
-          message: def.minSize.message
+          message: def.minSize.message,
         });
         status.dirty();
       }
@@ -10241,24 +11877,24 @@ class ZodSet extends ZodType {
           type: "set",
           inclusive: true,
           exact: false,
-          message: def.maxSize.message
+          message: def.maxSize.message,
         });
         status.dirty();
       }
     }
     const valueType = this._def.valueType;
     function finalizeSet(elements2) {
-      const parsedSet = new Set;
+      const parsedSet = new Set();
       for (const element of elements2) {
-        if (element.status === "aborted")
-          return INVALID;
-        if (element.status === "dirty")
-          status.dirty();
+        if (element.status === "aborted") return INVALID;
+        if (element.status === "dirty") status.dirty();
         parsedSet.add(element.value);
       }
       return { status: status.value, value: parsedSet };
     }
-    const elements = [...ctx.data.values()].map((item, i) => valueType._parse(new ParseInputLazyPath(ctx, item, ctx.path, i)));
+    const elements = [...ctx.data.values()].map((item, i) =>
+      valueType._parse(new ParseInputLazyPath(ctx, item, ctx.path, i))
+    );
     if (ctx.common.async) {
       return Promise.all(elements).then((elements2) => finalizeSet(elements2));
     } else {
@@ -10268,13 +11904,13 @@ class ZodSet extends ZodType {
   min(minSize, message) {
     return new ZodSet({
       ...this._def,
-      minSize: { value: minSize, message: errorUtil.toString(message) }
+      minSize: { value: minSize, message: errorUtil.toString(message) },
     });
   }
   max(maxSize, message) {
     return new ZodSet({
       ...this._def,
-      maxSize: { value: maxSize, message: errorUtil.toString(message) }
+      maxSize: { value: maxSize, message: errorUtil.toString(message) },
     });
   }
   size(size, message) {
@@ -10290,7 +11926,7 @@ ZodSet.create = (valueType, params) => {
     minSize: null,
     maxSize: null,
     typeName: ZodFirstPartyTypeKind.ZodSet,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -10305,7 +11941,7 @@ class ZodFunction extends ZodType {
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_type,
         expected: ZodParsedType.function,
-        received: ctx.parsedType
+        received: ctx.parsedType,
       });
       return INVALID;
     }
@@ -10316,8 +11952,8 @@ class ZodFunction extends ZodType {
         errorMaps: [ctx.common.contextualErrorMap, ctx.schemaErrorMap, getErrorMap(), en_default].filter((x) => !!x),
         issueData: {
           code: ZodIssueCode.invalid_arguments,
-          argumentsError: error
-        }
+          argumentsError: error,
+        },
       });
     }
     function makeReturnsIssue(returns, error) {
@@ -10327,15 +11963,15 @@ class ZodFunction extends ZodType {
         errorMaps: [ctx.common.contextualErrorMap, ctx.schemaErrorMap, getErrorMap(), en_default].filter((x) => !!x),
         issueData: {
           code: ZodIssueCode.invalid_return_type,
-          returnTypeError: error
-        }
+          returnTypeError: error,
+        },
       });
     }
     const params = { errorMap: ctx.common.contextualErrorMap };
     const fn = ctx.data;
     if (this._def.returns instanceof ZodPromise) {
       const me = this;
-      return OK(async function(...args) {
+      return OK(async function (...args) {
         const error = new ZodError([]);
         const parsedArgs = await me._def.args.parseAsync(args, params).catch((e) => {
           error.addIssue(makeArgsIssue(args, e));
@@ -10350,7 +11986,7 @@ class ZodFunction extends ZodType {
       });
     } else {
       const me = this;
-      return OK(function(...args) {
+      return OK(function (...args) {
         const parsedArgs = me._def.args.safeParse(args, params);
         if (!parsedArgs.success) {
           throw new ZodError([makeArgsIssue(args, parsedArgs.error)]);
@@ -10373,13 +12009,13 @@ class ZodFunction extends ZodType {
   args(...items) {
     return new ZodFunction({
       ...this._def,
-      args: ZodTuple.create(items).rest(ZodUnknown.create())
+      args: ZodTuple.create(items).rest(ZodUnknown.create()),
     });
   }
   returns(returnType) {
     return new ZodFunction({
       ...this._def,
-      returns: returnType
+      returns: returnType,
     });
   }
   implement(func) {
@@ -10395,7 +12031,7 @@ class ZodFunction extends ZodType {
       args: args ? args : ZodTuple.create([]).rest(ZodUnknown.create()),
       returns: returns || ZodUnknown.create(),
       typeName: ZodFirstPartyTypeKind.ZodFunction,
-      ...processCreateParams(params)
+      ...processCreateParams(params),
     });
   }
 }
@@ -10414,7 +12050,7 @@ ZodLazy.create = (getter, params) => {
   return new ZodLazy({
     getter,
     typeName: ZodFirstPartyTypeKind.ZodLazy,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -10425,7 +12061,7 @@ class ZodLiteral extends ZodType {
       addIssueToContext(ctx, {
         received: ctx.data,
         code: ZodIssueCode.invalid_literal,
-        expected: this._def.value
+        expected: this._def.value,
       });
       return INVALID;
     }
@@ -10439,14 +12075,14 @@ ZodLiteral.create = (value, params) => {
   return new ZodLiteral({
     value,
     typeName: ZodFirstPartyTypeKind.ZodLiteral,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 function createZodEnum(values, params) {
   return new ZodEnum({
     values,
     typeName: ZodFirstPartyTypeKind.ZodEnum,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 }
 
@@ -10458,7 +12094,7 @@ class ZodEnum extends ZodType {
       addIssueToContext(ctx, {
         expected: util.joinValues(expectedValues),
         received: ctx.parsedType,
-        code: ZodIssueCode.invalid_type
+        code: ZodIssueCode.invalid_type,
       });
       return INVALID;
     }
@@ -10471,7 +12107,7 @@ class ZodEnum extends ZodType {
       addIssueToContext(ctx, {
         received: ctx.data,
         code: ZodIssueCode.invalid_enum_value,
-        options: expectedValues
+        options: expectedValues,
       });
       return INVALID;
     }
@@ -10504,14 +12140,17 @@ class ZodEnum extends ZodType {
   extract(values, newDef = this._def) {
     return ZodEnum.create(values, {
       ...this._def,
-      ...newDef
+      ...newDef,
     });
   }
   exclude(values, newDef = this._def) {
-    return ZodEnum.create(this.options.filter((opt) => !values.includes(opt)), {
-      ...this._def,
-      ...newDef
-    });
+    return ZodEnum.create(
+      this.options.filter((opt) => !values.includes(opt)),
+      {
+        ...this._def,
+        ...newDef,
+      }
+    );
   }
 }
 ZodEnum.create = createZodEnum;
@@ -10525,7 +12164,7 @@ class ZodNativeEnum extends ZodType {
       addIssueToContext(ctx, {
         expected: util.joinValues(expectedValues),
         received: ctx.parsedType,
-        code: ZodIssueCode.invalid_type
+        code: ZodIssueCode.invalid_type,
       });
       return INVALID;
     }
@@ -10537,7 +12176,7 @@ class ZodNativeEnum extends ZodType {
       addIssueToContext(ctx, {
         received: ctx.data,
         code: ZodIssueCode.invalid_enum_value,
-        options: expectedValues
+        options: expectedValues,
       });
       return INVALID;
     }
@@ -10551,7 +12190,7 @@ ZodNativeEnum.create = (values, params) => {
   return new ZodNativeEnum({
     values,
     typeName: ZodFirstPartyTypeKind.ZodNativeEnum,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -10565,24 +12204,26 @@ class ZodPromise extends ZodType {
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_type,
         expected: ZodParsedType.promise,
-        received: ctx.parsedType
+        received: ctx.parsedType,
       });
       return INVALID;
     }
     const promisified = ctx.parsedType === ZodParsedType.promise ? ctx.data : Promise.resolve(ctx.data);
-    return OK(promisified.then((data) => {
-      return this._def.type.parseAsync(data, {
-        path: ctx.path,
-        errorMap: ctx.common.contextualErrorMap
-      });
-    }));
+    return OK(
+      promisified.then((data) => {
+        return this._def.type.parseAsync(data, {
+          path: ctx.path,
+          errorMap: ctx.common.contextualErrorMap,
+        });
+      })
+    );
   }
 }
 ZodPromise.create = (schema, params) => {
   return new ZodPromise({
     type: schema,
     typeName: ZodFirstPartyTypeKind.ZodPromise,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -10591,7 +12232,9 @@ class ZodEffects extends ZodType {
     return this._def.schema;
   }
   sourceType() {
-    return this._def.schema._def.typeName === ZodFirstPartyTypeKind.ZodEffects ? this._def.schema.sourceType() : this._def.schema;
+    return this._def.schema._def.typeName === ZodFirstPartyTypeKind.ZodEffects
+      ? this._def.schema.sourceType()
+      : this._def.schema;
   }
   _parse(input) {
     const { status, ctx } = this._processInputParams(input);
@@ -10607,42 +12250,34 @@ class ZodEffects extends ZodType {
       },
       get path() {
         return ctx.path;
-      }
+      },
     };
     checkCtx.addIssue = checkCtx.addIssue.bind(checkCtx);
     if (effect.type === "preprocess") {
       const processed = effect.transform(ctx.data, checkCtx);
       if (ctx.common.async) {
         return Promise.resolve(processed).then(async (processed2) => {
-          if (status.value === "aborted")
-            return INVALID;
+          if (status.value === "aborted") return INVALID;
           const result = await this._def.schema._parseAsync({
             data: processed2,
             path: ctx.path,
-            parent: ctx
+            parent: ctx,
           });
-          if (result.status === "aborted")
-            return INVALID;
-          if (result.status === "dirty")
-            return DIRTY(result.value);
-          if (status.value === "dirty")
-            return DIRTY(result.value);
+          if (result.status === "aborted") return INVALID;
+          if (result.status === "dirty") return DIRTY(result.value);
+          if (status.value === "dirty") return DIRTY(result.value);
           return result;
         });
       } else {
-        if (status.value === "aborted")
-          return INVALID;
+        if (status.value === "aborted") return INVALID;
         const result = this._def.schema._parseSync({
           data: processed,
           path: ctx.path,
-          parent: ctx
+          parent: ctx,
         });
-        if (result.status === "aborted")
-          return INVALID;
-        if (result.status === "dirty")
-          return DIRTY(result.value);
-        if (status.value === "dirty")
-          return DIRTY(result.value);
+        if (result.status === "aborted") return INVALID;
+        if (result.status === "dirty") return DIRTY(result.value);
+        if (status.value === "dirty") return DIRTY(result.value);
         return result;
       }
     }
@@ -10661,20 +12296,16 @@ class ZodEffects extends ZodType {
         const inner = this._def.schema._parseSync({
           data: ctx.data,
           path: ctx.path,
-          parent: ctx
+          parent: ctx,
         });
-        if (inner.status === "aborted")
-          return INVALID;
-        if (inner.status === "dirty")
-          status.dirty();
+        if (inner.status === "aborted") return INVALID;
+        if (inner.status === "dirty") status.dirty();
         executeRefinement(inner.value);
         return { status: status.value, value: inner.value };
       } else {
         return this._def.schema._parseAsync({ data: ctx.data, path: ctx.path, parent: ctx }).then((inner) => {
-          if (inner.status === "aborted")
-            return INVALID;
-          if (inner.status === "dirty")
-            status.dirty();
+          if (inner.status === "aborted") return INVALID;
+          if (inner.status === "dirty") status.dirty();
           return executeRefinement(inner.value).then(() => {
             return { status: status.value, value: inner.value };
           });
@@ -10686,22 +12317,22 @@ class ZodEffects extends ZodType {
         const base = this._def.schema._parseSync({
           data: ctx.data,
           path: ctx.path,
-          parent: ctx
+          parent: ctx,
         });
-        if (!isValid(base))
-          return INVALID;
+        if (!isValid(base)) return INVALID;
         const result = effect.transform(base.value, checkCtx);
         if (result instanceof Promise) {
-          throw new Error(`Asynchronous transform encountered during synchronous parse operation. Use .parseAsync instead.`);
+          throw new Error(
+            `Asynchronous transform encountered during synchronous parse operation. Use .parseAsync instead.`
+          );
         }
         return { status: status.value, value: result };
       } else {
         return this._def.schema._parseAsync({ data: ctx.data, path: ctx.path, parent: ctx }).then((base) => {
-          if (!isValid(base))
-            return INVALID;
+          if (!isValid(base)) return INVALID;
           return Promise.resolve(effect.transform(base.value, checkCtx)).then((result) => ({
             status: status.value,
-            value: result
+            value: result,
           }));
         });
       }
@@ -10714,7 +12345,7 @@ ZodEffects.create = (schema, effect, params) => {
     schema,
     typeName: ZodFirstPartyTypeKind.ZodEffects,
     effect,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 ZodEffects.createWithPreprocess = (preprocess, schema, params) => {
@@ -10722,7 +12353,7 @@ ZodEffects.createWithPreprocess = (preprocess, schema, params) => {
     schema,
     effect: { type: "preprocess", transform: preprocess },
     typeName: ZodFirstPartyTypeKind.ZodEffects,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 class ZodOptional extends ZodType {
@@ -10741,7 +12372,7 @@ ZodOptional.create = (type, params) => {
   return new ZodOptional({
     innerType: type,
     typeName: ZodFirstPartyTypeKind.ZodOptional,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -10761,7 +12392,7 @@ ZodNullable.create = (type, params) => {
   return new ZodNullable({
     innerType: type,
     typeName: ZodFirstPartyTypeKind.ZodNullable,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -10775,7 +12406,7 @@ class ZodDefault extends ZodType {
     return this._def.innerType._parse({
       data,
       path: ctx.path,
-      parent: ctx
+      parent: ctx,
     });
   }
   removeDefault() {
@@ -10787,7 +12418,7 @@ ZodDefault.create = (type, params) => {
     innerType: type,
     typeName: ZodFirstPartyTypeKind.ZodDefault,
     defaultValue: typeof params.default === "function" ? params.default : () => params.default,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -10798,37 +12429,43 @@ class ZodCatch extends ZodType {
       ...ctx,
       common: {
         ...ctx.common,
-        issues: []
-      }
+        issues: [],
+      },
     };
     const result = this._def.innerType._parse({
       data: newCtx.data,
       path: newCtx.path,
       parent: {
-        ...newCtx
-      }
+        ...newCtx,
+      },
     });
     if (isAsync(result)) {
       return result.then((result2) => {
         return {
           status: "valid",
-          value: result2.status === "valid" ? result2.value : this._def.catchValue({
-            get error() {
-              return new ZodError(newCtx.common.issues);
-            },
-            input: newCtx.data
-          })
+          value:
+            result2.status === "valid"
+              ? result2.value
+              : this._def.catchValue({
+                  get error() {
+                    return new ZodError(newCtx.common.issues);
+                  },
+                  input: newCtx.data,
+                }),
         };
       });
     } else {
       return {
         status: "valid",
-        value: result.status === "valid" ? result.value : this._def.catchValue({
-          get error() {
-            return new ZodError(newCtx.common.issues);
-          },
-          input: newCtx.data
-        })
+        value:
+          result.status === "valid"
+            ? result.value
+            : this._def.catchValue({
+                get error() {
+                  return new ZodError(newCtx.common.issues);
+                },
+                input: newCtx.data,
+              }),
       };
     }
   }
@@ -10841,7 +12478,7 @@ ZodCatch.create = (type, params) => {
     innerType: type,
     typeName: ZodFirstPartyTypeKind.ZodCatch,
     catchValue: typeof params.catch === "function" ? params.catch : () => params.catch,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 
@@ -10853,7 +12490,7 @@ class ZodNaN extends ZodType {
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_type,
         expected: ZodParsedType.nan,
-        received: ctx.parsedType
+        received: ctx.parsedType,
       });
       return INVALID;
     }
@@ -10863,7 +12500,7 @@ class ZodNaN extends ZodType {
 ZodNaN.create = (params) => {
   return new ZodNaN({
     typeName: ZodFirstPartyTypeKind.ZodNaN,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 var BRAND = Symbol("zod_brand");
@@ -10875,7 +12512,7 @@ class ZodBranded extends ZodType {
     return this._def.type._parse({
       data,
       path: ctx.path,
-      parent: ctx
+      parent: ctx,
     });
   }
   unwrap() {
@@ -10891,10 +12528,9 @@ class ZodPipeline extends ZodType {
         const inResult = await this._def.in._parseAsync({
           data: ctx.data,
           path: ctx.path,
-          parent: ctx
+          parent: ctx,
         });
-        if (inResult.status === "aborted")
-          return INVALID;
+        if (inResult.status === "aborted") return INVALID;
         if (inResult.status === "dirty") {
           status.dirty();
           return DIRTY(inResult.value);
@@ -10902,7 +12538,7 @@ class ZodPipeline extends ZodType {
           return this._def.out._parseAsync({
             data: inResult.value,
             path: ctx.path,
-            parent: ctx
+            parent: ctx,
           });
         }
       };
@@ -10911,21 +12547,20 @@ class ZodPipeline extends ZodType {
       const inResult = this._def.in._parseSync({
         data: ctx.data,
         path: ctx.path,
-        parent: ctx
+        parent: ctx,
       });
-      if (inResult.status === "aborted")
-        return INVALID;
+      if (inResult.status === "aborted") return INVALID;
       if (inResult.status === "dirty") {
         status.dirty();
         return {
           status: "dirty",
-          value: inResult.value
+          value: inResult.value,
         };
       } else {
         return this._def.out._parseSync({
           data: inResult.value,
           path: ctx.path,
-          parent: ctx
+          parent: ctx,
         });
       }
     }
@@ -10934,7 +12569,7 @@ class ZodPipeline extends ZodType {
     return new ZodPipeline({
       in: a,
       out: b,
-      typeName: ZodFirstPartyTypeKind.ZodPipeline
+      typeName: ZodFirstPartyTypeKind.ZodPipeline,
     });
   }
 }
@@ -10958,7 +12593,7 @@ ZodReadonly.create = (type, params) => {
   return new ZodReadonly({
     innerType: type,
     typeName: ZodFirstPartyTypeKind.ZodReadonly,
-    ...processCreateParams(params)
+    ...processCreateParams(params),
   });
 };
 function cleanParams(params, data) {
@@ -10989,10 +12624,10 @@ function custom(check, _params = {}, fatal) {
   return ZodAny.create();
 }
 var late = {
-  object: ZodObject.lazycreate
+  object: ZodObject.lazycreate,
 };
 var ZodFirstPartyTypeKind;
-(function(ZodFirstPartyTypeKind2) {
+(function (ZodFirstPartyTypeKind2) {
   ZodFirstPartyTypeKind2["ZodString"] = "ZodString";
   ZodFirstPartyTypeKind2["ZodNumber"] = "ZodNumber";
   ZodFirstPartyTypeKind2["ZodNaN"] = "ZodNaN";
@@ -11030,9 +12665,12 @@ var ZodFirstPartyTypeKind;
   ZodFirstPartyTypeKind2["ZodPipeline"] = "ZodPipeline";
   ZodFirstPartyTypeKind2["ZodReadonly"] = "ZodReadonly";
 })(ZodFirstPartyTypeKind || (ZodFirstPartyTypeKind = {}));
-var instanceOfType = (cls, params = {
-  message: `Input not instance of ${cls.name}`
-}) => custom((data) => data instanceof cls, params);
+var instanceOfType = (
+  cls,
+  params = {
+    message: `Input not instance of ${cls.name}`,
+  }
+) => custom((data) => data instanceof cls, params);
 var stringType = ZodString.create;
 var numberType = ZodNumber.create;
 var nanType = ZodNaN.create;
@@ -11073,348 +12711,413 @@ var oboolean = () => booleanType().optional();
 var coerce = {
   string: (arg) => ZodString.create({ ...arg, coerce: true }),
   number: (arg) => ZodNumber.create({ ...arg, coerce: true }),
-  boolean: (arg) => ZodBoolean.create({
-    ...arg,
-    coerce: true
-  }),
+  boolean: (arg) =>
+    ZodBoolean.create({
+      ...arg,
+      coerce: true,
+    }),
   bigint: (arg) => ZodBigInt.create({ ...arg, coerce: true }),
-  date: (arg) => ZodDate.create({ ...arg, coerce: true })
+  date: (arg) => ZodDate.create({ ...arg, coerce: true }),
 };
 var NEVER = INVALID;
 // node_modules/@modelcontextprotocol/sdk/dist/esm/types.js
 var LATEST_PROTOCOL_VERSION = "2025-06-18";
-var SUPPORTED_PROTOCOL_VERSIONS = [
-  LATEST_PROTOCOL_VERSION,
-  "2025-03-26",
-  "2024-11-05",
-  "2024-10-07"
-];
+var SUPPORTED_PROTOCOL_VERSIONS = [LATEST_PROTOCOL_VERSION, "2025-03-26", "2024-11-05", "2024-10-07"];
 var JSONRPC_VERSION = "2.0";
 var ProgressTokenSchema = exports_external.union([exports_external.string(), exports_external.number().int()]);
 var CursorSchema = exports_external.string();
-var RequestMetaSchema = exports_external.object({
-  progressToken: exports_external.optional(ProgressTokenSchema)
-}).passthrough();
-var BaseRequestParamsSchema = exports_external.object({
-  _meta: exports_external.optional(RequestMetaSchema)
-}).passthrough();
+var RequestMetaSchema = exports_external
+  .object({
+    progressToken: exports_external.optional(ProgressTokenSchema),
+  })
+  .passthrough();
+var BaseRequestParamsSchema = exports_external
+  .object({
+    _meta: exports_external.optional(RequestMetaSchema),
+  })
+  .passthrough();
 var RequestSchema = exports_external.object({
   method: exports_external.string(),
-  params: exports_external.optional(BaseRequestParamsSchema)
+  params: exports_external.optional(BaseRequestParamsSchema),
 });
-var BaseNotificationParamsSchema = exports_external.object({
-  _meta: exports_external.optional(exports_external.object({}).passthrough())
-}).passthrough();
+var BaseNotificationParamsSchema = exports_external
+  .object({
+    _meta: exports_external.optional(exports_external.object({}).passthrough()),
+  })
+  .passthrough();
 var NotificationSchema = exports_external.object({
   method: exports_external.string(),
-  params: exports_external.optional(BaseNotificationParamsSchema)
+  params: exports_external.optional(BaseNotificationParamsSchema),
 });
-var ResultSchema = exports_external.object({
-  _meta: exports_external.optional(exports_external.object({}).passthrough())
-}).passthrough();
+var ResultSchema = exports_external
+  .object({
+    _meta: exports_external.optional(exports_external.object({}).passthrough()),
+  })
+  .passthrough();
 var RequestIdSchema = exports_external.union([exports_external.string(), exports_external.number().int()]);
-var JSONRPCRequestSchema = exports_external.object({
-  jsonrpc: exports_external.literal(JSONRPC_VERSION),
-  id: RequestIdSchema
-}).merge(RequestSchema).strict();
+var JSONRPCRequestSchema = exports_external
+  .object({
+    jsonrpc: exports_external.literal(JSONRPC_VERSION),
+    id: RequestIdSchema,
+  })
+  .merge(RequestSchema)
+  .strict();
 var isJSONRPCRequest = (value) => JSONRPCRequestSchema.safeParse(value).success;
-var JSONRPCNotificationSchema = exports_external.object({
-  jsonrpc: exports_external.literal(JSONRPC_VERSION)
-}).merge(NotificationSchema).strict();
+var JSONRPCNotificationSchema = exports_external
+  .object({
+    jsonrpc: exports_external.literal(JSONRPC_VERSION),
+  })
+  .merge(NotificationSchema)
+  .strict();
 var isJSONRPCNotification = (value) => JSONRPCNotificationSchema.safeParse(value).success;
-var JSONRPCResponseSchema = exports_external.object({
-  jsonrpc: exports_external.literal(JSONRPC_VERSION),
-  id: RequestIdSchema,
-  result: ResultSchema
-}).strict();
+var JSONRPCResponseSchema = exports_external
+  .object({
+    jsonrpc: exports_external.literal(JSONRPC_VERSION),
+    id: RequestIdSchema,
+    result: ResultSchema,
+  })
+  .strict();
 var isJSONRPCResponse = (value) => JSONRPCResponseSchema.safeParse(value).success;
 var ErrorCode;
-(function(ErrorCode2) {
-  ErrorCode2[ErrorCode2["ConnectionClosed"] = -32000] = "ConnectionClosed";
-  ErrorCode2[ErrorCode2["RequestTimeout"] = -32001] = "RequestTimeout";
-  ErrorCode2[ErrorCode2["ParseError"] = -32700] = "ParseError";
-  ErrorCode2[ErrorCode2["InvalidRequest"] = -32600] = "InvalidRequest";
-  ErrorCode2[ErrorCode2["MethodNotFound"] = -32601] = "MethodNotFound";
-  ErrorCode2[ErrorCode2["InvalidParams"] = -32602] = "InvalidParams";
-  ErrorCode2[ErrorCode2["InternalError"] = -32603] = "InternalError";
+(function (ErrorCode2) {
+  ErrorCode2[(ErrorCode2["ConnectionClosed"] = -32000)] = "ConnectionClosed";
+  ErrorCode2[(ErrorCode2["RequestTimeout"] = -32001)] = "RequestTimeout";
+  ErrorCode2[(ErrorCode2["ParseError"] = -32700)] = "ParseError";
+  ErrorCode2[(ErrorCode2["InvalidRequest"] = -32600)] = "InvalidRequest";
+  ErrorCode2[(ErrorCode2["MethodNotFound"] = -32601)] = "MethodNotFound";
+  ErrorCode2[(ErrorCode2["InvalidParams"] = -32602)] = "InvalidParams";
+  ErrorCode2[(ErrorCode2["InternalError"] = -32603)] = "InternalError";
 })(ErrorCode || (ErrorCode = {}));
-var JSONRPCErrorSchema = exports_external.object({
-  jsonrpc: exports_external.literal(JSONRPC_VERSION),
-  id: RequestIdSchema,
-  error: exports_external.object({
-    code: exports_external.number().int(),
-    message: exports_external.string(),
-    data: exports_external.optional(exports_external.unknown())
+var JSONRPCErrorSchema = exports_external
+  .object({
+    jsonrpc: exports_external.literal(JSONRPC_VERSION),
+    id: RequestIdSchema,
+    error: exports_external.object({
+      code: exports_external.number().int(),
+      message: exports_external.string(),
+      data: exports_external.optional(exports_external.unknown()),
+    }),
   })
-}).strict();
+  .strict();
 var isJSONRPCError = (value) => JSONRPCErrorSchema.safeParse(value).success;
 var JSONRPCMessageSchema = exports_external.union([
   JSONRPCRequestSchema,
   JSONRPCNotificationSchema,
   JSONRPCResponseSchema,
-  JSONRPCErrorSchema
+  JSONRPCErrorSchema,
 ]);
 var EmptyResultSchema = ResultSchema.strict();
 var CancelledNotificationSchema = NotificationSchema.extend({
   method: exports_external.literal("notifications/cancelled"),
   params: BaseNotificationParamsSchema.extend({
     requestId: RequestIdSchema,
-    reason: exports_external.string().optional()
+    reason: exports_external.string().optional(),
+  }),
+});
+var BaseMetadataSchema = exports_external
+  .object({
+    name: exports_external.string(),
+    title: exports_external.optional(exports_external.string()),
   })
-});
-var BaseMetadataSchema = exports_external.object({
-  name: exports_external.string(),
-  title: exports_external.optional(exports_external.string())
-}).passthrough();
+  .passthrough();
 var ImplementationSchema = BaseMetadataSchema.extend({
-  version: exports_external.string()
+  version: exports_external.string(),
 });
-var ClientCapabilitiesSchema = exports_external.object({
-  experimental: exports_external.optional(exports_external.object({}).passthrough()),
-  sampling: exports_external.optional(exports_external.object({}).passthrough()),
-  elicitation: exports_external.optional(exports_external.object({}).passthrough()),
-  roots: exports_external.optional(exports_external.object({
-    listChanged: exports_external.optional(exports_external.boolean())
-  }).passthrough())
-}).passthrough();
+var ClientCapabilitiesSchema = exports_external
+  .object({
+    experimental: exports_external.optional(exports_external.object({}).passthrough()),
+    sampling: exports_external.optional(exports_external.object({}).passthrough()),
+    elicitation: exports_external.optional(exports_external.object({}).passthrough()),
+    roots: exports_external.optional(
+      exports_external
+        .object({
+          listChanged: exports_external.optional(exports_external.boolean()),
+        })
+        .passthrough()
+    ),
+  })
+  .passthrough();
 var InitializeRequestSchema = RequestSchema.extend({
   method: exports_external.literal("initialize"),
   params: BaseRequestParamsSchema.extend({
     protocolVersion: exports_external.string(),
     capabilities: ClientCapabilitiesSchema,
-    clientInfo: ImplementationSchema
-  })
+    clientInfo: ImplementationSchema,
+  }),
 });
-var ServerCapabilitiesSchema = exports_external.object({
-  experimental: exports_external.optional(exports_external.object({}).passthrough()),
-  logging: exports_external.optional(exports_external.object({}).passthrough()),
-  completions: exports_external.optional(exports_external.object({}).passthrough()),
-  prompts: exports_external.optional(exports_external.object({
-    listChanged: exports_external.optional(exports_external.boolean())
-  }).passthrough()),
-  resources: exports_external.optional(exports_external.object({
-    subscribe: exports_external.optional(exports_external.boolean()),
-    listChanged: exports_external.optional(exports_external.boolean())
-  }).passthrough()),
-  tools: exports_external.optional(exports_external.object({
-    listChanged: exports_external.optional(exports_external.boolean())
-  }).passthrough())
-}).passthrough();
+var ServerCapabilitiesSchema = exports_external
+  .object({
+    experimental: exports_external.optional(exports_external.object({}).passthrough()),
+    logging: exports_external.optional(exports_external.object({}).passthrough()),
+    completions: exports_external.optional(exports_external.object({}).passthrough()),
+    prompts: exports_external.optional(
+      exports_external
+        .object({
+          listChanged: exports_external.optional(exports_external.boolean()),
+        })
+        .passthrough()
+    ),
+    resources: exports_external.optional(
+      exports_external
+        .object({
+          subscribe: exports_external.optional(exports_external.boolean()),
+          listChanged: exports_external.optional(exports_external.boolean()),
+        })
+        .passthrough()
+    ),
+    tools: exports_external.optional(
+      exports_external
+        .object({
+          listChanged: exports_external.optional(exports_external.boolean()),
+        })
+        .passthrough()
+    ),
+  })
+  .passthrough();
 var InitializeResultSchema = ResultSchema.extend({
   protocolVersion: exports_external.string(),
   capabilities: ServerCapabilitiesSchema,
   serverInfo: ImplementationSchema,
-  instructions: exports_external.optional(exports_external.string())
+  instructions: exports_external.optional(exports_external.string()),
 });
 var InitializedNotificationSchema = NotificationSchema.extend({
-  method: exports_external.literal("notifications/initialized")
+  method: exports_external.literal("notifications/initialized"),
 });
 var PingRequestSchema = RequestSchema.extend({
-  method: exports_external.literal("ping")
+  method: exports_external.literal("ping"),
 });
-var ProgressSchema = exports_external.object({
-  progress: exports_external.number(),
-  total: exports_external.optional(exports_external.number()),
-  message: exports_external.optional(exports_external.string())
-}).passthrough();
+var ProgressSchema = exports_external
+  .object({
+    progress: exports_external.number(),
+    total: exports_external.optional(exports_external.number()),
+    message: exports_external.optional(exports_external.string()),
+  })
+  .passthrough();
 var ProgressNotificationSchema = NotificationSchema.extend({
   method: exports_external.literal("notifications/progress"),
   params: BaseNotificationParamsSchema.merge(ProgressSchema).extend({
-    progressToken: ProgressTokenSchema
-  })
+    progressToken: ProgressTokenSchema,
+  }),
 });
 var PaginatedRequestSchema = RequestSchema.extend({
   params: BaseRequestParamsSchema.extend({
-    cursor: exports_external.optional(CursorSchema)
-  }).optional()
+    cursor: exports_external.optional(CursorSchema),
+  }).optional(),
 });
 var PaginatedResultSchema = ResultSchema.extend({
-  nextCursor: exports_external.optional(CursorSchema)
+  nextCursor: exports_external.optional(CursorSchema),
 });
-var ResourceContentsSchema = exports_external.object({
-  uri: exports_external.string(),
-  mimeType: exports_external.optional(exports_external.string()),
-  _meta: exports_external.optional(exports_external.object({}).passthrough())
-}).passthrough();
+var ResourceContentsSchema = exports_external
+  .object({
+    uri: exports_external.string(),
+    mimeType: exports_external.optional(exports_external.string()),
+    _meta: exports_external.optional(exports_external.object({}).passthrough()),
+  })
+  .passthrough();
 var TextResourceContentsSchema = ResourceContentsSchema.extend({
-  text: exports_external.string()
+  text: exports_external.string(),
 });
-var Base64Schema = exports_external.string().refine((val) => {
-  try {
-    atob(val);
-    return true;
-  } catch (_a) {
-    return false;
-  }
-}, { message: "Invalid Base64 string" });
+var Base64Schema = exports_external.string().refine(
+  (val) => {
+    try {
+      atob(val);
+      return true;
+    } catch (_a) {
+      return false;
+    }
+  },
+  { message: "Invalid Base64 string" }
+);
 var BlobResourceContentsSchema = ResourceContentsSchema.extend({
-  blob: Base64Schema
+  blob: Base64Schema,
 });
 var ResourceSchema = BaseMetadataSchema.extend({
   uri: exports_external.string(),
   description: exports_external.optional(exports_external.string()),
   mimeType: exports_external.optional(exports_external.string()),
-  _meta: exports_external.optional(exports_external.object({}).passthrough())
+  _meta: exports_external.optional(exports_external.object({}).passthrough()),
 });
 var ResourceTemplateSchema = BaseMetadataSchema.extend({
   uriTemplate: exports_external.string(),
   description: exports_external.optional(exports_external.string()),
   mimeType: exports_external.optional(exports_external.string()),
-  _meta: exports_external.optional(exports_external.object({}).passthrough())
+  _meta: exports_external.optional(exports_external.object({}).passthrough()),
 });
 var ListResourcesRequestSchema = PaginatedRequestSchema.extend({
-  method: exports_external.literal("resources/list")
+  method: exports_external.literal("resources/list"),
 });
 var ListResourcesResultSchema = PaginatedResultSchema.extend({
-  resources: exports_external.array(ResourceSchema)
+  resources: exports_external.array(ResourceSchema),
 });
 var ListResourceTemplatesRequestSchema = PaginatedRequestSchema.extend({
-  method: exports_external.literal("resources/templates/list")
+  method: exports_external.literal("resources/templates/list"),
 });
 var ListResourceTemplatesResultSchema = PaginatedResultSchema.extend({
-  resourceTemplates: exports_external.array(ResourceTemplateSchema)
+  resourceTemplates: exports_external.array(ResourceTemplateSchema),
 });
 var ReadResourceRequestSchema = RequestSchema.extend({
   method: exports_external.literal("resources/read"),
   params: BaseRequestParamsSchema.extend({
-    uri: exports_external.string()
-  })
+    uri: exports_external.string(),
+  }),
 });
 var ReadResourceResultSchema = ResultSchema.extend({
-  contents: exports_external.array(exports_external.union([TextResourceContentsSchema, BlobResourceContentsSchema]))
+  contents: exports_external.array(exports_external.union([TextResourceContentsSchema, BlobResourceContentsSchema])),
 });
 var ResourceListChangedNotificationSchema = NotificationSchema.extend({
-  method: exports_external.literal("notifications/resources/list_changed")
+  method: exports_external.literal("notifications/resources/list_changed"),
 });
 var SubscribeRequestSchema = RequestSchema.extend({
   method: exports_external.literal("resources/subscribe"),
   params: BaseRequestParamsSchema.extend({
-    uri: exports_external.string()
-  })
+    uri: exports_external.string(),
+  }),
 });
 var UnsubscribeRequestSchema = RequestSchema.extend({
   method: exports_external.literal("resources/unsubscribe"),
   params: BaseRequestParamsSchema.extend({
-    uri: exports_external.string()
-  })
+    uri: exports_external.string(),
+  }),
 });
 var ResourceUpdatedNotificationSchema = NotificationSchema.extend({
   method: exports_external.literal("notifications/resources/updated"),
   params: BaseNotificationParamsSchema.extend({
-    uri: exports_external.string()
-  })
+    uri: exports_external.string(),
+  }),
 });
-var PromptArgumentSchema = exports_external.object({
-  name: exports_external.string(),
-  description: exports_external.optional(exports_external.string()),
-  required: exports_external.optional(exports_external.boolean())
-}).passthrough();
+var PromptArgumentSchema = exports_external
+  .object({
+    name: exports_external.string(),
+    description: exports_external.optional(exports_external.string()),
+    required: exports_external.optional(exports_external.boolean()),
+  })
+  .passthrough();
 var PromptSchema = BaseMetadataSchema.extend({
   description: exports_external.optional(exports_external.string()),
   arguments: exports_external.optional(exports_external.array(PromptArgumentSchema)),
-  _meta: exports_external.optional(exports_external.object({}).passthrough())
+  _meta: exports_external.optional(exports_external.object({}).passthrough()),
 });
 var ListPromptsRequestSchema = PaginatedRequestSchema.extend({
-  method: exports_external.literal("prompts/list")
+  method: exports_external.literal("prompts/list"),
 });
 var ListPromptsResultSchema = PaginatedResultSchema.extend({
-  prompts: exports_external.array(PromptSchema)
+  prompts: exports_external.array(PromptSchema),
 });
 var GetPromptRequestSchema = RequestSchema.extend({
   method: exports_external.literal("prompts/get"),
   params: BaseRequestParamsSchema.extend({
     name: exports_external.string(),
-    arguments: exports_external.optional(exports_external.record(exports_external.string()))
-  })
+    arguments: exports_external.optional(exports_external.record(exports_external.string())),
+  }),
 });
-var TextContentSchema = exports_external.object({
-  type: exports_external.literal("text"),
-  text: exports_external.string(),
-  _meta: exports_external.optional(exports_external.object({}).passthrough())
-}).passthrough();
-var ImageContentSchema = exports_external.object({
-  type: exports_external.literal("image"),
-  data: Base64Schema,
-  mimeType: exports_external.string(),
-  _meta: exports_external.optional(exports_external.object({}).passthrough())
-}).passthrough();
-var AudioContentSchema = exports_external.object({
-  type: exports_external.literal("audio"),
-  data: Base64Schema,
-  mimeType: exports_external.string(),
-  _meta: exports_external.optional(exports_external.object({}).passthrough())
-}).passthrough();
-var EmbeddedResourceSchema = exports_external.object({
-  type: exports_external.literal("resource"),
-  resource: exports_external.union([TextResourceContentsSchema, BlobResourceContentsSchema]),
-  _meta: exports_external.optional(exports_external.object({}).passthrough())
-}).passthrough();
+var TextContentSchema = exports_external
+  .object({
+    type: exports_external.literal("text"),
+    text: exports_external.string(),
+    _meta: exports_external.optional(exports_external.object({}).passthrough()),
+  })
+  .passthrough();
+var ImageContentSchema = exports_external
+  .object({
+    type: exports_external.literal("image"),
+    data: Base64Schema,
+    mimeType: exports_external.string(),
+    _meta: exports_external.optional(exports_external.object({}).passthrough()),
+  })
+  .passthrough();
+var AudioContentSchema = exports_external
+  .object({
+    type: exports_external.literal("audio"),
+    data: Base64Schema,
+    mimeType: exports_external.string(),
+    _meta: exports_external.optional(exports_external.object({}).passthrough()),
+  })
+  .passthrough();
+var EmbeddedResourceSchema = exports_external
+  .object({
+    type: exports_external.literal("resource"),
+    resource: exports_external.union([TextResourceContentsSchema, BlobResourceContentsSchema]),
+    _meta: exports_external.optional(exports_external.object({}).passthrough()),
+  })
+  .passthrough();
 var ResourceLinkSchema = ResourceSchema.extend({
-  type: exports_external.literal("resource_link")
+  type: exports_external.literal("resource_link"),
 });
 var ContentBlockSchema = exports_external.union([
   TextContentSchema,
   ImageContentSchema,
   AudioContentSchema,
   ResourceLinkSchema,
-  EmbeddedResourceSchema
+  EmbeddedResourceSchema,
 ]);
-var PromptMessageSchema = exports_external.object({
-  role: exports_external.enum(["user", "assistant"]),
-  content: ContentBlockSchema
-}).passthrough();
+var PromptMessageSchema = exports_external
+  .object({
+    role: exports_external.enum(["user", "assistant"]),
+    content: ContentBlockSchema,
+  })
+  .passthrough();
 var GetPromptResultSchema = ResultSchema.extend({
   description: exports_external.optional(exports_external.string()),
-  messages: exports_external.array(PromptMessageSchema)
+  messages: exports_external.array(PromptMessageSchema),
 });
 var PromptListChangedNotificationSchema = NotificationSchema.extend({
-  method: exports_external.literal("notifications/prompts/list_changed")
+  method: exports_external.literal("notifications/prompts/list_changed"),
 });
-var ToolAnnotationsSchema = exports_external.object({
-  title: exports_external.optional(exports_external.string()),
-  readOnlyHint: exports_external.optional(exports_external.boolean()),
-  destructiveHint: exports_external.optional(exports_external.boolean()),
-  idempotentHint: exports_external.optional(exports_external.boolean()),
-  openWorldHint: exports_external.optional(exports_external.boolean())
-}).passthrough();
+var ToolAnnotationsSchema = exports_external
+  .object({
+    title: exports_external.optional(exports_external.string()),
+    readOnlyHint: exports_external.optional(exports_external.boolean()),
+    destructiveHint: exports_external.optional(exports_external.boolean()),
+    idempotentHint: exports_external.optional(exports_external.boolean()),
+    openWorldHint: exports_external.optional(exports_external.boolean()),
+  })
+  .passthrough();
 var ToolSchema = BaseMetadataSchema.extend({
   description: exports_external.optional(exports_external.string()),
-  inputSchema: exports_external.object({
-    type: exports_external.literal("object"),
-    properties: exports_external.optional(exports_external.object({}).passthrough()),
-    required: exports_external.optional(exports_external.array(exports_external.string()))
-  }).passthrough(),
-  outputSchema: exports_external.optional(exports_external.object({
-    type: exports_external.literal("object"),
-    properties: exports_external.optional(exports_external.object({}).passthrough()),
-    required: exports_external.optional(exports_external.array(exports_external.string()))
-  }).passthrough()),
+  inputSchema: exports_external
+    .object({
+      type: exports_external.literal("object"),
+      properties: exports_external.optional(exports_external.object({}).passthrough()),
+      required: exports_external.optional(exports_external.array(exports_external.string())),
+    })
+    .passthrough(),
+  outputSchema: exports_external.optional(
+    exports_external
+      .object({
+        type: exports_external.literal("object"),
+        properties: exports_external.optional(exports_external.object({}).passthrough()),
+        required: exports_external.optional(exports_external.array(exports_external.string())),
+      })
+      .passthrough()
+  ),
   annotations: exports_external.optional(ToolAnnotationsSchema),
-  _meta: exports_external.optional(exports_external.object({}).passthrough())
+  _meta: exports_external.optional(exports_external.object({}).passthrough()),
 });
 var ListToolsRequestSchema = PaginatedRequestSchema.extend({
-  method: exports_external.literal("tools/list")
+  method: exports_external.literal("tools/list"),
 });
 var ListToolsResultSchema = PaginatedResultSchema.extend({
-  tools: exports_external.array(ToolSchema)
+  tools: exports_external.array(ToolSchema),
 });
 var CallToolResultSchema = ResultSchema.extend({
   content: exports_external.array(ContentBlockSchema).default([]),
   structuredContent: exports_external.object({}).passthrough().optional(),
-  isError: exports_external.optional(exports_external.boolean())
+  isError: exports_external.optional(exports_external.boolean()),
 });
-var CompatibilityCallToolResultSchema = CallToolResultSchema.or(ResultSchema.extend({
-  toolResult: exports_external.unknown()
-}));
+var CompatibilityCallToolResultSchema = CallToolResultSchema.or(
+  ResultSchema.extend({
+    toolResult: exports_external.unknown(),
+  })
+);
 var CallToolRequestSchema = RequestSchema.extend({
   method: exports_external.literal("tools/call"),
   params: BaseRequestParamsSchema.extend({
     name: exports_external.string(),
-    arguments: exports_external.optional(exports_external.record(exports_external.unknown()))
-  })
+    arguments: exports_external.optional(exports_external.record(exports_external.unknown())),
+  }),
 });
 var ToolListChangedNotificationSchema = NotificationSchema.extend({
-  method: exports_external.literal("notifications/tools/list_changed")
+  method: exports_external.literal("notifications/tools/list_changed"),
 });
 var LoggingLevelSchema = exports_external.enum([
   "debug",
@@ -11424,35 +13127,41 @@ var LoggingLevelSchema = exports_external.enum([
   "error",
   "critical",
   "alert",
-  "emergency"
+  "emergency",
 ]);
 var SetLevelRequestSchema = RequestSchema.extend({
   method: exports_external.literal("logging/setLevel"),
   params: BaseRequestParamsSchema.extend({
-    level: LoggingLevelSchema
-  })
+    level: LoggingLevelSchema,
+  }),
 });
 var LoggingMessageNotificationSchema = NotificationSchema.extend({
   method: exports_external.literal("notifications/message"),
   params: BaseNotificationParamsSchema.extend({
     level: LoggingLevelSchema,
     logger: exports_external.optional(exports_external.string()),
-    data: exports_external.unknown()
-  })
+    data: exports_external.unknown(),
+  }),
 });
-var ModelHintSchema = exports_external.object({
-  name: exports_external.string().optional()
-}).passthrough();
-var ModelPreferencesSchema = exports_external.object({
-  hints: exports_external.optional(exports_external.array(ModelHintSchema)),
-  costPriority: exports_external.optional(exports_external.number().min(0).max(1)),
-  speedPriority: exports_external.optional(exports_external.number().min(0).max(1)),
-  intelligencePriority: exports_external.optional(exports_external.number().min(0).max(1))
-}).passthrough();
-var SamplingMessageSchema = exports_external.object({
-  role: exports_external.enum(["user", "assistant"]),
-  content: exports_external.union([TextContentSchema, ImageContentSchema, AudioContentSchema])
-}).passthrough();
+var ModelHintSchema = exports_external
+  .object({
+    name: exports_external.string().optional(),
+  })
+  .passthrough();
+var ModelPreferencesSchema = exports_external
+  .object({
+    hints: exports_external.optional(exports_external.array(ModelHintSchema)),
+    costPriority: exports_external.optional(exports_external.number().min(0).max(1)),
+    speedPriority: exports_external.optional(exports_external.number().min(0).max(1)),
+    intelligencePriority: exports_external.optional(exports_external.number().min(0).max(1)),
+  })
+  .passthrough();
+var SamplingMessageSchema = exports_external
+  .object({
+    role: exports_external.enum(["user", "assistant"]),
+    content: exports_external.union([TextContentSchema, ImageContentSchema, AudioContentSchema]),
+  })
+  .passthrough();
 var CreateMessageRequestSchema = RequestSchema.extend({
   method: exports_external.literal("sampling/createMessage"),
   params: BaseRequestParamsSchema.extend({
@@ -11463,109 +13172,131 @@ var CreateMessageRequestSchema = RequestSchema.extend({
     maxTokens: exports_external.number().int(),
     stopSequences: exports_external.optional(exports_external.array(exports_external.string())),
     metadata: exports_external.optional(exports_external.object({}).passthrough()),
-    modelPreferences: exports_external.optional(ModelPreferencesSchema)
-  })
+    modelPreferences: exports_external.optional(ModelPreferencesSchema),
+  }),
 });
 var CreateMessageResultSchema = ResultSchema.extend({
   model: exports_external.string(),
-  stopReason: exports_external.optional(exports_external.enum(["endTurn", "stopSequence", "maxTokens"]).or(exports_external.string())),
+  stopReason: exports_external.optional(
+    exports_external.enum(["endTurn", "stopSequence", "maxTokens"]).or(exports_external.string())
+  ),
   role: exports_external.enum(["user", "assistant"]),
-  content: exports_external.discriminatedUnion("type", [
-    TextContentSchema,
-    ImageContentSchema,
-    AudioContentSchema
-  ])
+  content: exports_external.discriminatedUnion("type", [TextContentSchema, ImageContentSchema, AudioContentSchema]),
 });
-var BooleanSchemaSchema = exports_external.object({
-  type: exports_external.literal("boolean"),
-  title: exports_external.optional(exports_external.string()),
-  description: exports_external.optional(exports_external.string()),
-  default: exports_external.optional(exports_external.boolean())
-}).passthrough();
-var StringSchemaSchema = exports_external.object({
-  type: exports_external.literal("string"),
-  title: exports_external.optional(exports_external.string()),
-  description: exports_external.optional(exports_external.string()),
-  minLength: exports_external.optional(exports_external.number()),
-  maxLength: exports_external.optional(exports_external.number()),
-  format: exports_external.optional(exports_external.enum(["email", "uri", "date", "date-time"]))
-}).passthrough();
-var NumberSchemaSchema = exports_external.object({
-  type: exports_external.enum(["number", "integer"]),
-  title: exports_external.optional(exports_external.string()),
-  description: exports_external.optional(exports_external.string()),
-  minimum: exports_external.optional(exports_external.number()),
-  maximum: exports_external.optional(exports_external.number())
-}).passthrough();
-var EnumSchemaSchema = exports_external.object({
-  type: exports_external.literal("string"),
-  title: exports_external.optional(exports_external.string()),
-  description: exports_external.optional(exports_external.string()),
-  enum: exports_external.array(exports_external.string()),
-  enumNames: exports_external.optional(exports_external.array(exports_external.string()))
-}).passthrough();
+var BooleanSchemaSchema = exports_external
+  .object({
+    type: exports_external.literal("boolean"),
+    title: exports_external.optional(exports_external.string()),
+    description: exports_external.optional(exports_external.string()),
+    default: exports_external.optional(exports_external.boolean()),
+  })
+  .passthrough();
+var StringSchemaSchema = exports_external
+  .object({
+    type: exports_external.literal("string"),
+    title: exports_external.optional(exports_external.string()),
+    description: exports_external.optional(exports_external.string()),
+    minLength: exports_external.optional(exports_external.number()),
+    maxLength: exports_external.optional(exports_external.number()),
+    format: exports_external.optional(exports_external.enum(["email", "uri", "date", "date-time"])),
+  })
+  .passthrough();
+var NumberSchemaSchema = exports_external
+  .object({
+    type: exports_external.enum(["number", "integer"]),
+    title: exports_external.optional(exports_external.string()),
+    description: exports_external.optional(exports_external.string()),
+    minimum: exports_external.optional(exports_external.number()),
+    maximum: exports_external.optional(exports_external.number()),
+  })
+  .passthrough();
+var EnumSchemaSchema = exports_external
+  .object({
+    type: exports_external.literal("string"),
+    title: exports_external.optional(exports_external.string()),
+    description: exports_external.optional(exports_external.string()),
+    enum: exports_external.array(exports_external.string()),
+    enumNames: exports_external.optional(exports_external.array(exports_external.string())),
+  })
+  .passthrough();
 var PrimitiveSchemaDefinitionSchema = exports_external.union([
   BooleanSchemaSchema,
   StringSchemaSchema,
   NumberSchemaSchema,
-  EnumSchemaSchema
+  EnumSchemaSchema,
 ]);
 var ElicitRequestSchema = RequestSchema.extend({
   method: exports_external.literal("elicitation/create"),
   params: BaseRequestParamsSchema.extend({
     message: exports_external.string(),
-    requestedSchema: exports_external.object({
-      type: exports_external.literal("object"),
-      properties: exports_external.record(exports_external.string(), PrimitiveSchemaDefinitionSchema),
-      required: exports_external.optional(exports_external.array(exports_external.string()))
-    }).passthrough()
-  })
+    requestedSchema: exports_external
+      .object({
+        type: exports_external.literal("object"),
+        properties: exports_external.record(exports_external.string(), PrimitiveSchemaDefinitionSchema),
+        required: exports_external.optional(exports_external.array(exports_external.string())),
+      })
+      .passthrough(),
+  }),
 });
 var ElicitResultSchema = ResultSchema.extend({
   action: exports_external.enum(["accept", "decline", "cancel"]),
-  content: exports_external.optional(exports_external.record(exports_external.string(), exports_external.unknown()))
+  content: exports_external.optional(exports_external.record(exports_external.string(), exports_external.unknown())),
 });
-var ResourceTemplateReferenceSchema = exports_external.object({
-  type: exports_external.literal("ref/resource"),
-  uri: exports_external.string()
-}).passthrough();
-var PromptReferenceSchema = exports_external.object({
-  type: exports_external.literal("ref/prompt"),
-  name: exports_external.string()
-}).passthrough();
+var ResourceTemplateReferenceSchema = exports_external
+  .object({
+    type: exports_external.literal("ref/resource"),
+    uri: exports_external.string(),
+  })
+  .passthrough();
+var PromptReferenceSchema = exports_external
+  .object({
+    type: exports_external.literal("ref/prompt"),
+    name: exports_external.string(),
+  })
+  .passthrough();
 var CompleteRequestSchema = RequestSchema.extend({
   method: exports_external.literal("completion/complete"),
   params: BaseRequestParamsSchema.extend({
     ref: exports_external.union([PromptReferenceSchema, ResourceTemplateReferenceSchema]),
-    argument: exports_external.object({
-      name: exports_external.string(),
-      value: exports_external.string()
-    }).passthrough(),
-    context: exports_external.optional(exports_external.object({
-      arguments: exports_external.optional(exports_external.record(exports_external.string(), exports_external.string()))
-    }))
-  })
+    argument: exports_external
+      .object({
+        name: exports_external.string(),
+        value: exports_external.string(),
+      })
+      .passthrough(),
+    context: exports_external.optional(
+      exports_external.object({
+        arguments: exports_external.optional(
+          exports_external.record(exports_external.string(), exports_external.string())
+        ),
+      })
+    ),
+  }),
 });
 var CompleteResultSchema = ResultSchema.extend({
-  completion: exports_external.object({
-    values: exports_external.array(exports_external.string()).max(100),
-    total: exports_external.optional(exports_external.number().int()),
-    hasMore: exports_external.optional(exports_external.boolean())
-  }).passthrough()
+  completion: exports_external
+    .object({
+      values: exports_external.array(exports_external.string()).max(100),
+      total: exports_external.optional(exports_external.number().int()),
+      hasMore: exports_external.optional(exports_external.boolean()),
+    })
+    .passthrough(),
 });
-var RootSchema = exports_external.object({
-  uri: exports_external.string().startsWith("file://"),
-  name: exports_external.optional(exports_external.string()),
-  _meta: exports_external.optional(exports_external.object({}).passthrough())
-}).passthrough();
+var RootSchema = exports_external
+  .object({
+    uri: exports_external.string().startsWith("file://"),
+    name: exports_external.optional(exports_external.string()),
+    _meta: exports_external.optional(exports_external.object({}).passthrough()),
+  })
+  .passthrough();
 var ListRootsRequestSchema = RequestSchema.extend({
-  method: exports_external.literal("roots/list")
+  method: exports_external.literal("roots/list"),
 });
 var ListRootsResultSchema = ResultSchema.extend({
-  roots: exports_external.array(RootSchema)
+  roots: exports_external.array(RootSchema),
 });
 var RootsListChangedNotificationSchema = NotificationSchema.extend({
-  method: exports_external.literal("notifications/roots/list_changed")
+  method: exports_external.literal("notifications/roots/list_changed"),
 });
 var ClientRequestSchema = exports_external.union([
   PingRequestSchema,
@@ -11580,25 +13311,25 @@ var ClientRequestSchema = exports_external.union([
   SubscribeRequestSchema,
   UnsubscribeRequestSchema,
   CallToolRequestSchema,
-  ListToolsRequestSchema
+  ListToolsRequestSchema,
 ]);
 var ClientNotificationSchema = exports_external.union([
   CancelledNotificationSchema,
   ProgressNotificationSchema,
   InitializedNotificationSchema,
-  RootsListChangedNotificationSchema
+  RootsListChangedNotificationSchema,
 ]);
 var ClientResultSchema = exports_external.union([
   EmptyResultSchema,
   CreateMessageResultSchema,
   ElicitResultSchema,
-  ListRootsResultSchema
+  ListRootsResultSchema,
 ]);
 var ServerRequestSchema = exports_external.union([
   PingRequestSchema,
   CreateMessageRequestSchema,
   ElicitRequestSchema,
-  ListRootsRequestSchema
+  ListRootsRequestSchema,
 ]);
 var ServerNotificationSchema = exports_external.union([
   CancelledNotificationSchema,
@@ -11607,7 +13338,7 @@ var ServerNotificationSchema = exports_external.union([
   ResourceUpdatedNotificationSchema,
   ResourceListChangedNotificationSchema,
   ToolListChangedNotificationSchema,
-  PromptListChangedNotificationSchema
+  PromptListChangedNotificationSchema,
 ]);
 var ServerResultSchema = exports_external.union([
   EmptyResultSchema,
@@ -11619,7 +13350,7 @@ var ServerResultSchema = exports_external.union([
   ListResourceTemplatesResultSchema,
   ReadResourceResultSchema,
   CallToolResultSchema,
-  ListToolsResultSchema
+  ListToolsResultSchema,
 ]);
 
 class McpError extends Error {
@@ -11638,13 +13369,13 @@ class Protocol {
   constructor(_options) {
     this._options = _options;
     this._requestMessageId = 0;
-    this._requestHandlers = new Map;
-    this._requestHandlerAbortControllers = new Map;
-    this._notificationHandlers = new Map;
-    this._responseHandlers = new Map;
-    this._progressHandlers = new Map;
-    this._timeoutInfo = new Map;
-    this._pendingDebouncedNotifications = new Set;
+    this._requestHandlers = new Map();
+    this._requestHandlerAbortControllers = new Map();
+    this._notificationHandlers = new Map();
+    this._responseHandlers = new Map();
+    this._progressHandlers = new Map();
+    this._timeoutInfo = new Map();
+    this._pendingDebouncedNotifications = new Set();
     this.setNotificationHandler(CancelledNotificationSchema, (notification) => {
       const controller = this._requestHandlerAbortControllers.get(notification.params.requestId);
       controller === null || controller === undefined || controller.abort(notification.params.reason);
@@ -11661,17 +13392,19 @@ class Protocol {
       timeout,
       maxTotalTimeout,
       resetTimeoutOnProgress,
-      onTimeout
+      onTimeout,
     });
   }
   _resetTimeout(messageId) {
     const info = this._timeoutInfo.get(messageId);
-    if (!info)
-      return false;
+    if (!info) return false;
     const totalElapsed = Date.now() - info.startTime;
     if (info.maxTotalTimeout && totalElapsed >= info.maxTotalTimeout) {
       this._timeoutInfo.delete(messageId);
-      throw new McpError(ErrorCode.RequestTimeout, "Maximum total timeout exceeded", { maxTotalTimeout: info.maxTotalTimeout, totalElapsed });
+      throw new McpError(ErrorCode.RequestTimeout, "Maximum total timeout exceeded", {
+        maxTotalTimeout: info.maxTotalTimeout,
+        totalElapsed,
+      });
     }
     clearTimeout(info.timeoutId);
     info.timeoutId = setTimeout(info.onTimeout, info.timeout);
@@ -11715,7 +13448,7 @@ class Protocol {
   _onclose() {
     var _a;
     const responseHandlers = this._responseHandlers;
-    this._responseHandlers = new Map;
+    this._responseHandlers = new Map();
     this._progressHandlers.clear();
     this._pendingDebouncedNotifications.clear();
     this._transport = undefined;
@@ -11731,71 +13464,96 @@ class Protocol {
   }
   _onnotification(notification) {
     var _a;
-    const handler = (_a = this._notificationHandlers.get(notification.method)) !== null && _a !== undefined ? _a : this.fallbackNotificationHandler;
+    const handler =
+      (_a = this._notificationHandlers.get(notification.method)) !== null && _a !== undefined
+        ? _a
+        : this.fallbackNotificationHandler;
     if (handler === undefined) {
       return;
     }
-    Promise.resolve().then(() => handler(notification)).catch((error) => this._onerror(new Error(`Uncaught error in notification handler: ${error}`)));
+    Promise.resolve()
+      .then(() => handler(notification))
+      .catch((error) => this._onerror(new Error(`Uncaught error in notification handler: ${error}`)));
   }
   _onrequest(request, extra) {
     var _a, _b;
-    const handler = (_a = this._requestHandlers.get(request.method)) !== null && _a !== undefined ? _a : this.fallbackRequestHandler;
+    const handler =
+      (_a = this._requestHandlers.get(request.method)) !== null && _a !== undefined ? _a : this.fallbackRequestHandler;
     const capturedTransport = this._transport;
     if (handler === undefined) {
-      capturedTransport === null || capturedTransport === undefined || capturedTransport.send({
-        jsonrpc: "2.0",
-        id: request.id,
-        error: {
-          code: ErrorCode.MethodNotFound,
-          message: "Method not found"
-        }
-      }).catch((error) => this._onerror(new Error(`Failed to send an error response: ${error}`)));
+      capturedTransport === null ||
+        capturedTransport === undefined ||
+        capturedTransport
+          .send({
+            jsonrpc: "2.0",
+            id: request.id,
+            error: {
+              code: ErrorCode.MethodNotFound,
+              message: "Method not found",
+            },
+          })
+          .catch((error) => this._onerror(new Error(`Failed to send an error response: ${error}`)));
       return;
     }
-    const abortController = new AbortController;
+    const abortController = new AbortController();
     this._requestHandlerAbortControllers.set(request.id, abortController);
     const fullExtra = {
       signal: abortController.signal,
-      sessionId: capturedTransport === null || capturedTransport === undefined ? undefined : capturedTransport.sessionId,
+      sessionId:
+        capturedTransport === null || capturedTransport === undefined ? undefined : capturedTransport.sessionId,
       _meta: (_b = request.params) === null || _b === undefined ? undefined : _b._meta,
       sendNotification: (notification) => this.notification(notification, { relatedRequestId: request.id }),
-      sendRequest: (r, resultSchema, options) => this.request(r, resultSchema, { ...options, relatedRequestId: request.id }),
+      sendRequest: (r, resultSchema, options) =>
+        this.request(r, resultSchema, { ...options, relatedRequestId: request.id }),
       authInfo: extra === null || extra === undefined ? undefined : extra.authInfo,
       requestId: request.id,
-      requestInfo: extra === null || extra === undefined ? undefined : extra.requestInfo
+      requestInfo: extra === null || extra === undefined ? undefined : extra.requestInfo,
     };
-    Promise.resolve().then(() => handler(request, fullExtra)).then((result) => {
-      if (abortController.signal.aborted) {
-        return;
-      }
-      return capturedTransport === null || capturedTransport === undefined ? undefined : capturedTransport.send({
-        result,
-        jsonrpc: "2.0",
-        id: request.id
-      });
-    }, (error) => {
-      var _a2;
-      if (abortController.signal.aborted) {
-        return;
-      }
-      return capturedTransport === null || capturedTransport === undefined ? undefined : capturedTransport.send({
-        jsonrpc: "2.0",
-        id: request.id,
-        error: {
-          code: Number.isSafeInteger(error["code"]) ? error["code"] : ErrorCode.InternalError,
-          message: (_a2 = error.message) !== null && _a2 !== undefined ? _a2 : "Internal error"
+    Promise.resolve()
+      .then(() => handler(request, fullExtra))
+      .then(
+        (result) => {
+          if (abortController.signal.aborted) {
+            return;
+          }
+          return capturedTransport === null || capturedTransport === undefined
+            ? undefined
+            : capturedTransport.send({
+                result,
+                jsonrpc: "2.0",
+                id: request.id,
+              });
+        },
+        (error) => {
+          var _a2;
+          if (abortController.signal.aborted) {
+            return;
+          }
+          return capturedTransport === null || capturedTransport === undefined
+            ? undefined
+            : capturedTransport.send({
+                jsonrpc: "2.0",
+                id: request.id,
+                error: {
+                  code: Number.isSafeInteger(error["code"]) ? error["code"] : ErrorCode.InternalError,
+                  message: (_a2 = error.message) !== null && _a2 !== undefined ? _a2 : "Internal error",
+                },
+              });
         }
+      )
+      .catch((error) => this._onerror(new Error(`Failed to send response: ${error}`)))
+      .finally(() => {
+        this._requestHandlerAbortControllers.delete(request.id);
       });
-    }).catch((error) => this._onerror(new Error(`Failed to send response: ${error}`))).finally(() => {
-      this._requestHandlerAbortControllers.delete(request.id);
-    });
   }
   _onprogress(notification) {
     const { progressToken, ...params } = notification.params;
     const messageId = Number(progressToken);
     const handler = this._progressHandlers.get(messageId);
     if (!handler) {
-      this._onerror(new Error(`Received a progress notification for an unknown token: ${JSON.stringify(notification)}`));
+      this._onerror(
+        new Error(`Received a progress notification for an unknown token: ${JSON.stringify(notification)}`)
+      );
       return;
     }
     const responseHandler = this._responseHandlers.get(messageId);
@@ -11835,7 +13593,8 @@ class Protocol {
     await ((_a = this._transport) === null || _a === undefined ? undefined : _a.close());
   }
   request(request, resultSchema, options) {
-    const { relatedRequestId, resumptionToken, onresumptiontoken } = options !== null && options !== undefined ? options : {};
+    const { relatedRequestId, resumptionToken, onresumptiontoken } =
+      options !== null && options !== undefined ? options : {};
     return new Promise((resolve, reject) => {
       var _a, _b, _c, _d, _e, _f;
       if (!this._transport) {
@@ -11845,21 +13604,23 @@ class Protocol {
       if (((_a = this._options) === null || _a === undefined ? undefined : _a.enforceStrictCapabilities) === true) {
         this.assertCapabilityForMethod(request.method);
       }
-      (_b = options === null || options === undefined ? undefined : options.signal) === null || _b === undefined || _b.throwIfAborted();
+      (_b = options === null || options === undefined ? undefined : options.signal) === null ||
+        _b === undefined ||
+        _b.throwIfAborted();
       const messageId = this._requestMessageId++;
       const jsonrpcRequest = {
         ...request,
         jsonrpc: "2.0",
-        id: messageId
+        id: messageId,
       };
       if (options === null || options === undefined ? undefined : options.onprogress) {
         this._progressHandlers.set(messageId, options.onprogress);
         jsonrpcRequest.params = {
           ...request.params,
           _meta: {
-            ...((_c = request.params) === null || _c === undefined ? undefined : _c._meta) || {},
-            progressToken: messageId
-          }
+            ...(((_c = request.params) === null || _c === undefined ? undefined : _c._meta) || {}),
+            progressToken: messageId,
+          },
         };
       }
       const cancel = (reason) => {
@@ -11867,19 +13628,30 @@ class Protocol {
         this._responseHandlers.delete(messageId);
         this._progressHandlers.delete(messageId);
         this._cleanupTimeout(messageId);
-        (_a2 = this._transport) === null || _a2 === undefined || _a2.send({
-          jsonrpc: "2.0",
-          method: "notifications/cancelled",
-          params: {
-            requestId: messageId,
-            reason: String(reason)
-          }
-        }, { relatedRequestId, resumptionToken, onresumptiontoken }).catch((error) => this._onerror(new Error(`Failed to send cancellation: ${error}`)));
+        (_a2 = this._transport) === null ||
+          _a2 === undefined ||
+          _a2
+            .send(
+              {
+                jsonrpc: "2.0",
+                method: "notifications/cancelled",
+                params: {
+                  requestId: messageId,
+                  reason: String(reason),
+                },
+              },
+              { relatedRequestId, resumptionToken, onresumptiontoken }
+            )
+            .catch((error) => this._onerror(new Error(`Failed to send cancellation: ${error}`)));
         reject(reason);
       };
       this._responseHandlers.set(messageId, (response) => {
         var _a2;
-        if ((_a2 = options === null || options === undefined ? undefined : options.signal) === null || _a2 === undefined ? undefined : _a2.aborted) {
+        if (
+          (_a2 = options === null || options === undefined ? undefined : options.signal) === null || _a2 === undefined
+            ? undefined
+            : _a2.aborted
+        ) {
           return;
         }
         if (response instanceof Error) {
@@ -11892,13 +13664,31 @@ class Protocol {
           reject(error);
         }
       });
-      (_d = options === null || options === undefined ? undefined : options.signal) === null || _d === undefined || _d.addEventListener("abort", () => {
-        var _a2;
-        cancel((_a2 = options === null || options === undefined ? undefined : options.signal) === null || _a2 === undefined ? undefined : _a2.reason);
-      });
-      const timeout = (_e = options === null || options === undefined ? undefined : options.timeout) !== null && _e !== undefined ? _e : DEFAULT_REQUEST_TIMEOUT_MSEC;
+      (_d = options === null || options === undefined ? undefined : options.signal) === null ||
+        _d === undefined ||
+        _d.addEventListener("abort", () => {
+          var _a2;
+          cancel(
+            (_a2 = options === null || options === undefined ? undefined : options.signal) === null || _a2 === undefined
+              ? undefined
+              : _a2.reason
+          );
+        });
+      const timeout =
+        (_e = options === null || options === undefined ? undefined : options.timeout) !== null && _e !== undefined
+          ? _e
+          : DEFAULT_REQUEST_TIMEOUT_MSEC;
       const timeoutHandler = () => cancel(new McpError(ErrorCode.RequestTimeout, "Request timed out", { timeout }));
-      this._setupTimeout(messageId, timeout, options === null || options === undefined ? undefined : options.maxTotalTimeout, timeoutHandler, (_f = options === null || options === undefined ? undefined : options.resetTimeoutOnProgress) !== null && _f !== undefined ? _f : false);
+      this._setupTimeout(
+        messageId,
+        timeout,
+        options === null || options === undefined ? undefined : options.maxTotalTimeout,
+        timeoutHandler,
+        (_f = options === null || options === undefined ? undefined : options.resetTimeoutOnProgress) !== null &&
+          _f !== undefined
+          ? _f
+          : false
+      );
       this._transport.send(jsonrpcRequest, { relatedRequestId, resumptionToken, onresumptiontoken }).catch((error) => {
         this._cleanupTimeout(messageId);
         reject(error);
@@ -11911,8 +13701,15 @@ class Protocol {
       throw new Error("Not connected");
     }
     this.assertNotificationCapability(notification.method);
-    const debouncedMethods = (_b = (_a = this._options) === null || _a === undefined ? undefined : _a.debouncedNotificationMethods) !== null && _b !== undefined ? _b : [];
-    const canDebounce = debouncedMethods.includes(notification.method) && !notification.params && !(options === null || options === undefined ? undefined : options.relatedRequestId);
+    const debouncedMethods =
+      (_b = (_a = this._options) === null || _a === undefined ? undefined : _a.debouncedNotificationMethods) !== null &&
+      _b !== undefined
+        ? _b
+        : [];
+    const canDebounce =
+      debouncedMethods.includes(notification.method) &&
+      !notification.params &&
+      !(options === null || options === undefined ? undefined : options.relatedRequestId);
     if (canDebounce) {
       if (this._pendingDebouncedNotifications.has(notification.method)) {
         return;
@@ -11926,15 +13723,17 @@ class Protocol {
         }
         const jsonrpcNotification2 = {
           ...notification,
-          jsonrpc: "2.0"
+          jsonrpc: "2.0",
         };
-        (_a2 = this._transport) === null || _a2 === undefined || _a2.send(jsonrpcNotification2, options).catch((error) => this._onerror(error));
+        (_a2 = this._transport) === null ||
+          _a2 === undefined ||
+          _a2.send(jsonrpcNotification2, options).catch((error) => this._onerror(error));
       });
       return;
     }
     const jsonrpcNotification = {
       ...notification,
-      jsonrpc: "2.0"
+      jsonrpc: "2.0",
     };
     await this._transport.send(jsonrpcNotification, options);
   }
@@ -11954,21 +13753,26 @@ class Protocol {
     }
   }
   setNotificationHandler(notificationSchema, handler) {
-    this._notificationHandlers.set(notificationSchema.shape.method.value, (notification) => Promise.resolve(handler(notificationSchema.parse(notification))));
+    this._notificationHandlers.set(notificationSchema.shape.method.value, (notification) =>
+      Promise.resolve(handler(notificationSchema.parse(notification)))
+    );
   }
   removeNotificationHandler(method) {
     this._notificationHandlers.delete(method);
   }
 }
 function mergeCapabilities(base, additional) {
-  return Object.entries(additional).reduce((acc, [key, value]) => {
-    if (value && typeof value === "object") {
-      acc[key] = acc[key] ? { ...acc[key], ...value } : value;
-    } else {
-      acc[key] = value;
-    }
-    return acc;
-  }, { ...base });
+  return Object.entries(additional).reduce(
+    (acc, [key, value]) => {
+      if (value && typeof value === "object") {
+        acc[key] = acc[key] ? { ...acc[key], ...value } : value;
+      } else {
+        acc[key] = value;
+      }
+      return acc;
+    },
+    { ...base }
+  );
 }
 
 // node_modules/@modelcontextprotocol/sdk/dist/esm/server/index.js
@@ -11979,7 +13783,10 @@ class Server extends Protocol {
     var _a;
     super(options);
     this._serverInfo = _serverInfo;
-    this._capabilities = (_a = options === null || options === undefined ? undefined : options.capabilities) !== null && _a !== undefined ? _a : {};
+    this._capabilities =
+      (_a = options === null || options === undefined ? undefined : options.capabilities) !== null && _a !== undefined
+        ? _a
+        : {};
     this._instructions = options === null || options === undefined ? undefined : options.instructions;
     this.setRequestHandler(InitializeRequestSchema, (request) => this._oninitialize(request));
     this.setNotificationHandler(InitializedNotificationSchema, () => {
@@ -12084,12 +13891,14 @@ class Server extends Protocol {
     const requestedVersion = request.params.protocolVersion;
     this._clientCapabilities = request.params.capabilities;
     this._clientVersion = request.params.clientInfo;
-    const protocolVersion = SUPPORTED_PROTOCOL_VERSIONS.includes(requestedVersion) ? requestedVersion : LATEST_PROTOCOL_VERSION;
+    const protocolVersion = SUPPORTED_PROTOCOL_VERSIONS.includes(requestedVersion)
+      ? requestedVersion
+      : LATEST_PROTOCOL_VERSION;
     return {
       protocolVersion,
       capabilities: this.getCapabilities(),
       serverInfo: this._serverInfo,
-      ...this._instructions && { instructions: this._instructions }
+      ...(this._instructions && { instructions: this._instructions }),
     };
   }
   getClientCapabilities() {
@@ -12111,11 +13920,14 @@ class Server extends Protocol {
     const result = await this.request({ method: "elicitation/create", params }, ElicitResultSchema, options);
     if (result.action === "accept" && result.content) {
       try {
-        const ajv = new import_ajv.default;
+        const ajv = new import_ajv.default();
         const validate = ajv.compile(params.requestedSchema);
         const isValid2 = validate(result.content);
         if (!isValid2) {
-          throw new McpError(ErrorCode.InvalidParams, `Elicitation response content does not match requested schema: ${ajv.errorsText(validate.errors)}`);
+          throw new McpError(
+            ErrorCode.InvalidParams,
+            `Elicitation response content does not match requested schema: ${ajv.errorsText(validate.errors)}`
+          );
         }
       } catch (error) {
         if (error instanceof McpError) {
@@ -12135,12 +13947,12 @@ class Server extends Protocol {
   async sendResourceUpdated(params) {
     return this.notification({
       method: "notifications/resources/updated",
-      params
+      params,
     });
   }
   async sendResourceListChanged() {
     return this.notification({
-      method: "notifications/resources/list_changed"
+      method: "notifications/resources/list_changed",
     });
   }
   async sendToolListChanged() {
@@ -12174,41 +13986,46 @@ var defaultOptions = {
   applyRegexFlags: false,
   emailStrategy: "format:email",
   base64Strategy: "contentEncoding:base64",
-  nameStrategy: "ref"
+  nameStrategy: "ref",
 };
-var getDefaultOptions = (options) => typeof options === "string" ? {
-  ...defaultOptions,
-  name: options
-} : {
-  ...defaultOptions,
-  ...options
-};
+var getDefaultOptions = (options) =>
+  typeof options === "string"
+    ? {
+        ...defaultOptions,
+        name: options,
+      }
+    : {
+        ...defaultOptions,
+        ...options,
+      };
 // node_modules/zod-to-json-schema/dist/esm/Refs.js
 var getRefs = (options) => {
   const _options = getDefaultOptions(options);
-  const currentPath = _options.name !== undefined ? [..._options.basePath, _options.definitionPath, _options.name] : _options.basePath;
+  const currentPath =
+    _options.name !== undefined ? [..._options.basePath, _options.definitionPath, _options.name] : _options.basePath;
   return {
     ..._options,
     currentPath,
     propertyPath: undefined,
-    seen: new Map(Object.entries(_options.definitions).map(([name, def]) => [
-      def._def,
-      {
-        def: def._def,
-        path: [..._options.basePath, _options.definitionPath, name],
-        jsonSchema: undefined
-      }
-    ]))
+    seen: new Map(
+      Object.entries(_options.definitions).map(([name, def]) => [
+        def._def,
+        {
+          def: def._def,
+          path: [..._options.basePath, _options.definitionPath, name],
+          jsonSchema: undefined,
+        },
+      ])
+    ),
   };
 };
 // node_modules/zod-to-json-schema/dist/esm/errorMessages.js
 function addErrorMessage(res, key, errorMessage, refs) {
-  if (!refs?.errorMessages)
-    return;
+  if (!refs?.errorMessages) return;
   if (errorMessage) {
     res.errorMessage = {
       ...res.errorMessage,
-      [key]: errorMessage
+      [key]: errorMessage,
     };
   }
 }
@@ -12224,12 +14041,12 @@ function parseAnyDef() {
 // node_modules/zod-to-json-schema/dist/esm/parsers/array.js
 function parseArrayDef(def, refs) {
   const res = {
-    type: "array"
+    type: "array",
   };
   if (def.type?._def && def.type?._def?.typeName !== ZodFirstPartyTypeKind.ZodAny) {
     res.items = parseDef(def.type._def, {
       ...refs,
-      currentPath: [...refs.currentPath, "items"]
+      currentPath: [...refs.currentPath, "items"],
     });
   }
   if (def.minLength) {
@@ -12249,10 +14066,9 @@ function parseArrayDef(def, refs) {
 function parseBigintDef(def, refs) {
   const res = {
     type: "integer",
-    format: "int64"
+    format: "int64",
   };
-  if (!def.checks)
-    return res;
+  if (!def.checks) return res;
   for (const check of def.checks) {
     switch (check.kind) {
       case "min":
@@ -12294,7 +14110,7 @@ function parseBigintDef(def, refs) {
 // node_modules/zod-to-json-schema/dist/esm/parsers/boolean.js
 function parseBooleanDef() {
   return {
-    type: "boolean"
+    type: "boolean",
   };
 }
 
@@ -12313,7 +14129,7 @@ function parseDateDef(def, refs, overrideDateStrategy) {
   const strategy = overrideDateStrategy ?? refs.dateStrategy;
   if (Array.isArray(strategy)) {
     return {
-      anyOf: strategy.map((item, i) => parseDateDef(def, refs, item))
+      anyOf: strategy.map((item, i) => parseDateDef(def, refs, item)),
     };
   }
   switch (strategy) {
@@ -12321,12 +14137,12 @@ function parseDateDef(def, refs, overrideDateStrategy) {
     case "format:date-time":
       return {
         type: "string",
-        format: "date-time"
+        format: "date-time",
       };
     case "format:date":
       return {
         type: "string",
-        format: "date"
+        format: "date",
       };
     case "integer":
       return integerDateParser(def, refs);
@@ -12335,7 +14151,7 @@ function parseDateDef(def, refs, overrideDateStrategy) {
 var integerDateParser = (def, refs) => {
   const res = {
     type: "integer",
-    format: "unix-time"
+    format: "unix-time",
   };
   if (refs.target === "openApi3") {
     return res;
@@ -12357,7 +14173,7 @@ var integerDateParser = (def, refs) => {
 function parseDefaultDef(_def, refs) {
   return {
     ...parseDef(_def.innerType._def, refs),
-    default: _def.defaultValue()
+    default: _def.defaultValue(),
   };
 }
 
@@ -12370,26 +14186,25 @@ function parseEffectsDef(_def, refs) {
 function parseEnumDef(def) {
   return {
     type: "string",
-    enum: Array.from(def.values)
+    enum: Array.from(def.values),
   };
 }
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/intersection.js
 var isJsonSchema7AllOfType = (type) => {
-  if ("type" in type && type.type === "string")
-    return false;
+  if ("type" in type && type.type === "string") return false;
   return "allOf" in type;
 };
 function parseIntersectionDef(def, refs) {
   const allOf = [
     parseDef(def.left._def, {
       ...refs,
-      currentPath: [...refs.currentPath, "allOf", "0"]
+      currentPath: [...refs.currentPath, "allOf", "0"],
     }),
     parseDef(def.right._def, {
       ...refs,
-      currentPath: [...refs.currentPath, "allOf", "1"]
-    })
+      currentPath: [...refs.currentPath, "allOf", "1"],
+    }),
   ].filter((x) => !!x);
   let unevaluatedProperties = refs.target === "jsonSchema2019-09" ? { unevaluatedProperties: false } : undefined;
   const mergedAllOf = [];
@@ -12410,10 +14225,12 @@ function parseIntersectionDef(def, refs) {
       mergedAllOf.push(nestedSchema);
     }
   });
-  return mergedAllOf.length ? {
-    allOf: mergedAllOf,
-    ...unevaluatedProperties
-  } : undefined;
+  return mergedAllOf.length
+    ? {
+        allOf: mergedAllOf,
+        ...unevaluatedProperties,
+      }
+    : undefined;
 }
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/literal.js
@@ -12421,18 +14238,18 @@ function parseLiteralDef(def, refs) {
   const parsedType = typeof def.value;
   if (parsedType !== "bigint" && parsedType !== "number" && parsedType !== "boolean" && parsedType !== "string") {
     return {
-      type: Array.isArray(def.value) ? "array" : "object"
+      type: Array.isArray(def.value) ? "array" : "object",
     };
   }
   if (refs.target === "openApi3") {
     return {
       type: parsedType === "bigint" ? "integer" : parsedType,
-      enum: [def.value]
+      enum: [def.value],
     };
   }
   return {
     type: parsedType === "bigint" ? "integer" : parsedType,
-    const: def.value
+    const: def.value,
   };
 }
 
@@ -12451,26 +14268,40 @@ var zodPatterns = {
   },
   uuid: /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/,
   ipv4: /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$/,
-  ipv4Cidr: /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\/(3[0-2]|[12]?[0-9])$/,
+  ipv4Cidr:
+    /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\/(3[0-2]|[12]?[0-9])$/,
   ipv6: /^(([a-f0-9]{1,4}:){7}|::([a-f0-9]{1,4}:){0,6}|([a-f0-9]{1,4}:){1}:([a-f0-9]{1,4}:){0,5}|([a-f0-9]{1,4}:){2}:([a-f0-9]{1,4}:){0,4}|([a-f0-9]{1,4}:){3}:([a-f0-9]{1,4}:){0,3}|([a-f0-9]{1,4}:){4}:([a-f0-9]{1,4}:){0,2}|([a-f0-9]{1,4}:){5}:([a-f0-9]{1,4}:){0,1})([a-f0-9]{1,4}|(((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\.){3}((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2})))$/,
-  ipv6Cidr: /^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/,
+  ipv6Cidr:
+    /^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/,
   base64: /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/,
   base64url: /^([0-9a-zA-Z-_]{4})*(([0-9a-zA-Z-_]{2}(==)?)|([0-9a-zA-Z-_]{3}(=)?))?$/,
   nanoid: /^[a-zA-Z0-9_-]{21}$/,
-  jwt: /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$/
+  jwt: /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$/,
 };
 function parseStringDef(def, refs) {
   const res = {
-    type: "string"
+    type: "string",
   };
   if (def.checks) {
     for (const check of def.checks) {
       switch (check.kind) {
         case "min":
-          setResponseValueAndErrors(res, "minLength", typeof res.minLength === "number" ? Math.max(res.minLength, check.value) : check.value, check.message, refs);
+          setResponseValueAndErrors(
+            res,
+            "minLength",
+            typeof res.minLength === "number" ? Math.max(res.minLength, check.value) : check.value,
+            check.message,
+            refs
+          );
           break;
         case "max":
-          setResponseValueAndErrors(res, "maxLength", typeof res.maxLength === "number" ? Math.min(res.maxLength, check.value) : check.value, check.message, refs);
+          setResponseValueAndErrors(
+            res,
+            "maxLength",
+            typeof res.maxLength === "number" ? Math.min(res.maxLength, check.value) : check.value,
+            check.message,
+            refs
+          );
           break;
         case "email":
           switch (refs.emailStrategy) {
@@ -12519,8 +14350,20 @@ function parseStringDef(def, refs) {
           addFormat(res, "duration", check.message, refs);
           break;
         case "length":
-          setResponseValueAndErrors(res, "minLength", typeof res.minLength === "number" ? Math.max(res.minLength, check.value) : check.value, check.message, refs);
-          setResponseValueAndErrors(res, "maxLength", typeof res.maxLength === "number" ? Math.min(res.maxLength, check.value) : check.value, check.message, refs);
+          setResponseValueAndErrors(
+            res,
+            "minLength",
+            typeof res.minLength === "number" ? Math.max(res.minLength, check.value) : check.value,
+            check.message,
+            refs
+          );
+          setResponseValueAndErrors(
+            res,
+            "maxLength",
+            typeof res.maxLength === "number" ? Math.min(res.maxLength, check.value) : check.value,
+            check.message,
+            refs
+          );
           break;
         case "includes": {
           addPattern(res, RegExp(escapeLiteralCheckValue(check.value, refs)), check.message, refs);
@@ -12594,7 +14437,7 @@ function escapeLiteralCheckValue(literal, refs) {
 var ALPHA_NUMERIC = new Set("ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvxyz0123456789");
 function escapeNonAlphaNumeric(source) {
   let result = "";
-  for (let i = 0;i < source.length; i++) {
+  for (let i = 0; i < source.length; i++) {
     if (!ALPHA_NUMERIC.has(source[i])) {
       result += "\\";
     }
@@ -12610,9 +14453,10 @@ function addFormat(schema, value, message, refs) {
     if (schema.format) {
       schema.anyOf.push({
         format: schema.format,
-        ...schema.errorMessage && refs.errorMessages && {
-          errorMessage: { format: schema.errorMessage.format }
-        }
+        ...(schema.errorMessage &&
+          refs.errorMessages && {
+            errorMessage: { format: schema.errorMessage.format },
+          }),
       });
       delete schema.format;
       if (schema.errorMessage) {
@@ -12624,7 +14468,7 @@ function addFormat(schema, value, message, refs) {
     }
     schema.anyOf.push({
       format: value,
-      ...message && refs.errorMessages && { errorMessage: { format: message } }
+      ...(message && refs.errorMessages && { errorMessage: { format: message } }),
     });
   } else {
     setResponseValueAndErrors(schema, "format", value, message, refs);
@@ -12638,9 +14482,10 @@ function addPattern(schema, regex, message, refs) {
     if (schema.pattern) {
       schema.allOf.push({
         pattern: schema.pattern,
-        ...schema.errorMessage && refs.errorMessages && {
-          errorMessage: { pattern: schema.errorMessage.pattern }
-        }
+        ...(schema.errorMessage &&
+          refs.errorMessages && {
+            errorMessage: { pattern: schema.errorMessage.pattern },
+          }),
       });
       delete schema.pattern;
       if (schema.errorMessage) {
@@ -12652,7 +14497,7 @@ function addPattern(schema, regex, message, refs) {
     }
     schema.allOf.push({
       pattern: stringifyRegExpWithFlags(regex, refs),
-      ...message && refs.errorMessages && { errorMessage: { pattern: message } }
+      ...(message && refs.errorMessages && { errorMessage: { pattern: message } }),
     });
   } else {
     setResponseValueAndErrors(schema, "pattern", stringifyRegExpWithFlags(regex, refs), message, refs);
@@ -12665,14 +14510,14 @@ function stringifyRegExpWithFlags(regex, refs) {
   const flags = {
     i: regex.flags.includes("i"),
     m: regex.flags.includes("m"),
-    s: regex.flags.includes("s")
+    s: regex.flags.includes("s"),
   };
   const source = flags.i ? regex.source.toLowerCase() : regex.source;
   let pattern = "";
   let isEscaped = false;
   let inCharGroup = false;
   let inCharRange = false;
-  for (let i = 0;i < source.length; i++) {
+  for (let i = 0; i < source.length; i++) {
     if (isEscaped) {
       pattern += source[i];
       isEscaped = false;
@@ -12710,8 +14555,10 @@ function stringifyRegExpWithFlags(regex, refs) {
       }
     }
     if (flags.s && source[i] === ".") {
-      pattern += inCharGroup ? `${source[i]}\r
-` : `[${source[i]}\r
+      pattern += inCharGroup
+        ? `${source[i]}\r
+`
+        : `[${source[i]}\r
 ]`;
       continue;
     }
@@ -12727,7 +14574,9 @@ function stringifyRegExpWithFlags(regex, refs) {
   try {
     new RegExp(pattern);
   } catch {
-    console.warn(`Could not convert regex pattern at ${refs.currentPath.join("/")} to a flag-independent form! Falling back to the flag-ignorant source`);
+    console.warn(
+      `Could not convert regex pattern at ${refs.currentPath.join("/")} to a flag-independent form! Falling back to the flag-ignorant source`
+    );
     return regex.source;
   }
   return pattern;
@@ -12742,22 +14591,27 @@ function parseRecordDef(def, refs) {
     return {
       type: "object",
       required: def.keyType._def.values,
-      properties: def.keyType._def.values.reduce((acc, key) => ({
-        ...acc,
-        [key]: parseDef(def.valueType._def, {
-          ...refs,
-          currentPath: [...refs.currentPath, "properties", key]
-        }) ?? {}
-      }), {}),
-      additionalProperties: refs.rejectedAdditionalProperties
+      properties: def.keyType._def.values.reduce(
+        (acc, key) => ({
+          ...acc,
+          [key]:
+            parseDef(def.valueType._def, {
+              ...refs,
+              currentPath: [...refs.currentPath, "properties", key],
+            }) ?? {},
+        }),
+        {}
+      ),
+      additionalProperties: refs.rejectedAdditionalProperties,
     };
   }
   const schema = {
     type: "object",
-    additionalProperties: parseDef(def.valueType._def, {
-      ...refs,
-      currentPath: [...refs.currentPath, "additionalProperties"]
-    }) ?? refs.allowedAdditionalProperties
+    additionalProperties:
+      parseDef(def.valueType._def, {
+        ...refs,
+        currentPath: [...refs.currentPath, "additionalProperties"],
+      }) ?? refs.allowedAdditionalProperties,
   };
   if (refs.target === "openApi3") {
     return schema;
@@ -12766,20 +14620,24 @@ function parseRecordDef(def, refs) {
     const { type, ...keyType } = parseStringDef(def.keyType._def, refs);
     return {
       ...schema,
-      propertyNames: keyType
+      propertyNames: keyType,
     };
   } else if (def.keyType?._def.typeName === ZodFirstPartyTypeKind.ZodEnum) {
     return {
       ...schema,
       propertyNames: {
-        enum: def.keyType._def.values
-      }
+        enum: def.keyType._def.values,
+      },
     };
-  } else if (def.keyType?._def.typeName === ZodFirstPartyTypeKind.ZodBranded && def.keyType._def.type._def.typeName === ZodFirstPartyTypeKind.ZodString && def.keyType._def.type._def.checks?.length) {
+  } else if (
+    def.keyType?._def.typeName === ZodFirstPartyTypeKind.ZodBranded &&
+    def.keyType._def.type._def.typeName === ZodFirstPartyTypeKind.ZodString &&
+    def.keyType._def.type._def.checks?.length
+  ) {
     const { type, ...keyType } = parseBrandedDef(def.keyType._def, refs);
     return {
       ...schema,
-      propertyNames: keyType
+      propertyNames: keyType,
     };
   }
   return schema;
@@ -12790,14 +14648,16 @@ function parseMapDef(def, refs) {
   if (refs.mapStrategy === "record") {
     return parseRecordDef(def, refs);
   }
-  const keys = parseDef(def.keyType._def, {
-    ...refs,
-    currentPath: [...refs.currentPath, "items", "items", "0"]
-  }) || {};
-  const values = parseDef(def.valueType._def, {
-    ...refs,
-    currentPath: [...refs.currentPath, "items", "items", "1"]
-  }) || {};
+  const keys =
+    parseDef(def.keyType._def, {
+      ...refs,
+      currentPath: [...refs.currentPath, "items", "items", "0"],
+    }) || {};
+  const values =
+    parseDef(def.valueType._def, {
+      ...refs,
+      currentPath: [...refs.currentPath, "items", "items", "1"],
+    }) || {};
   return {
     type: "array",
     maxItems: 125,
@@ -12805,8 +14665,8 @@ function parseMapDef(def, refs) {
       type: "array",
       items: [keys, values],
       minItems: 2,
-      maxItems: 2
-    }
+      maxItems: 2,
+    },
   };
 }
 
@@ -12819,26 +14679,28 @@ function parseNativeEnumDef(def) {
   const actualValues = actualKeys.map((key) => object[key]);
   const parsedTypes = Array.from(new Set(actualValues.map((values) => typeof values)));
   return {
-    type: parsedTypes.length === 1 ? parsedTypes[0] === "string" ? "string" : "number" : ["string", "number"],
-    enum: actualValues
+    type: parsedTypes.length === 1 ? (parsedTypes[0] === "string" ? "string" : "number") : ["string", "number"],
+    enum: actualValues,
   };
 }
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/never.js
 function parseNeverDef() {
   return {
-    not: {}
+    not: {},
   };
 }
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/null.js
 function parseNullDef(refs) {
-  return refs.target === "openApi3" ? {
-    enum: ["null"],
-    nullable: true
-  } : {
-    type: "null"
-  };
+  return refs.target === "openApi3"
+    ? {
+        enum: ["null"],
+        nullable: true,
+      }
+    : {
+        type: "null",
+      };
 }
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/union.js
@@ -12847,19 +14709,18 @@ var primitiveMappings = {
   ZodNumber: "number",
   ZodBigInt: "integer",
   ZodBoolean: "boolean",
-  ZodNull: "null"
+  ZodNull: "null",
 };
 function parseUnionDef(def, refs) {
-  if (refs.target === "openApi3")
-    return asAnyOf(def, refs);
+  if (refs.target === "openApi3") return asAnyOf(def, refs);
   const options = def.options instanceof Map ? Array.from(def.options.values()) : def.options;
-  if (options.every((x) => (x._def.typeName in primitiveMappings) && (!x._def.checks || !x._def.checks.length))) {
+  if (options.every((x) => x._def.typeName in primitiveMappings && (!x._def.checks || !x._def.checks.length))) {
     const types2 = options.reduce((types3, x) => {
       const type = primitiveMappings[x._def.typeName];
       return type && !types3.includes(type) ? [...types3, type] : types3;
     }, []);
     return {
-      type: types2.length > 1 ? types2 : types2[0]
+      type: types2.length > 1 ? types2 : types2[0],
     };
   } else if (options.every((x) => x._def.typeName === "ZodLiteral" && !x.description)) {
     const types2 = options.reduce((acc, x) => {
@@ -12872,8 +14733,7 @@ function parseUnionDef(def, refs) {
         case "bigint":
           return [...acc, "integer"];
         case "object":
-          if (x._def.value === null)
-            return [...acc, "null"];
+          if (x._def.value === null) return [...acc, "null"];
         case "symbol":
         case "undefined":
         case "function":
@@ -12887,56 +14747,56 @@ function parseUnionDef(def, refs) {
         type: uniqueTypes.length > 1 ? uniqueTypes : uniqueTypes[0],
         enum: options.reduce((acc, x) => {
           return acc.includes(x._def.value) ? acc : [...acc, x._def.value];
-        }, [])
+        }, []),
       };
     }
   } else if (options.every((x) => x._def.typeName === "ZodEnum")) {
     return {
       type: "string",
-      enum: options.reduce((acc, x) => [
-        ...acc,
-        ...x._def.values.filter((x2) => !acc.includes(x2))
-      ], [])
+      enum: options.reduce((acc, x) => [...acc, ...x._def.values.filter((x2) => !acc.includes(x2))], []),
     };
   }
   return asAnyOf(def, refs);
 }
 var asAnyOf = (def, refs) => {
-  const anyOf = (def.options instanceof Map ? Array.from(def.options.values()) : def.options).map((x, i) => parseDef(x._def, {
-    ...refs,
-    currentPath: [...refs.currentPath, "anyOf", `${i}`]
-  })).filter((x) => !!x && (!refs.strictUnions || typeof x === "object" && Object.keys(x).length > 0));
+  const anyOf = (def.options instanceof Map ? Array.from(def.options.values()) : def.options)
+    .map((x, i) =>
+      parseDef(x._def, {
+        ...refs,
+        currentPath: [...refs.currentPath, "anyOf", `${i}`],
+      })
+    )
+    .filter((x) => !!x && (!refs.strictUnions || (typeof x === "object" && Object.keys(x).length > 0)));
   return anyOf.length ? { anyOf } : undefined;
 };
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/nullable.js
 function parseNullableDef(def, refs) {
-  if (["ZodString", "ZodNumber", "ZodBigInt", "ZodBoolean", "ZodNull"].includes(def.innerType._def.typeName) && (!def.innerType._def.checks || !def.innerType._def.checks.length)) {
+  if (
+    ["ZodString", "ZodNumber", "ZodBigInt", "ZodBoolean", "ZodNull"].includes(def.innerType._def.typeName) &&
+    (!def.innerType._def.checks || !def.innerType._def.checks.length)
+  ) {
     if (refs.target === "openApi3") {
       return {
         type: primitiveMappings[def.innerType._def.typeName],
-        nullable: true
+        nullable: true,
       };
     }
     return {
-      type: [
-        primitiveMappings[def.innerType._def.typeName],
-        "null"
-      ]
+      type: [primitiveMappings[def.innerType._def.typeName], "null"],
     };
   }
   if (refs.target === "openApi3") {
     const base2 = parseDef(def.innerType._def, {
       ...refs,
-      currentPath: [...refs.currentPath]
+      currentPath: [...refs.currentPath],
     });
-    if (base2 && "$ref" in base2)
-      return { allOf: [base2], nullable: true };
+    if (base2 && "$ref" in base2) return { allOf: [base2], nullable: true };
     return base2 && { ...base2, nullable: true };
   }
   const base = parseDef(def.innerType._def, {
     ...refs,
-    currentPath: [...refs.currentPath, "anyOf", "0"]
+    currentPath: [...refs.currentPath, "anyOf", "0"],
   });
   return base && { anyOf: [base, { type: "null" }] };
 }
@@ -12944,10 +14804,9 @@ function parseNullableDef(def, refs) {
 // node_modules/zod-to-json-schema/dist/esm/parsers/number.js
 function parseNumberDef(def, refs) {
   const res = {
-    type: "number"
+    type: "number",
   };
-  if (!def.checks)
-    return res;
+  if (!def.checks) return res;
   for (const check of def.checks) {
     switch (check.kind) {
       case "int":
@@ -12995,7 +14854,7 @@ function parseObjectDef(def, refs) {
   const forceOptionalIntoNullable = refs.target === "openAi";
   const result = {
     type: "object",
-    properties: {}
+    properties: {},
   };
   const required = [];
   const shape = def.shape();
@@ -13017,7 +14876,7 @@ function parseObjectDef(def, refs) {
     const parsedDef = parseDef(propDef._def, {
       ...refs,
       currentPath: [...refs.currentPath, "properties", propName],
-      propertyPath: [...refs.currentPath, "properties", propName]
+      propertyPath: [...refs.currentPath, "properties", propName],
     });
     if (parsedDef === undefined) {
       continue;
@@ -13040,7 +14899,7 @@ function decideAdditionalProperties(def, refs) {
   if (def.catchall._def.typeName !== "ZodNever") {
     return parseDef(def.catchall._def, {
       ...refs,
-      currentPath: [...refs.currentPath, "additionalProperties"]
+      currentPath: [...refs.currentPath, "additionalProperties"],
     });
   }
   switch (def.unknownKeys) {
@@ -13049,7 +14908,9 @@ function decideAdditionalProperties(def, refs) {
     case "strict":
       return refs.rejectedAdditionalProperties;
     case "strip":
-      return refs.removeAdditionalStrategy === "strict" ? refs.allowedAdditionalProperties : refs.rejectedAdditionalProperties;
+      return refs.removeAdditionalStrategy === "strict"
+        ? refs.allowedAdditionalProperties
+        : refs.rejectedAdditionalProperties;
   }
 }
 function safeIsOptional(schema) {
@@ -13067,16 +14928,18 @@ var parseOptionalDef = (def, refs) => {
   }
   const innerSchema = parseDef(def.innerType._def, {
     ...refs,
-    currentPath: [...refs.currentPath, "anyOf", "1"]
+    currentPath: [...refs.currentPath, "anyOf", "1"],
   });
-  return innerSchema ? {
-    anyOf: [
-      {
-        not: {}
-      },
-      innerSchema
-    ]
-  } : {};
+  return innerSchema
+    ? {
+        anyOf: [
+          {
+            not: {},
+          },
+          innerSchema,
+        ],
+      }
+    : {};
 };
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/pipeline.js
@@ -13088,14 +14951,14 @@ var parsePipelineDef = (def, refs) => {
   }
   const a = parseDef(def.in._def, {
     ...refs,
-    currentPath: [...refs.currentPath, "allOf", "0"]
+    currentPath: [...refs.currentPath, "allOf", "0"],
   });
   const b = parseDef(def.out._def, {
     ...refs,
-    currentPath: [...refs.currentPath, "allOf", a ? "1" : "0"]
+    currentPath: [...refs.currentPath, "allOf", a ? "1" : "0"],
   });
   return {
-    allOf: [a, b].filter((x) => x !== undefined)
+    allOf: [a, b].filter((x) => x !== undefined),
   };
 };
 
@@ -13108,12 +14971,12 @@ function parsePromiseDef(def, refs) {
 function parseSetDef(def, refs) {
   const items = parseDef(def.valueType._def, {
     ...refs,
-    currentPath: [...refs.currentPath, "items"]
+    currentPath: [...refs.currentPath, "items"],
   });
   const schema = {
     type: "array",
     uniqueItems: true,
-    items
+    items,
   };
   if (def.minSize) {
     setResponseValueAndErrors(schema, "minItems", def.minSize.value, def.minSize.message, refs);
@@ -13130,24 +14993,32 @@ function parseTupleDef(def, refs) {
     return {
       type: "array",
       minItems: def.items.length,
-      items: def.items.map((x, i) => parseDef(x._def, {
-        ...refs,
-        currentPath: [...refs.currentPath, "items", `${i}`]
-      })).reduce((acc, x) => x === undefined ? acc : [...acc, x], []),
+      items: def.items
+        .map((x, i) =>
+          parseDef(x._def, {
+            ...refs,
+            currentPath: [...refs.currentPath, "items", `${i}`],
+          })
+        )
+        .reduce((acc, x) => (x === undefined ? acc : [...acc, x]), []),
       additionalItems: parseDef(def.rest._def, {
         ...refs,
-        currentPath: [...refs.currentPath, "additionalItems"]
-      })
+        currentPath: [...refs.currentPath, "additionalItems"],
+      }),
     };
   } else {
     return {
       type: "array",
       minItems: def.items.length,
       maxItems: def.items.length,
-      items: def.items.map((x, i) => parseDef(x._def, {
-        ...refs,
-        currentPath: [...refs.currentPath, "items", `${i}`]
-      })).reduce((acc, x) => x === undefined ? acc : [...acc, x], [])
+      items: def.items
+        .map((x, i) =>
+          parseDef(x._def, {
+            ...refs,
+            currentPath: [...refs.currentPath, "items", `${i}`],
+          })
+        )
+        .reduce((acc, x) => (x === undefined ? acc : [...acc, x]), []),
     };
   }
 }
@@ -13155,7 +15026,7 @@ function parseTupleDef(def, refs) {
 // node_modules/zod-to-json-schema/dist/esm/parsers/undefined.js
 function parseUndefinedDef() {
   return {
-    not: {}
+    not: {},
   };
 }
 
@@ -13265,7 +15136,8 @@ function parseDef(def, refs, forceResolution = false) {
   const newItem = { def, path: refs.currentPath, jsonSchema: undefined };
   refs.seen.set(def, newItem);
   const jsonSchemaOrGetter = selectParser(def, def.typeName, refs);
-  const jsonSchema = typeof jsonSchemaOrGetter === "function" ? parseDef(jsonSchemaOrGetter(), refs) : jsonSchemaOrGetter;
+  const jsonSchema =
+    typeof jsonSchemaOrGetter === "function" ? parseDef(jsonSchemaOrGetter(), refs) : jsonSchemaOrGetter;
   if (jsonSchema) {
     addMeta(def, refs, jsonSchema);
   }
@@ -13285,7 +15157,10 @@ var get$ref = (item, refs) => {
       return { $ref: getRelativePath(refs.currentPath, item.path) };
     case "none":
     case "seen": {
-      if (item.path.length < refs.currentPath.length && item.path.every((value, index) => refs.currentPath[index] === value)) {
+      if (
+        item.path.length < refs.currentPath.length &&
+        item.path.every((value, index) => refs.currentPath[index] === value)
+      ) {
         console.warn(`Recursive reference detected at ${refs.currentPath.join("/")}! Defaulting to any`);
         return {};
       }
@@ -13295,9 +15170,8 @@ var get$ref = (item, refs) => {
 };
 var getRelativePath = (pathA, pathB) => {
   let i = 0;
-  for (;i < pathA.length && i < pathB.length; i++) {
-    if (pathA[i] !== pathB[i])
-      break;
+  for (; i < pathA.length && i < pathB.length; i++) {
+    if (pathA[i] !== pathB[i]) break;
   }
   return [(pathA.length - i).toString(), ...pathB.slice(i)].join("/");
 };
@@ -13313,49 +15187,79 @@ var addMeta = (def, refs, jsonSchema) => {
 // node_modules/zod-to-json-schema/dist/esm/zodToJsonSchema.js
 var zodToJsonSchema = (schema, options) => {
   const refs = getRefs(options);
-  const definitions = typeof options === "object" && options.definitions ? Object.entries(options.definitions).reduce((acc, [name2, schema2]) => ({
-    ...acc,
-    [name2]: parseDef(schema2._def, {
-      ...refs,
-      currentPath: [...refs.basePath, refs.definitionPath, name2]
-    }, true) ?? {}
-  }), {}) : undefined;
+  const definitions =
+    typeof options === "object" && options.definitions
+      ? Object.entries(options.definitions).reduce(
+          (acc, [name2, schema2]) => ({
+            ...acc,
+            [name2]:
+              parseDef(
+                schema2._def,
+                {
+                  ...refs,
+                  currentPath: [...refs.basePath, refs.definitionPath, name2],
+                },
+                true
+              ) ?? {},
+          }),
+          {}
+        )
+      : undefined;
   const name = typeof options === "string" ? options : options?.nameStrategy === "title" ? undefined : options?.name;
-  const main = parseDef(schema._def, name === undefined ? refs : {
-    ...refs,
-    currentPath: [...refs.basePath, refs.definitionPath, name]
-  }, false) ?? {};
-  const title = typeof options === "object" && options.name !== undefined && options.nameStrategy === "title" ? options.name : undefined;
+  const main =
+    parseDef(
+      schema._def,
+      name === undefined
+        ? refs
+        : {
+            ...refs,
+            currentPath: [...refs.basePath, refs.definitionPath, name],
+          },
+      false
+    ) ?? {};
+  const title =
+    typeof options === "object" && options.name !== undefined && options.nameStrategy === "title"
+      ? options.name
+      : undefined;
   if (title !== undefined) {
     main.title = title;
   }
-  const combined = name === undefined ? definitions ? {
-    ...main,
-    [refs.definitionPath]: definitions
-  } : main : {
-    $ref: [
-      ...refs.$refStrategy === "relative" ? [] : refs.basePath,
-      refs.definitionPath,
-      name
-    ].join("/"),
-    [refs.definitionPath]: {
-      ...definitions,
-      [name]: main
-    }
-  };
+  const combined =
+    name === undefined
+      ? definitions
+        ? {
+            ...main,
+            [refs.definitionPath]: definitions,
+          }
+        : main
+      : {
+          $ref: [...(refs.$refStrategy === "relative" ? [] : refs.basePath), refs.definitionPath, name].join("/"),
+          [refs.definitionPath]: {
+            ...definitions,
+            [name]: main,
+          },
+        };
   if (refs.target === "jsonSchema7") {
     combined.$schema = "http://json-schema.org/draft-07/schema#";
   } else if (refs.target === "jsonSchema2019-09" || refs.target === "openAi") {
     combined.$schema = "https://json-schema.org/draft/2019-09/schema#";
   }
-  if (refs.target === "openAi" && (("anyOf" in combined) || ("oneOf" in combined) || ("allOf" in combined) || ("type" in combined) && Array.isArray(combined.type))) {
-    console.warn("Warning: OpenAI may not support schemas with unions as roots! Try wrapping it in an object property.");
+  if (
+    refs.target === "openAi" &&
+    ("anyOf" in combined ||
+      "oneOf" in combined ||
+      "allOf" in combined ||
+      ("type" in combined && Array.isArray(combined.type)))
+  ) {
+    console.warn(
+      "Warning: OpenAI may not support schemas with unions as roots! Try wrapping it in an object property."
+    );
   }
   return combined;
 };
 // node_modules/@modelcontextprotocol/sdk/dist/esm/server/completable.js
 var McpZodTypeKind;
-(function(McpZodTypeKind2) {
+(function (McpZodTypeKind2) {
   McpZodTypeKind2["Completable"] = "McpCompletable";
 })(McpZodTypeKind || (McpZodTypeKind = {}));
 
@@ -13366,7 +15270,7 @@ class Completable extends ZodType {
     return this._def.type._parse({
       data,
       path: ctx.path,
-      parent: ctx
+      parent: ctx,
     });
   }
   unwrap() {
@@ -13378,18 +15282,16 @@ Completable.create = (type, params) => {
     type,
     typeName: McpZodTypeKind.Completable,
     complete: params.complete,
-    ...processCreateParams2(params)
+    ...processCreateParams2(params),
   });
 };
 function processCreateParams2(params) {
-  if (!params)
-    return {};
+  if (!params) return {};
   const { errorMap: errorMap2, invalid_type_error, required_error, description } = params;
   if (errorMap2 && (invalid_type_error || required_error)) {
     throw new Error(`Can't use "invalid_type_error" or "required_error" in conjunction with custom error map.`);
   }
-  if (errorMap2)
-    return { errorMap: errorMap2, description };
+  if (errorMap2) return { errorMap: errorMap2, description };
   const customMap = (iss, ctx) => {
     var _a, _b;
     const { message } = params;
@@ -13397,11 +15299,20 @@ function processCreateParams2(params) {
       return { message: message !== null && message !== undefined ? message : ctx.defaultError };
     }
     if (typeof ctx.data === "undefined") {
-      return { message: (_a = message !== null && message !== undefined ? message : required_error) !== null && _a !== undefined ? _a : ctx.defaultError };
+      return {
+        message:
+          (_a = message !== null && message !== undefined ? message : required_error) !== null && _a !== undefined
+            ? _a
+            : ctx.defaultError,
+      };
     }
-    if (iss.code !== "invalid_type")
-      return { message: ctx.defaultError };
-    return { message: (_b = message !== null && message !== undefined ? message : invalid_type_error) !== null && _b !== undefined ? _b : ctx.defaultError };
+    if (iss.code !== "invalid_type") return { message: ctx.defaultError };
+    return {
+      message:
+        (_b = message !== null && message !== undefined ? message : invalid_type_error) !== null && _b !== undefined
+          ? _b
+          : ctx.defaultError,
+    };
   };
   return { errorMap: customMap, description };
 }
@@ -13433,25 +15344,29 @@ class McpServer {
     this.server.assertCanSetRequestHandler(CallToolRequestSchema.shape.method.value);
     this.server.registerCapabilities({
       tools: {
-        listChanged: true
-      }
+        listChanged: true,
+      },
     });
     this.server.setRequestHandler(ListToolsRequestSchema, () => ({
-      tools: Object.entries(this._registeredTools).filter(([, tool]) => tool.enabled).map(([name, tool]) => {
-        const toolDefinition = {
-          name,
-          title: tool.title,
-          description: tool.description,
-          inputSchema: tool.inputSchema ? zodToJsonSchema(tool.inputSchema, {
-            strictUnions: true
-          }) : EMPTY_OBJECT_JSON_SCHEMA,
-          annotations: tool.annotations
-        };
-        if (tool.outputSchema) {
-          toolDefinition.outputSchema = zodToJsonSchema(tool.outputSchema, { strictUnions: true });
-        }
-        return toolDefinition;
-      })
+      tools: Object.entries(this._registeredTools)
+        .filter(([, tool]) => tool.enabled)
+        .map(([name, tool]) => {
+          const toolDefinition = {
+            name,
+            title: tool.title,
+            description: tool.description,
+            inputSchema: tool.inputSchema
+              ? zodToJsonSchema(tool.inputSchema, {
+                  strictUnions: true,
+                })
+              : EMPTY_OBJECT_JSON_SCHEMA,
+            annotations: tool.annotations,
+          };
+          if (tool.outputSchema) {
+            toolDefinition.outputSchema = zodToJsonSchema(tool.outputSchema, { strictUnions: true });
+          }
+          return toolDefinition;
+        }),
     }));
     this.server.setRequestHandler(CallToolRequestSchema, async (request, extra) => {
       const tool = this._registeredTools[request.params.name];
@@ -13465,7 +15380,10 @@ class McpServer {
       if (tool.inputSchema) {
         const parseResult = await tool.inputSchema.safeParseAsync(request.params.arguments);
         if (!parseResult.success) {
-          throw new McpError(ErrorCode.InvalidParams, `Invalid arguments for tool ${request.params.name}: ${parseResult.error.message}`);
+          throw new McpError(
+            ErrorCode.InvalidParams,
+            `Invalid arguments for tool ${request.params.name}: ${parseResult.error.message}`
+          );
         }
         const args = parseResult.data;
         const cb = tool.callback;
@@ -13476,10 +15394,10 @@ class McpServer {
             content: [
               {
                 type: "text",
-                text: error instanceof Error ? error.message : String(error)
-              }
+                text: error instanceof Error ? error.message : String(error),
+              },
             ],
-            isError: true
+            isError: true,
           };
         }
       } else {
@@ -13491,20 +15409,26 @@ class McpServer {
             content: [
               {
                 type: "text",
-                text: error instanceof Error ? error.message : String(error)
-              }
+                text: error instanceof Error ? error.message : String(error),
+              },
             ],
-            isError: true
+            isError: true,
           };
         }
       }
       if (tool.outputSchema && !result.isError) {
         if (!result.structuredContent) {
-          throw new McpError(ErrorCode.InvalidParams, `Tool ${request.params.name} has an output schema but no structured content was provided`);
+          throw new McpError(
+            ErrorCode.InvalidParams,
+            `Tool ${request.params.name} has an output schema but no structured content was provided`
+          );
         }
         const parseResult = await tool.outputSchema.safeParseAsync(result.structuredContent);
         if (!parseResult.success) {
-          throw new McpError(ErrorCode.InvalidParams, `Invalid structured content for tool ${request.params.name}: ${parseResult.error.message}`);
+          throw new McpError(
+            ErrorCode.InvalidParams,
+            `Invalid structured content for tool ${request.params.name}: ${parseResult.error.message}`
+          );
         }
       }
       return result;
@@ -13517,7 +15441,7 @@ class McpServer {
     }
     this.server.assertCanSetRequestHandler(CompleteRequestSchema.shape.method.value);
     this.server.registerCapabilities({
-      completions: {}
+      completions: {},
     });
     this.server.setRequestHandler(CompleteRequestSchema, async (request) => {
       switch (request.params.ref.type) {
@@ -13551,7 +15475,9 @@ class McpServer {
     return createCompletionResult(suggestions);
   }
   async handleResourceCompletion(request, ref) {
-    const template = Object.values(this._registeredResourceTemplates).find((t) => t.resourceTemplate.uriTemplate.toString() === ref.uri);
+    const template = Object.values(this._registeredResourceTemplates).find(
+      (t) => t.resourceTemplate.uriTemplate.toString() === ref.uri
+    );
     if (!template) {
       if (this._registeredResources[ref.uri]) {
         return EMPTY_COMPLETION_RESULT;
@@ -13574,15 +15500,17 @@ class McpServer {
     this.server.assertCanSetRequestHandler(ReadResourceRequestSchema.shape.method.value);
     this.server.registerCapabilities({
       resources: {
-        listChanged: true
-      }
+        listChanged: true,
+      },
     });
     this.server.setRequestHandler(ListResourcesRequestSchema, async (request, extra) => {
-      const resources = Object.entries(this._registeredResources).filter(([_, resource]) => resource.enabled).map(([uri, resource]) => ({
-        uri,
-        name: resource.name,
-        ...resource.metadata
-      }));
+      const resources = Object.entries(this._registeredResources)
+        .filter(([_, resource]) => resource.enabled)
+        .map(([uri, resource]) => ({
+          uri,
+          name: resource.name,
+          ...resource.metadata,
+        }));
       const templateResources = [];
       for (const template of Object.values(this._registeredResourceTemplates)) {
         if (!template.resourceTemplate.listCallback) {
@@ -13592,7 +15520,7 @@ class McpServer {
         for (const resource of result.resources) {
           templateResources.push({
             ...template.metadata,
-            ...resource
+            ...resource,
           });
         }
       }
@@ -13602,7 +15530,7 @@ class McpServer {
       const resourceTemplates = Object.entries(this._registeredResourceTemplates).map(([name, template]) => ({
         name,
         uriTemplate: template.resourceTemplate.uriTemplate.toString(),
-        ...template.metadata
+        ...template.metadata,
       }));
       return { resourceTemplates };
     });
@@ -13634,18 +15562,20 @@ class McpServer {
     this.server.assertCanSetRequestHandler(GetPromptRequestSchema.shape.method.value);
     this.server.registerCapabilities({
       prompts: {
-        listChanged: true
-      }
+        listChanged: true,
+      },
     });
     this.server.setRequestHandler(ListPromptsRequestSchema, () => ({
-      prompts: Object.entries(this._registeredPrompts).filter(([, prompt]) => prompt.enabled).map(([name, prompt]) => {
-        return {
-          name,
-          title: prompt.title,
-          description: prompt.description,
-          arguments: prompt.argsSchema ? promptArgumentsFromSchema(prompt.argsSchema) : undefined
-        };
-      })
+      prompts: Object.entries(this._registeredPrompts)
+        .filter(([, prompt]) => prompt.enabled)
+        .map(([name, prompt]) => {
+          return {
+            name,
+            title: prompt.title,
+            description: prompt.description,
+            arguments: prompt.argsSchema ? promptArgumentsFromSchema(prompt.argsSchema) : undefined,
+          };
+        }),
     }));
     this.server.setRequestHandler(GetPromptRequestSchema, async (request, extra) => {
       const prompt = this._registeredPrompts[request.params.name];
@@ -13658,7 +15588,10 @@ class McpServer {
       if (prompt.argsSchema) {
         const parseResult = await prompt.argsSchema.safeParseAsync(request.params.arguments);
         if (!parseResult.success) {
-          throw new McpError(ErrorCode.InvalidParams, `Invalid arguments for prompt ${request.params.name}: ${parseResult.error.message}`);
+          throw new McpError(
+            ErrorCode.InvalidParams,
+            `Invalid arguments for prompt ${request.params.name}: ${parseResult.error.message}`
+          );
         }
         const args = parseResult.data;
         const cb = prompt.callback;
@@ -13689,7 +15622,13 @@ class McpServer {
       if (this._registeredResourceTemplates[name]) {
         throw new Error(`Resource template ${name} is already registered`);
       }
-      const registeredResourceTemplate = this._createRegisteredResourceTemplate(name, undefined, uriOrTemplate, metadata, readCallback);
+      const registeredResourceTemplate = this._createRegisteredResourceTemplate(
+        name,
+        undefined,
+        uriOrTemplate,
+        metadata,
+        readCallback
+      );
       this.setResourceRequestHandlers();
       this.sendResourceListChanged();
       return registeredResourceTemplate;
@@ -13700,7 +15639,13 @@ class McpServer {
       if (this._registeredResources[uriOrTemplate]) {
         throw new Error(`Resource ${uriOrTemplate} is already registered`);
       }
-      const registeredResource = this._createRegisteredResource(name, config.title, uriOrTemplate, config, readCallback);
+      const registeredResource = this._createRegisteredResource(
+        name,
+        config.title,
+        uriOrTemplate,
+        config,
+        readCallback
+      );
       this.setResourceRequestHandlers();
       this.sendResourceListChanged();
       return registeredResource;
@@ -13708,7 +15653,13 @@ class McpServer {
       if (this._registeredResourceTemplates[name]) {
         throw new Error(`Resource template ${name} is already registered`);
       }
-      const registeredResourceTemplate = this._createRegisteredResourceTemplate(name, config.title, uriOrTemplate, config, readCallback);
+      const registeredResourceTemplate = this._createRegisteredResourceTemplate(
+        name,
+        config.title,
+        uriOrTemplate,
+        config,
+        readCallback
+      );
       this.setResourceRequestHandlers();
       this.sendResourceListChanged();
       return registeredResourceTemplate;
@@ -13727,21 +15678,15 @@ class McpServer {
       update: (updates) => {
         if (typeof updates.uri !== "undefined" && updates.uri !== uri) {
           delete this._registeredResources[uri];
-          if (updates.uri)
-            this._registeredResources[updates.uri] = registeredResource;
+          if (updates.uri) this._registeredResources[updates.uri] = registeredResource;
         }
-        if (typeof updates.name !== "undefined")
-          registeredResource.name = updates.name;
-        if (typeof updates.title !== "undefined")
-          registeredResource.title = updates.title;
-        if (typeof updates.metadata !== "undefined")
-          registeredResource.metadata = updates.metadata;
-        if (typeof updates.callback !== "undefined")
-          registeredResource.readCallback = updates.callback;
-        if (typeof updates.enabled !== "undefined")
-          registeredResource.enabled = updates.enabled;
+        if (typeof updates.name !== "undefined") registeredResource.name = updates.name;
+        if (typeof updates.title !== "undefined") registeredResource.title = updates.title;
+        if (typeof updates.metadata !== "undefined") registeredResource.metadata = updates.metadata;
+        if (typeof updates.callback !== "undefined") registeredResource.readCallback = updates.callback;
+        if (typeof updates.enabled !== "undefined") registeredResource.enabled = updates.enabled;
         this.sendResourceListChanged();
-      }
+      },
     };
     this._registeredResources[uri] = registeredResource;
     return registeredResource;
@@ -13759,21 +15704,15 @@ class McpServer {
       update: (updates) => {
         if (typeof updates.name !== "undefined" && updates.name !== name) {
           delete this._registeredResourceTemplates[name];
-          if (updates.name)
-            this._registeredResourceTemplates[updates.name] = registeredResourceTemplate;
+          if (updates.name) this._registeredResourceTemplates[updates.name] = registeredResourceTemplate;
         }
-        if (typeof updates.title !== "undefined")
-          registeredResourceTemplate.title = updates.title;
-        if (typeof updates.template !== "undefined")
-          registeredResourceTemplate.resourceTemplate = updates.template;
-        if (typeof updates.metadata !== "undefined")
-          registeredResourceTemplate.metadata = updates.metadata;
-        if (typeof updates.callback !== "undefined")
-          registeredResourceTemplate.readCallback = updates.callback;
-        if (typeof updates.enabled !== "undefined")
-          registeredResourceTemplate.enabled = updates.enabled;
+        if (typeof updates.title !== "undefined") registeredResourceTemplate.title = updates.title;
+        if (typeof updates.template !== "undefined") registeredResourceTemplate.resourceTemplate = updates.template;
+        if (typeof updates.metadata !== "undefined") registeredResourceTemplate.metadata = updates.metadata;
+        if (typeof updates.callback !== "undefined") registeredResourceTemplate.readCallback = updates.callback;
+        if (typeof updates.enabled !== "undefined") registeredResourceTemplate.enabled = updates.enabled;
         this.sendResourceListChanged();
-      }
+      },
     };
     this._registeredResourceTemplates[name] = registeredResourceTemplate;
     return registeredResourceTemplate;
@@ -13791,21 +15730,16 @@ class McpServer {
       update: (updates) => {
         if (typeof updates.name !== "undefined" && updates.name !== name) {
           delete this._registeredPrompts[name];
-          if (updates.name)
-            this._registeredPrompts[updates.name] = registeredPrompt;
+          if (updates.name) this._registeredPrompts[updates.name] = registeredPrompt;
         }
-        if (typeof updates.title !== "undefined")
-          registeredPrompt.title = updates.title;
-        if (typeof updates.description !== "undefined")
-          registeredPrompt.description = updates.description;
+        if (typeof updates.title !== "undefined") registeredPrompt.title = updates.title;
+        if (typeof updates.description !== "undefined") registeredPrompt.description = updates.description;
         if (typeof updates.argsSchema !== "undefined")
           registeredPrompt.argsSchema = exports_external.object(updates.argsSchema);
-        if (typeof updates.callback !== "undefined")
-          registeredPrompt.callback = updates.callback;
-        if (typeof updates.enabled !== "undefined")
-          registeredPrompt.enabled = updates.enabled;
+        if (typeof updates.callback !== "undefined") registeredPrompt.callback = updates.callback;
+        if (typeof updates.enabled !== "undefined") registeredPrompt.enabled = updates.enabled;
         this.sendPromptListChanged();
-      }
+      },
     };
     this._registeredPrompts[name] = registeredPrompt;
     return registeredPrompt;
@@ -13825,23 +15759,17 @@ class McpServer {
       update: (updates) => {
         if (typeof updates.name !== "undefined" && updates.name !== name) {
           delete this._registeredTools[name];
-          if (updates.name)
-            this._registeredTools[updates.name] = registeredTool;
+          if (updates.name) this._registeredTools[updates.name] = registeredTool;
         }
-        if (typeof updates.title !== "undefined")
-          registeredTool.title = updates.title;
-        if (typeof updates.description !== "undefined")
-          registeredTool.description = updates.description;
+        if (typeof updates.title !== "undefined") registeredTool.title = updates.title;
+        if (typeof updates.description !== "undefined") registeredTool.description = updates.description;
         if (typeof updates.paramsSchema !== "undefined")
           registeredTool.inputSchema = exports_external.object(updates.paramsSchema);
-        if (typeof updates.callback !== "undefined")
-          registeredTool.callback = updates.callback;
-        if (typeof updates.annotations !== "undefined")
-          registeredTool.annotations = updates.annotations;
-        if (typeof updates.enabled !== "undefined")
-          registeredTool.enabled = updates.enabled;
+        if (typeof updates.callback !== "undefined") registeredTool.callback = updates.callback;
+        if (typeof updates.annotations !== "undefined") registeredTool.annotations = updates.annotations;
+        if (typeof updates.enabled !== "undefined") registeredTool.enabled = updates.enabled;
         this.sendToolListChanged();
-      }
+      },
     };
     this._registeredTools[name] = registeredTool;
     this.setToolRequestHandlers();
@@ -13929,22 +15857,28 @@ class McpServer {
 }
 var EMPTY_OBJECT_JSON_SCHEMA = {
   type: "object",
-  properties: {}
+  properties: {},
 };
 function isZodRawShape(obj) {
-  if (typeof obj !== "object" || obj === null)
-    return false;
+  if (typeof obj !== "object" || obj === null) return false;
   const isEmptyObject = Object.keys(obj).length === 0;
   return isEmptyObject || Object.values(obj).some(isZodTypeLike);
 }
 function isZodTypeLike(value) {
-  return value !== null && typeof value === "object" && "parse" in value && typeof value.parse === "function" && "safeParse" in value && typeof value.safeParse === "function";
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    "parse" in value &&
+    typeof value.parse === "function" &&
+    "safeParse" in value &&
+    typeof value.safeParse === "function"
+  );
 }
 function promptArgumentsFromSchema(schema) {
   return Object.entries(schema.shape).map(([name, field]) => ({
     name,
     description: field.description,
-    required: !field.isOptional()
+    required: !field.isOptional(),
   }));
 }
 function createCompletionResult(suggestions) {
@@ -13952,15 +15886,15 @@ function createCompletionResult(suggestions) {
     completion: {
       values: suggestions.slice(0, 100),
       total: suggestions.length,
-      hasMore: suggestions.length > 100
-    }
+      hasMore: suggestions.length > 100,
+    },
   };
 }
 var EMPTY_COMPLETION_RESULT = {
   completion: {
     values: [],
-    hasMore: false
-  }
+    hasMore: false,
+  },
 };
 
 // src/services/mcp/createSdkMcpServer.ts
@@ -13968,14 +15902,17 @@ function tool(name, description, inputSchema, handler) {
   return { name, description, inputSchema, handler };
 }
 function createSdkMcpServer(options) {
-  const server = new McpServer({
-    name: options.name,
-    version: options.version ?? "1.0.0"
-  }, {
-    capabilities: {
-      tools: options.tools ? {} : undefined
+  const server = new McpServer(
+    {
+      name: options.name,
+      version: options.version ?? "1.0.0",
+    },
+    {
+      capabilities: {
+        tools: options.tools ? {} : undefined,
+      },
     }
-  });
+  );
   if (options.tools) {
     options.tools.forEach((toolDef) => {
       server.tool(toolDef.name, toolDef.description, toolDef.inputSchema, toolDef.handler);
@@ -13984,7 +15921,7 @@ function createSdkMcpServer(options) {
   return {
     type: "sdk",
     name: options.name,
-    instance: server
+    instance: server,
   };
 }
 
@@ -14016,8 +15953,8 @@ function query({
     permissionPromptToolName,
     resume,
     stderr,
-    strictMcpConfig
-  } = {}
+    strictMcpConfig,
+  } = {},
 }) {
   if (!env) {
     env = { ...process.env };
@@ -14031,14 +15968,14 @@ function query({
     pathToClaudeCodeExecutable = join(dirname, "cli.js");
   }
   const allMcpServers = {};
-  const sdkMcpServers = new Map;
+  const sdkMcpServers = new Map();
   if (mcpServers) {
     for (const [name, config] of Object.entries(mcpServers)) {
       if (config.type === "sdk") {
         sdkMcpServers.set(name, config.instance);
         allMcpServers[name] = {
           type: "sdk",
-          name
+          name,
         };
       } else {
         allMcpServers[name] = config;
@@ -14072,7 +16009,7 @@ function query({
     strictMcpConfig,
     canUseTool: !!canUseTool,
     hooks: !!hooks,
-    includePartialMessages
+    includePartialMessages,
   });
   const query2 = new Query(transport, isStreamingMode, canUseTool, hooks, abortController, sdkMcpServers);
   if (typeof prompt !== "string") {
@@ -14080,8 +16017,4 @@ function query({
   }
   return query2;
 }
-export {
-  tool,
-  query,
-  createSdkMcpServer
-};
+export { tool, query, createSdkMcpServer };

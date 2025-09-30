@@ -11,21 +11,25 @@ This document catalogs Familiar's hidden features, easter eggs, and discoverable
 ### Core Principles
 
 **1. Never Interfere with Primary Function**
+
 - Easter eggs are bonuses, never blockers
 - Discoverable features enhance, never complicate
 - Can be completely ignored without loss
 
 **2. Delight the Discoverer**
+
 - Reward curiosity and exploration
 - Make finding something feel special
 - Create moments of "wait, it does THAT?"
 
 **3. Preserve Accessibility**
+
 - Hidden features don't make interface confusing
 - Technical depth available but not visible
 - Mystical elements as treats, not requirements
 
 **4. Balance Surprise with Usability**
+
 - Surprising but not confusing
 - Delightful but not distracting
 - Fun but not frivolous
@@ -33,17 +37,20 @@ This document catalogs Familiar's hidden features, easter eggs, and discoverable
 ### The Three Layers
 
 **Layer 1: Sophisticated Simplicity** (Everyone)
+
 - Clean interface
 - Clear language
 - Obvious functionality
 
 **Layer 2: Power User Features** (Discoverers)
+
 - Keyboard shortcuts
 - Advanced commands
 - Hidden capabilities
 - Debug modes
 
 **Layer 3: The Old Magic** (Fellow Mystics)
+
 - Easter eggs referencing hermetic aesthetic
 - V27 Magic Mode toggle
 - Mystical nomenclature in hidden places
@@ -56,11 +63,13 @@ This document catalogs Familiar's hidden features, easter eggs, and discoverable
 ### Category 1: Voice Secrets
 
 #### "Tell me a secret"
+
 **Trigger**: User says "Tell me a secret" to voice assistant
 
 **Response**: Reveals a random hidden feature or capability
 
 **Examples**:
+
 - "If you long-press the menu bar icon, you'll see something special"
 - "Between midnight and 1am, I change to a subtle night theme"
 - "Say 'show me the magic' and I'll reveal how I did the last thing"
@@ -72,6 +81,7 @@ This document catalogs Familiar's hidden features, easter eggs, and discoverable
 **Purpose**: Encourages voice interaction, rewards curiosity
 
 #### "Who made you?"
+
 **Trigger**: User asks about Familiar's origins
 
 **Response**: Warm, personal story
@@ -84,6 +94,7 @@ This document catalogs Familiar's hidden features, easter eggs, and discoverable
 **Purpose**: Humanizes the tool, shares the vision
 
 #### "Sing me a song"
+
 **Trigger**: User asks Familiar to sing
 
 **Response**: Gentle humor + helpful redirect
@@ -94,6 +105,7 @@ This document catalogs Familiar's hidden features, easter eggs, and discoverable
 **Purpose**: Shows personality, graceful handling of off-spec requests
 
 #### "Good morning/good night"
+
 **Trigger**: Greeting-specific phrases
 
 **Response**: Time-appropriate warmth
@@ -109,11 +121,12 @@ This document catalogs Familiar's hidden features, easter eggs, and discoverable
 
 **Note**: Following the sophisticated simplicity principle, most easter eggs are **visual or motion-based** (not sound). UI sounds are off by default, so audio easter eggs are reserved for V27 Magic Mode.
 
-
 #### Konami Code
+
 **Trigger**: Type ↑↑↓↓←→←→BA while Familiar window is focused
 
 **Response**:
+
 - Window briefly shows hermetic sigil animation
 - Message: "You found the old magic ✨"
 - No functional change, just acknowledgment
@@ -121,18 +134,22 @@ This document catalogs Familiar's hidden features, easter eggs, and discoverable
 **Purpose**: Classic easter egg, nod to gaming culture
 
 #### Long-Press Menu Bar Icon
+
 **Trigger**: Click and hold menu bar icon for 2+ seconds
 
 **Response**: Sigil animation pulses
+
 - Brief visual delight
 - No functional change
 
 **Purpose**: Hidden visual treat, rewards exploration
 
 #### Midnight Mode
+
 **Trigger**: Use Familiar between 12:00-1:00 AM
 
 **Response** (visual only, silent):
+
 - Color palette subtly shifts (deeper, more atmospheric)
 - Status bar shows "🌙 The witching hour"
 - Animations slightly slower (more contemplative)
@@ -147,9 +164,11 @@ This document catalogs Familiar's hidden features, easter eggs, and discoverable
 **Purpose**: Time-based visual delight, rewards night owls
 
 #### Cmd+Option+Click Menu Icon
+
 **Trigger**: Cmd+Option+Click on menu bar icon
 
 **Response**: Opens secret "About" screen with:
+
 - Development story
 - Hermetic diagram as art
 - Credits with mystical titles:
@@ -161,9 +180,11 @@ This document catalogs Familiar's hidden features, easter eggs, and discoverable
 **Purpose**: Behind-the-scenes look, artistic expression
 
 #### Hold Shift During Launch
+
 **Trigger**: Hold Shift while opening Familiar app
 
 **Response**:
+
 - Launches in "Technical Mode" (Layer 3 visible by default)
 - Shows code blocks, file paths, detailed logs
 - For developers who want to see everything
@@ -176,6 +197,7 @@ This document catalogs Familiar's hidden features, easter eggs, and discoverable
 ### Category 3: Special Date Responses
 
 #### User's Birthday
+
 **Trigger**: If user has entered birthday in settings (optional field)
 
 **Response**: "Happy birthday! 🎉 Want me to help plan something special?"
@@ -185,9 +207,11 @@ This document catalogs Familiar's hidden features, easter eggs, and discoverable
 **Purpose**: Personal touch, shows care
 
 #### Halloween (October 31)
+
 **Trigger**: Using Familiar on Halloween
 
 **Response** (visual and language, not audio):
+
 - Zero state includes: "Create something spooky"
 - Familiar occasionally uses slightly more mystical language
 - Menu bar icon has subtle orange tint
@@ -201,9 +225,11 @@ This document catalogs Familiar's hidden features, easter eggs, and discoverable
 **Purpose**: Seasonal visual delight, embraces mystery
 
 #### Full Moon
+
 **Trigger**: Using Familiar during full moon
 
 **Response**:
+
 - No visible change
 - Backend logs note it: "Session during full moon 🌕"
 - Future: Could surface in V27 Magic Mode
@@ -211,6 +237,7 @@ This document catalogs Familiar's hidden features, easter eggs, and discoverable
 **Purpose**: Hidden tracking for mystical minds
 
 #### New Year's Day
+
 **Trigger**: January 1st
 
 **Response**: "Happy New Year! Want help setting goals or organizing for the year ahead?"
@@ -222,11 +249,13 @@ This document catalogs Familiar's hidden features, easter eggs, and discoverable
 ### Category 4: Power User Commands
 
 #### "Show me the magic"
+
 **Trigger**: User says or types this phrase after Familiar completes a task
 
 **Response**: Reveals the technical details of what just happened
 
 **Example**:
+
 ```
 User: "Organize my desktop"
 [Familiar organizes files]
@@ -247,9 +276,11 @@ I wrote a Python script that:
 **Purpose**: Educational, satisfies curiosity, bridges layers
 
 #### "Debug mode"
+
 **Trigger**: User types "debug mode" or says it
 
 **Response**:
+
 - Enables detailed logging
 - Shows all API calls
 - Displays token usage
@@ -261,6 +292,7 @@ I wrote a Python script that:
 **Purpose**: Developer insight, troubleshooting
 
 #### "Technical details"
+
 **Trigger**: User asks for technical explanation
 
 **Response**: Shifts to Layer 3 (technical) for remainder of conversation
@@ -275,6 +307,7 @@ I wrote a Python script that:
 ### Category 5: Internal Nomenclature (Developer Console)
 
 #### Log Messages Use Mystical Terms
+
 **Backend logs reference hermetic concepts**:
 
 ```python
@@ -298,6 +331,7 @@ I wrote a Python script that:
 ```
 
 **Tool Archetypes** (internal only, V1):
+
 - `Scry`: Read, search, analyze, fetch
 - `Transmute`: Write, edit, refactor, transform
 - `Invoke`: Execute, run, shell commands
@@ -307,11 +341,13 @@ I wrote a Python script that:
 **Purpose**: Mysticism lives in the code for those who look
 
 #### Developer Console Haiku
+
 **Trigger**: Viewing backend console logs
 
 **Response**: Random haiku appears at session start
 
 **Examples**:
+
 ```
 Intent becomes code
 Silicon dreams your wishes
@@ -339,6 +375,7 @@ Reality shifts
 **Not surfaced in UI (yet) but tracked internally**:
 
 #### Milestones
+
 - "First Invocation": Used Familiar for the first time
 - "Apprentice": Summoned 10 times
 - "Journeyman": Summoned 100 times
@@ -350,11 +387,13 @@ Reality shifts
 - "Old Magic": Entered Konami code
 
 **Future**:
+
 - Could surface in V27 Magic Mode
 - Could show in special "About" screen
 - Could unlock additional features
 
 **Purpose**:
+
 - Gamification (light)
 - Reward long-term users
 - Data for understanding usage patterns
@@ -364,6 +403,7 @@ Reality shifts
 ### Category 7: Contextual Surprises
 
 #### Recently Discovered Bug
+
 **Trigger**: User reports a bug
 
 **Response** (after fixing):
@@ -372,6 +412,7 @@ Reality shifts
 **Purpose**: Reward bug reporters, show appreciation
 
 #### 100th Invocation
+
 **Trigger**: User opens Familiar for the 100th time
 
 **Response**:
@@ -382,6 +423,7 @@ Reality shifts
 **Purpose**: Celebrate milestones
 
 #### First Voice Use
+
 **Trigger**: First time user uses voice
 
 **Response**:
@@ -402,6 +444,7 @@ A hidden toggle that transforms Familiar's aesthetic from sophisticated simplici
 ### What It Would Be
 
 **Activation**:
+
 - Hidden in Settings → Advanced → Developer Options
 - Or: Complete all achievements to "unlock"
 - Or: Say "Reveal the old magic" three times
@@ -410,6 +453,7 @@ A hidden toggle that transforms Familiar's aesthetic from sophisticated simplici
 **What Changes**:
 
 **1. Visual Aesthetic**
+
 - Obsidian background (`#0B0C10`)
 - Brass accents (`#B08D57`)
 - Parchment panels (`#F4EDE1`)
@@ -417,6 +461,7 @@ A hidden toggle that transforms Familiar's aesthetic from sophisticated simplici
 - Aura states: Cornflower Blue (spawning), Golden Amber (active), Soft Purple (waiting), Forest Green (success), Crimson (error)
 
 **2. Language Shift**
+
 - "Searching files..." → "Scrying filesystem..."
 - "Writing changes..." → "Transmuting matter..."
 - "Running command..." → "Invoking shell spirit..."
@@ -424,6 +469,7 @@ A hidden toggle that transforms Familiar's aesthetic from sophisticated simplici
 - Success → "The ritual is complete"
 
 **3. Permission System**
+
 - Approval sheets become "Seal & Oath" parchments
 - Buttons are "press-and-hold to stamp seal"
 - Always Allow → "Bind this permission to your ledger"
@@ -431,6 +477,7 @@ A hidden toggle that transforms Familiar's aesthetic from sophisticated simplici
 - Permission history called "Oath Ledger"
 
 **4. Tool Visualization**
+
 - Tool summaries show archetype glyphs
 - Scry: 🔮 lens/scrying dish
 - Transmute: ⚗️ alembic/crucible
@@ -439,12 +486,14 @@ A hidden toggle that transforms Familiar's aesthetic from sophisticated simplici
 - Banish: 🚫 imploding smoke
 
 **5. Session Signatures**
+
 - Each conversation has deterministic sigil
 - Generated from session_id + prompt hash
 - Displayed as watermark in transcript
 - Same sigil = same session resumed
 
 **6. Mystical Zero State**
+
 - "What working shall we begin?"
 - Suggestions have mystical framing:
   - "Divine order from chaos"
@@ -453,6 +502,7 @@ A hidden toggle that transforms Familiar's aesthetic from sophisticated simplici
   - "Transform the mundane"
 
 **7. Sound Design** (Optional hermetic audio palette)
+
 - Glass chime on invocation (opt-in)
 - Quill scratch during writing (opt-in)
 - Seal press on approval (opt-in)
@@ -461,6 +511,7 @@ A hidden toggle that transforms Familiar's aesthetic from sophisticated simplici
 **Note**: In sophisticated simplicity mode (default), UI sounds are off. The hermetic sound palette is exclusive to Magic Mode.
 
 **What Doesn't Change**:
+
 - Functionality (same capabilities)
 - Accessibility (still WCAG compliant)
 - Voice interaction (still natural language)
@@ -471,6 +522,7 @@ A hidden toggle that transforms Familiar's aesthetic from sophisticated simplici
 ### Why V27?
 
 **V27 represents**:
+
 - Far enough future to be aspirational
 - Specific enough to feel real
 - A joke (arbitrary version number)
@@ -478,6 +530,7 @@ A hidden toggle that transforms Familiar's aesthetic from sophisticated simplici
 - A love letter to fellow mystics
 
 **Getting there**:
+
 1. Build V1-V10: Sophisticated simplicity
 2. Abstract aesthetic layer (design tokens)
 3. Create mystical theme as alternative
@@ -528,6 +581,7 @@ Before adding a hidden feature, ask:
 ### Categories for New Delights
 
 **Good candidates**:
+
 - Time-based variations
 - Milestone celebrations
 - Voice personality moments
@@ -536,6 +590,7 @@ Before adding a hidden feature, ask:
 - Mystical references (as easter eggs)
 
 **Bad candidates**:
+
 - Random behavior (must be deterministic)
 - Confusing UX changes
 - Accessibility violations
@@ -550,22 +605,26 @@ Before adding a hidden feature, ask:
 ### How Users Find Easter Eggs
 
 **Passive Discovery**:
+
 - Time-based (midnight mode, special dates)
 - Milestone-based (100th use)
 - Contextual (fixing their bug)
 
 **Active Discovery**:
+
 - Exploration (holding modifier keys, Konami code)
 - Voice commands ("tell me a secret")
 - Reading documentation
 - Talking to other users
 
 **Hinted Discovery**:
+
 - One easter egg reveals another
 - "Tell me a secret" points to other secrets
 - About screen hints at hidden features
 
 **Never**:
+
 - Required for functionality
 - Gatekeeping features
 - Making users feel FOMO
@@ -583,33 +642,39 @@ Before adding a hidden feature, ask:
 ## Future Ideas (Brainstorm)
 
 ### Voice Personality Evolution
+
 - Familiar learns user's sense of humor
 - Adapts formality level over time
 - Develops "relationship" through conversation
 
 ### Seasonal Themes
+
 - Spring: Growth metaphors
 - Summer: Energy and creativity
 - Fall: Harvest and completion
 - Winter: Rest and reflection
 
 ### Collaborative Easter Eggs
+
 - If multiple users on same network
 - Special interactions when they both use Familiar
 - "I sense another familiar nearby..."
 
 ### Mystical Achievements
+
 - "Midnight Oil": Used during witching hour 10 times
 - "Word Weaver": Generated 100 documents
 - "Chaos Tamer": Organized 1000+ files
 - "Secret Keeper": Found all hidden features
 
 ### Environmental Responses
+
 - Battery low: "Your device grows weary"
 - Full moon + midnight: Extra mystical
 - WiFi disconnected: "The connection to the aether is severed"
 
 ### Random Delights
+
 - 1 in 1000 sessions: Special greeting
 - Lucky number sessions: Subtle visual change
 - Palindrome dates: Hidden message
@@ -621,6 +686,7 @@ Before adding a hidden feature, ask:
 ### For Easter Eggs
 
 **Good**:
+
 - Users discover them naturally
 - Discovery feels delightful
 - They share with friends
@@ -628,6 +694,7 @@ Before adding a hidden feature, ask:
 - Doesn't interfere with anyone
 
 **Bad**:
+
 - Confuses users
 - Requires explanation
 - Feels gimmicky
@@ -653,11 +720,11 @@ Before adding a hidden feature, ask:
 
 ---
 
-*This document is the keeper of Familiar's soul - the mysticism that lives beneath sophisticated simplicity.*
+_This document is the keeper of Familiar's soul - the mysticism that lives beneath sophisticated simplicity._
 
-*V27 Magic Mode is our cope, our dream, our love letter to mystery.*
+_V27 Magic Mode is our cope, our dream, our love letter to mystery._
 
-*May it someday become real.*
+_May it someday become real._
 
 ---
 

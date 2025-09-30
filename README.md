@@ -10,7 +10,8 @@ Build a focused macOS companion that unlocks Claude Code's full capabilities thr
 ## Why Native?
 
 Embedding Claude Code directly into a macOS app removes sandbox and subprocess limitations. Native control means:
-- ✅ Full Claude Code SDK access with streamlined tool permission flows
+
+- ✅ Full Claude Agent SDK access with streamlined tool permission flows
 - ✅ Direct subprocess spawning for MCP servers and shell actions
 - ✅ First-class filesystem integration for editing and diffing
 - ✅ Tight coupling with macOS input, windows, and menu bar surfaces
@@ -19,12 +20,14 @@ Embedding Claude Code directly into a macOS app removes sandbox and subprocess l
 ## Planned Features
 
 ### Core Functionality
+
 - **Global Hotkey**: Cmd+Cmd for instant access
-- **Complete Claude Code SDK**: Every tool, including Bash and MCP servers
+- **Complete Claude Agent SDK**: Every tool, including Bash and MCP servers
 - **Process Management**: Live logs, cancellation, and retries
 - **Rich UI**: Markdown rendering, syntax highlighting, diff viewers
 
 ### User Experience
+
 - Menu bar entry point with status insights
 - Floating command palette that respects the active workspace
 - Progressive trust and permission audit trails
@@ -33,14 +36,17 @@ Embedding Claude Code directly into a macOS app removes sandbox and subprocess l
 ## Technology Options Under Consideration
 
 ### Option 1: Electron
+
 - Full Node.js runtime for SDK integration
 - Mature ecosystem and cross-platform potential
 
 ### Option 2: Tauri
+
 - Slim bundle footprint backed by Rust
 - Security-forward architecture with WebView UI
 
 ### Option 3: Swift + Node Bridge
+
 - Deep macOS integration and native feel
 - Requires bridging for Node-based tooling
 
@@ -50,7 +56,7 @@ Embedding Claude Code directly into a macOS app removes sandbox and subprocess l
 familiar/
 ├── README.md                  # Project overview
 ├── docs/                      # Architecture research and SDK references
-│   ├── claude-code-sdk.md     # SDK reference
+│   ├── reference/claude-agent-sdk.md  # SDK reference
 │   └── prd.md                 # Product requirements draft
 ├── backend/                   # FastAPI sidecar (uv project)
 │   ├── pyproject.toml
@@ -88,6 +94,7 @@ See `docs/steel-thread.md` for full packaging and smoke test details.
 ## Contributing
 
 Current focus areas:
+
 1. Select core architecture stack and IPC strategy
 2. Prototype native windowing and command palette flows
 3. Define distribution, update, and permission-handling pipelines
@@ -98,4 +105,4 @@ TBD
 
 ---
 
-*This repository exists to design and ship a native macOS application that can fully leverage the Claude Code SDK without compromise.*
+_This repository exists to design and ship a native macOS application that can fully leverage the Claude Agent SDK without compromise._
