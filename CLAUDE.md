@@ -12,6 +12,177 @@ This repository designs a **native macOS application** that embeds the Claude Co
 
 Active work involves comparing desktop frameworks, defining IPC boundaries, and documenting product flows. No production-ready source code ships yet; most artifacts live in documentation and tool bundles.
 
+## Core Design Philosophy
+
+### The Ive Test (Primary Decision Framework)
+Every decision must pass these four criteria:
+- **Is it inevitable?** (feels obvious in hindsight)
+- **Is it essential?** (nothing superfluous)
+- **Does it show care?** (attention to detail perceptible)
+- **Is the design invisible?** (user thinks about task, not UI)
+
+Reference: docs/design/aesthetic-system.md:851-857
+
+### Sophisticated Simplicity
+Familiar is designed for **everyone** - from grandma organizing files to developers debugging systems.
+
+Core principles:
+- **Immediately understandable**: No learning curve
+- **Joyful to use**: Delightful interactions, not transactional
+- **Respectful of attention**: Present when invoked, absent otherwise
+- **Rewarding to explore**: Hidden depth for curious users
+
+"Can grandma understand this?" is the litmus test.
+
+Reference: docs/design/aesthetic-system.md:5-18
+
+### The Four Pillars
+1. **Clarity Over Decoration**: Every element serves communication
+2. **Joy Through Interaction**: Delight from how it works, not looks
+3. **Human Language**: "Is that ok?" not "Approve?"
+4. **Mystery Through Discovery**: Hidden features reward exploration
+
+Reference: docs/design/aesthetic-system.md:22-53
+
+## Decision Frameworks
+
+### The Three-Layer Abstraction System
+**Layer 1: Human Outcomes (Default)** - "Organized 47 images"
+**Layer 2: How It Works (Collapsed)** - "I used a Python script..."
+**Layer 3: Technical Details (Hidden)** - Full code, paths, errors
+
+**Key Principle**: Users choose their depth. Most stay at Layer 1. That's correct.
+
+Reference: docs/design/aesthetic-system.md:363-392
+
+### The Grandma Test
+Before implementing or describing anything:
+- Can grandma understand this?
+- Would I say this to a friend?
+- Or does it sound corporate/robotic?
+
+### The Language Test
+**Good**: "Is that ok?", "Done!", "Hmm, something went wrong"
+**Bad**: "Approve?", "Operation completed", "Error: Permission denied"
+
+Reference: docs/design/aesthetic-system.md:283-313
+
+### Motion First, Sound Silent
+**Distinctive Element**: The "Familiar Spring" animation
+```swift
+Animation.spring(response: 0.3, dampingFraction: 0.7)
+```
+
+**Sound Philosophy**: Default silent. Voice output when enabled, UI sounds OFF.
+
+Reference: docs/design/aesthetic-system.md:165-237, 466-519
+
+## Non-Negotiable Constraints
+
+### Accessibility Requirements
+- WCAG AA minimum (AAA preferred)
+- VoiceOver fully supported
+- Keyboard navigation complete
+- High contrast mode respected
+- Reduced motion honored
+- Minimum 44pt touch targets
+- Color never sole information carrier
+
+**Accessibility is not optional. It's how we ensure universality.**
+
+Reference: docs/design/aesthetic-system.md:421-442
+
+### Human Language Standards
+**Do**:
+- "I can organize your desktop for you"
+- "Is that ok?"
+- "Done! Your files are organized"
+- "Hmm, I can't access that file"
+
+**Don't**:
+- "Familiar wants to execute command"
+- "Approve?"
+- "Operation completed successfully"
+- "Error: Permission denied [Errno 13]"
+
+Reference: docs/design/aesthetic-system.md:283-313
+
+### Permission Philosophy
+Permissions exist to **build trust, not satisfy legal requirements**.
+
+**Template**:
+```
+I can [action] for you:
+• [Specific detail with real numbers]
+• [Another specific detail]
+
+Is that ok?
+
+[Show me how ▼]  [Not right now]  [Yes, do it]
+```
+
+Reference: docs/design/aesthetic-system.md:318-360
+
+## Mandatory Design Consultation
+
+### Before ANY Design Decision
+1. Read `docs/design/aesthetic-system.md`
+2. Apply **The Ive Test** (is it inevitable, essential, careful, invisible?)
+3. Verify it passes **The Grandma Test**
+
+### Before Implementing Visual Changes
+1. Check **locked design tokens** in `docs/design/aesthetic-system.md:522-663`
+2. Use 8pt grid spacing (xs: 8, sm: 16, md: 24, lg: 32, xl: 48)
+3. Use corner radius (control: 8pt, card: 12pt)
+4. Use The Familiar Spring for all animations
+5. Consult `docs/design/visual-improvements.md` for patterns
+
+### Before Adding Features
+1. Read `docs/design/hidden-delights.md:493-516`
+2. Apply **The Test**:
+   - Does it delight without confusing?
+   - Does it interfere with core functionality?
+   - Is it accessible?
+   - Is it tasteful? (Would Jony Ive approve?)
+
+### Before Implementing Permissions
+1. Use permission language templates from `docs/design/aesthetic-system.md:318-360`
+2. Say specifically what will happen
+3. Use real numbers (47 images, not "files")
+4. Make approval collaborative, not bureaucratic
+
+### Before Implementing Steel Thread Features
+1. Read `docs/implementation/steel-thread-v1.md`
+2. **Steel Thread Definition**: The smallest, fully polished workflow that proves the product vision
+3. V1 is done when a new user can complete the full workflow cleanly
+
+### For SDK Integration
+1. **Always** consult `docs/reference/claude-agent-sdk.md`
+2. Understand Options, permissions, hooks, MCP servers
+3. Follow established patterns
+
+## Core Vocabulary
+
+### Product Language
+- **Familiar** (not "Familiar App" or "the tool")
+- **Summon** (not "open" or "launch")
+- **Steel Thread** (not "MVP" or "v0.1")
+- **Layer 1/2/3** (technical abstraction levels)
+- **The Ive Test** (primary design framework)
+- **Sophisticated Simplicity** (core aesthetic)
+
+### Permission Language
+- "Is that ok?" (not "Approve?")
+- "Yes, do it" / "Sounds good" (not "Approve")
+- "Not right now" / "No thanks" (not "Deny")
+- "Show me how" (not "Show details")
+
+### Technical Terms
+- **Sidecar** (Python FastAPI backend)
+- **PreToolUse** / **PostToolUse** (permission hooks)
+- **The Familiar Spring** (signature animation)
+- **Breathing Dot** (subtle progress, not spinner)
+
 ## Collaboration Principles
 
 1. **Documentation First**: Treat `docs/` as the source of truth. Start with **[docs/00-README.md](docs/00-README.md)** for navigation.
