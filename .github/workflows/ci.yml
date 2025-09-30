@@ -2,9 +2,9 @@ name: ci
 
 on:
   pull_request:
-    branches: [ "main", "develop", "feature/**" ]
+    branches: ["main", "develop", "feature/**"]
   push:
-    branches: [ "main", "develop", "feature/**" ]
+    branches: ["main", "develop", "feature/**"]
 
 jobs:
   prettier:
@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
       - name: Install uv
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -34,11 +34,12 @@ jobs:
         working-directory: backend
         run: |
           uv sync
+          uv run python -m pip install pytest
           uv run pytest -q
 
   swift-tests:
     name: Swift Build and Tests
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
       - name: Build
@@ -56,4 +57,3 @@ jobs:
           node-version: 20
       - name: Smoke test Claude CLI bundle
         run: node assets/claude-cli/cli.js --help
-
