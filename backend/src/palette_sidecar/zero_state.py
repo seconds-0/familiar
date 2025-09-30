@@ -1,8 +1,9 @@
 """Zero state suggestions powered by Claude AI."""
 
 import logging
+import json
 from datetime import datetime
-from typing import Literal
+from typing import Literal, cast
 
 from .claude_service import session
 
@@ -27,7 +28,8 @@ def get_time_of_day() -> TimeOfDay:
 
 def get_day_of_week() -> DayOfWeek:
     """Get current day of week."""
-    return datetime.now().strftime("%A")  # type: ignore
+    # Cast to DayOfWeek for type-checkers; runtime value always like 'Monday'.
+    return cast(DayOfWeek, datetime.now().strftime("%A"))
 
 
 def build_suggestion_prompt(time_of_day: TimeOfDay, day_of_week: DayOfWeek) -> str:
@@ -83,8 +85,17 @@ async def generate_suggestions(count: int = 4) -> list[str]:
                 raise RuntimeError(event.get("message", "Query failed"))
 
         # Parse JSON response
-        import json
         full_text = "".join(response_text).strip()
+
+        # Claude may occasionally wrap JSON in markdown code fences; strip them.
+        if full_text.startswith("```"):
+            lines = full_text.split("\n")
+            if lines and lines[0].startswith("```"):
+                lines = lines[1:]
+            if lines and lines[-1].strip() == "```":
+                lines = lines[:-1]
+            full_text = "\n".join(lines).strip()
+
         suggestions = json.loads(full_text)
 
         if not isinstance(suggestions, list):

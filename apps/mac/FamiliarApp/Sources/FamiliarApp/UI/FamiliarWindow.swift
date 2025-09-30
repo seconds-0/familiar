@@ -47,45 +47,45 @@ struct FamiliarView: View {
     @FocusState private var isPromptFocused: Bool
 
     var body: some View {
-        ZStack {
-            // Zero state - show when empty
-            if viewModel.transcript.isEmpty && viewModel.prompt.isEmpty {
-                ZeroStateView(
-                    onSuggestionTap: { suggestion in
-                        viewModel.prompt = suggestion
-                        isPromptFocused = true
-                    },
-                    fetchSuggestions: {
-                        await viewModel.fetchZeroStateSuggestions()
-                    }
-                )
-                .transition(.opacity.animation(.familiar))
-            }
-
-            // Main content
-            VStack(spacing: FamiliarSpacing.sm) {
-                ScrollView(.vertical, showsIndicators: true) {
-                    LazyVStack(alignment: .leading, spacing: FamiliarSpacing.sm) {
-                        if !viewModel.transcript.isEmpty {
-                            Text(viewModel.transcript)
-                                .font(.familiarMono)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .textSelection(.enabled)
+        VStack(spacing: FamiliarSpacing.sm) {
+            // Top content region: zero state OR transcript content
+            Group {
+                if viewModel.transcript.isEmpty && viewModel.prompt.isEmpty && !viewModel.isStreaming {
+                    ZeroStateView(
+                        onSuggestionTap: { suggestion in
+                            viewModel.prompt = suggestion
+                            isPromptFocused = true
+                        },
+                        fetchSuggestions: {
+                            await viewModel.fetchZeroStateSuggestions()
                         }
+                    )
+                    .transition(.opacity.animation(.familiar))
+                } else {
+                    ScrollView(.vertical, showsIndicators: true) {
+                        LazyVStack(alignment: .leading, spacing: FamiliarSpacing.sm) {
+                            if !viewModel.transcript.isEmpty {
+                                Text(viewModel.transcript)
+                                    .font(.familiarMono)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .textSelection(.enabled)
+                            }
 
-                    if let summary = viewModel.toolSummary {
-                        ToolSummaryView(summary: summary)
-                    }
+                            if let summary = viewModel.toolSummary {
+                                ToolSummaryView(summary: summary)
+                            }
 
-                    if let error = viewModel.errorMessage {
-                        Label(error, systemImage: "exclamationmark.circle")
-                            .foregroundStyle(Color.familiarError)
+                            if let error = viewModel.errorMessage {
+                                Label(error, systemImage: "exclamationmark.circle")
+                                    .foregroundStyle(Color.familiarError)
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, 1) // Prevent content from touching scroll edges
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, 1) // Prevent content from touching scroll edges
             }
-            .frame(maxHeight: 300) // Allow scrolling when content is large
+            .frame(maxHeight: 300)
 
             if let totals = viewModel.usageTotalsDisplay {
                 UsageSummaryView(totals: totals, last: viewModel.lastUsageDisplay)
@@ -106,6 +106,7 @@ struct FamiliarView: View {
 
             Divider()
 
+            // Prompt composer region (always visible)
             VStack(alignment: .leading, spacing: FamiliarSpacing.xs / 2) {
                 HStack(alignment: .center, spacing: FamiliarSpacing.xs) {
                     PromptTextEditor(
@@ -145,7 +146,6 @@ struct FamiliarView: View {
                         .foregroundStyle(.secondary)
                     Spacer()
                 }
-            }
             }
         }
         .padding(EdgeInsets(
