@@ -20,6 +20,7 @@ final class FamiliarViewModel: ObservableObject {
     @Published var promptPreview: String?
     @Published private(set) var usageTotals = UsageTotals()
     @Published private(set) var lastUsage: UsageTotals?
+    @Published private var zeroStateCache: [String]? = nil
 
     private var streamTask: Task<Void, Never>?
     private let client = SidecarClient.shared
@@ -110,6 +111,20 @@ final class FamiliarViewModel: ObservableObject {
         }
     }
 
+    func fetchZeroStateSuggestions() async -> [String] {
+        if let cached = zeroStateCache, !cached.isEmpty {
+            return cached
+        }
+        do {
+            let suggestions = try await client.fetchZeroStateSuggestions()
+            await MainActor.run { self.zeroStateCache = suggestions }
+            return suggestions
+        } catch {
+            // Return empty array on error - ZeroStateView will show fallback text
+            return []
+        }
+    }
+
     private func handle(_ event: SidecarEvent) {
         switch event.type {
         case .assistantText:
@@ -150,7 +165,7 @@ final class FamiliarViewModel: ObservableObject {
         isProcessingPermission = false
         permissionRequest = nil
         if event.decision == "deny" {
-            errorMessage = "Permission denied. Claude could not run the requested action."
+            errorMessage = "Got it — I won’t run that."
             isStreaming = false
         }
     }

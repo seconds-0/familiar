@@ -83,6 +83,18 @@ actor SidecarClient {
         return try await sendDecodable(path: "auth/claude/status", method: "GET", payload: nil)
     }
 
+    func fetchZeroStateSuggestions() async throws -> [String] {
+        struct Response: Decodable { let suggestions: [String] }
+        // Prefer GET (idempotent), fallback to POST if needed
+        do {
+            let response: Response = try await sendDecodable(path: "zero-state/suggestions", method: "GET", payload: nil)
+            return response.suggestions
+        } catch {
+            let response: Response = try await sendDecodable(path: "zero-state/suggestions", method: "POST", payload: [:])
+            return response.suggestions
+        }
+    }
+
     // MARK: - Helpers
 
     private func sendJSON(path: String, method: String, payload: [String: Any]?) async throws -> [String: Any] {
