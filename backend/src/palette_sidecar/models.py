@@ -45,3 +45,10 @@ class SettingsResponse(BaseModel):
     always_allow: dict[str, list[str]] = Field(alias="alwaysAllow")
     default_workspace: str = Field(alias="defaultWorkspace")
     auth_mode: str = Field(alias="authMode")
+
+
+class ResumeContextPayload(BaseModel):
+    """Small, metadata-first context for generating a resume label."""
+    transcript_preview: str | None = None
+    path: str | None = None
+    project: str | None = None

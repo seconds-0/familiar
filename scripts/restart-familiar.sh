@@ -21,6 +21,13 @@ fi
 pkill -f "uvicorn palette_sidecar.api" 2>/dev/null || true
 pkill -f "FamiliarApp" 2>/dev/null || true
 
+# Check if port 8765 is in use and kill any processes using it
+if lsof -ti:8765 >/dev/null 2>&1; then
+  printf '🧹 Clearing processes using port 8765…\n'
+  lsof -ti:8765 | xargs kill -9 2>/dev/null || true
+  sleep 0.5  # Give the OS a moment to release the port
+fi
+
 # Ensure the macOS client is built
 printf '🛠️  Building FamiliarApp…\n'
 (
@@ -57,10 +64,21 @@ printf '🔥 Starting Familiar sidecar…\n'
 # Give the backend a moment to boot
 sleep 2
 
-# Relaunch the macOS client if the binary exists
+# Open log viewer FIRST (before app launches) to capture startup logs
+printf '📋 Opening log viewer in new terminal window…\n'
+osascript <<EOF
+tell application "Terminal"
+    do script "cd '$ROOT_DIR' && ./scripts/watch-logs.sh"
+end tell
+EOF
+
+# Give log viewer time to start capturing
+sleep 1
+
+# Now launch the macOS client
 if [[ -x "$APP_BINARY" ]]; then
   printf '✨ Launching Familiar app…\n'
-  "$APP_BINARY" >/dev/null 2>&1 &
+  "$APP_BINARY" &
 else
   echo "FamiliarApp binary not found at $APP_BINARY even after building." >&2
   exit 1

@@ -95,6 +95,21 @@ actor SidecarClient {
         }
     }
 
+    func fetchResumeSuggestion(transcriptPreview: String?, path: String?, project: String?) async throws -> String {
+        struct Request: Encodable {
+            let transcript_preview: String?
+            let path: String?
+            let project: String?
+        }
+        struct Response: Decodable { let suggestion: String }
+        let req = Request(transcript_preview: transcriptPreview, path: path, project: project)
+        // Encode manually to dictionary for sendDecodable convenience
+        let data = try JSONEncoder().encode(req)
+        let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        let resp: Response = try await sendDecodable(path: "zero-state/resume-suggestion", method: "POST", payload: json)
+        return resp.suggestion
+    }
+
     // MARK: - Helpers
 
     private func sendJSON(path: String, method: String, payload: [String: Any]?) async throws -> [String: Any] {

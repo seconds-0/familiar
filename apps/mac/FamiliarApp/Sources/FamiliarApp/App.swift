@@ -4,7 +4,7 @@ import KeyboardShortcuts
 
 @main
 struct FamiliarAppMain: App {
-    @StateObject private var controller = FamiliarWindowController.shared
+    private let controller = FamiliarWindowController.shared
     @StateObject private var appState = AppState()
 
     init() {
@@ -13,6 +13,11 @@ struct FamiliarAppMain: App {
                 .init(.space, modifiers: [.option]),
                 for: .summon
             )
+        }
+
+        // Kick off zero-state prewarm independently of the view lifecycle
+        Task.detached {
+            await ZeroStateCache.shared.prewarm()
         }
     }
 
@@ -35,7 +40,7 @@ struct FamiliarAppMain: App {
                 }
             }
             Button("Toggle Familiar") {
-                FamiliarWindowController.shared.toggle()
+                controller.toggle()
             }
             Button("Open Settings…") {
                 SettingsWindowController.shared.toggle(appState: appState)

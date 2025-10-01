@@ -14,11 +14,13 @@ struct SuggestionCard: View {
 
     var body: some View {
         Button(action: action) {
-            HStack {
+            HStack(alignment: .top) {
                 Text(text)
                     .font(.familiarBody)
                     .foregroundStyle(Color.familiarTextPrimary)
                     .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
+                    .fixedSize(horizontal: false, vertical: true)
                 Spacer()
             }
             .padding(FamiliarSpacing.sm)
