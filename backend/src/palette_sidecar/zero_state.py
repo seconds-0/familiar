@@ -13,6 +13,23 @@ TimeOfDay = Literal["morning", "afternoon", "evening", "night"]
 DayOfWeek = Literal["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 
+def strip_code_fences(text: str) -> str:
+    """Remove markdown code fences from text if present.
+
+    Claude may occasionally wrap JSON responses in markdown code blocks.
+    This helper strips the opening ```json and closing ``` markers.
+    """
+    if not text.startswith("```"):
+        return text
+
+    lines = text.split("\n")
+    if lines and lines[0].startswith("```"):
+        lines = lines[1:]
+    if lines and lines[-1].strip() == "```":
+        lines = lines[:-1]
+    return "\n".join(lines).strip()
+
+
 def get_time_of_day() -> TimeOfDay:
     """Determine time of day based on current hour."""
     hour = datetime.now().hour
@@ -91,15 +108,7 @@ async def generate_suggestions(count: int = 4, history: list[str] | None = None)
 
         # Parse JSON response
         full_text = "".join(response_text).strip()
-
-        # Claude may occasionally wrap JSON in markdown code fences; strip them.
-        if full_text.startswith("```"):
-            lines = full_text.split("\n")
-            if lines and lines[0].startswith("```"):
-                lines = lines[1:]
-            if lines and lines[-1].strip() == "```":
-                lines = lines[:-1]
-            full_text = "\n".join(lines).strip()
+        full_text = strip_code_fences(full_text)
 
         suggestions = json.loads(full_text)
 
@@ -153,14 +162,7 @@ async def generate_resume_suggestion(context_summary: str) -> str:
                 raise RuntimeError(event.get("message", "Query failed"))
 
         text = "".join(chunks).strip()
-        # Strip code fences if present
-        if text.startswith("```"):
-            lines = text.split("\n")
-            if lines and lines[0].startswith("```"):
-                lines = lines[1:]
-            if lines and lines[-1].strip() == "```":
-                lines = lines[:-1]
-            text = "\n".join(lines).strip()
+        text = strip_code_fences(text)
 
         obj = json.loads(text)
         suggestion = obj.get("suggestion") if isinstance(obj, dict) else None

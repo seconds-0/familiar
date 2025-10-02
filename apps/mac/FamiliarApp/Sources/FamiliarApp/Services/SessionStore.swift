@@ -111,6 +111,7 @@ final class SessionStore {
                     currency: s.currency
                 )
             }
+            logger.info("Loaded previous session from disk")
             return FamiliarViewModel.SessionSnapshot(
                 transcript: stored.transcript,
                 toolSummary: ts,
@@ -118,6 +119,7 @@ final class SessionStore {
                 lastUsage: stored.lastUsage.map { totals($0) }
             )
         } catch {
+            logger.debug("Failed to load session: \(error.localizedDescription)")
             return nil
         }
     }
