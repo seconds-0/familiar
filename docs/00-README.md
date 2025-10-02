@@ -22,6 +22,7 @@ Foundational knowledge and technical specifications:
   - Options, permissions, hooks, MCP servers
   - Python SDK patterns and examples
   - Headless mode and streaming
+  - Context engineering best practices
 
 - **[swiftui-reference.md](reference/swiftui-reference.md)** - SwiftUI patterns for Familiar
   - Components, layout, state management

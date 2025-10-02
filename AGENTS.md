@@ -133,6 +133,110 @@ if authStatus != .approved {
 }
 ```
 
+## Context-Aware Development
+
+Every interaction with Claude Agent SDK must follow **context engineering principles** to maintain performance and reliability.
+
+### Before Adding MCP Tools
+
+**Checklist**:
+
+- [ ] Tool has single, clear purpose (no overlap with existing tools)
+- [ ] Tool returns metadata-first (summary + identifiers, not full content)
+- [ ] Tool respects context budgets (`config.py` MAX\_\* constants)
+- [ ] Tool is self-contained (no hidden dependencies)
+
+**Good Example**:
+
+```python
+# ✅ Metadata-first file listing
+@mcp_tool
+def list_workspace_files() -> dict:
+    files = scan_directory(workspace)
+    return {
+        "summary": f"{len(files)} files in {workspace.name}/",
+        "files": [{"path": f.path, "size": f.size, "modified": f.mtime} for f in files],
+        "note": "Use read_file(path) for full content"
+    }
+```
+
+**Bad Example**:
+
+```python
+# ❌ Context explosion - loads everything
+@mcp_tool
+def list_workspace_files() -> list:
+    return [{"path": f, "content": read_file(f)} for f in scan_directory(workspace)]
+```
+
+### Context Budget Enforcement
+
+All tool outputs must respect these limits (defined in `backend/src/palette_sidecar/config.py`):
+
+```python
+MAX_FILE_PREVIEW_SIZE = 1000      # characters
+MAX_SEARCH_RESULTS = 20           # files
+MAX_DIRECTORY_LISTING = 50        # entries
+MAX_TOOL_OUTPUT_LENGTH = 5000     # characters
+```
+
+**Implementation Pattern**:
+
+```python
+def get_file_preview(path: str) -> str:
+    content = read_file(path)
+    if len(content) > MAX_FILE_PREVIEW_SIZE:
+        return (
+            f"{content[:MAX_FILE_PREVIEW_SIZE]}...\n\n"
+            f"[{len(content):,} total chars. Use read_file(\"{path}\") for full content]"
+        )
+    return content
+```
+
+### System Prompt Updates
+
+When modifying `STEEL_THREAD_SYSTEM_PROMPT` in `claude_service.py`:
+
+1. Use structured sections (Identity, Capabilities, Constraints, Format)
+2. Keep total prompt under 500 tokens
+3. Reference Layer 1/2/3 abstraction for response guidance
+4. Pass The Language Test (human, conversational, no corporate speak)
+
+**Reference**: `docs/reference/claude-agent-sdk.md:Context-Engineering-Best-Practices`
+
+### Sub-Agent Patterns
+
+For complex workflows (e.g., "organize entire desktop"), use sub-agent composition:
+
+```python
+# Main agent coordinates
+async def organize_desktop(workspace: Path):
+    # Sub-agent 1: Analyze (returns summary only)
+    analysis = await analyze_files(workspace)  # "47 images, 12 docs, 3 videos"
+
+    # Sub-agent 2: Plan (returns structure only)
+    plan = await create_organization_plan(analysis)  # Directory structure + rules
+
+    # Sub-agent 3: Execute (returns outcome only)
+    result = await execute_moves(plan)  # "Moved 62 files into 4 folders"
+
+    return result  # Not full history!
+```
+
+**Why**: Each sub-agent returns summaries, preventing context accumulation.
+
+### Validation Tools
+
+```bash
+# Measure context size for a prompt (when available)
+cd backend
+uv run python scripts/measure-context.py --prompt "your test prompt here"
+
+# Expected: < 10K tokens for typical Steel Thread interaction
+```
+
+**Reference**: `docs/reference/claude-agent-sdk.md:Context-Engineering-Best-Practices` for full patterns.
+
 ## Testing Guidelines
 
 - Backend: add pytest or `uv run ruff check`/`uv run mypy` once service endpoints solidify; keep tests under `backend/tests/`.
@@ -188,6 +292,14 @@ if authStatus != .approved {
 - [ ] All text sounds conversational
 - [ ] "Is that ok?" style maintained
 - [ ] No corporate/robotic language
+
+## Context Engineering
+
+- [ ] Tools return metadata-first (not full content)
+- [ ] Respects MAX\_\* limits in config.py
+- [ ] Tested with large files/directories (100K+ chars, 500+ files)
+- [ ] Context size measured (< 10K tokens for typical flow)
+- [ ] Truncation includes expansion affordances
 
 ## Screenshots/Video
 

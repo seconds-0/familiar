@@ -1,6 +1,9 @@
 import AppKit
 import KeyboardShortcuts
 import SwiftUI
+import OSLog
+
+private let logger = Logger(subsystem: "com.familiar.app", category: "FamiliarWindow")
 
 private final class FamiliarPanel: NSPanel {
     override func cancelOperation(_ sender: Any?) {
@@ -10,20 +13,26 @@ private final class FamiliarPanel: NSPanel {
 final class FamiliarWindowController: NSObject, ObservableObject {
     static let shared = FamiliarWindowController()
 
-    private lazy var hostingController = NSHostingController(rootView: FamiliarView())
+    private let hostingController: NSHostingController<FamiliarView>
     private lazy var panel: NSPanel = {
         let panel = FamiliarPanel(contentViewController: hostingController)
         panel.titleVisibility = .hidden
         panel.isFloatingPanel = true
         panel.hidesOnDeactivate = false
-        panel.styleMask = [.nonactivatingPanel, .titled, .fullSizeContentView, .closable]
+        panel.styleMask = [.nonactivatingPanel, .titled, .fullSizeContentView, .closable, .resizable]
         panel.level = .statusBar
         panel.collectionBehavior = [.fullScreenAuxiliary, .canJoinAllSpaces]
         panel.isReleasedWhenClosed = false
+        panel.setFrameAutosaveName("FamiliarMainWindow")
         return panel
     }()
 
     private override init() {
+        logger.info("🎮 Initializing controller")
+        // Create hosting controller eagerly (triggers FamiliarView/ViewModel creation)
+        self.hostingController = NSHostingController(rootView: FamiliarView())
+        logger.info("🎮 Hosting controller created")
+
         super.init()
         KeyboardShortcuts.onKeyUp(for: .summon) { [weak self] in
             self?.toggle()
@@ -33,8 +42,10 @@ final class FamiliarWindowController: NSObject, ObservableObject {
     func toggle() {
         let window = panel
         if window.isVisible {
+            logger.info("🪟 Closing window")
             window.orderOut(nil)
         } else {
+            logger.info("🪟 Opening window")
             window.center()
             window.makeKeyAndOrderFront(nil)
             NSApp.activate(ignoringOtherApps: true)
@@ -53,8 +64,7 @@ struct FamiliarView: View {
                 if viewModel.transcript.isEmpty && viewModel.prompt.isEmpty && !viewModel.isStreaming {
                     ZeroStateView(
                         onSuggestionTap: { suggestion in
-                            viewModel.prompt = suggestion
-                            isPromptFocused = true
+                            viewModel.handleSuggestionTap(suggestion)
                         },
                         fetchSuggestions: {
                             await viewModel.fetchZeroStateSuggestions()
@@ -83,9 +93,9 @@ struct FamiliarView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.vertical, 1) // Prevent content from touching scroll edges
                     }
+                    .frame(maxHeight: 300)
                 }
             }
-            .frame(maxHeight: 300)
 
             if let totals = viewModel.usageTotalsDisplay {
                 UsageSummaryView(totals: totals, last: viewModel.lastUsageDisplay)
@@ -158,8 +168,8 @@ struct FamiliarView: View {
             minWidth: 600,
             idealWidth: 720,
             maxWidth: 900,
-            minHeight: 400,
-            idealHeight: 460,
+            minHeight: 520,
+            idealHeight: 620,
             maxHeight: .infinity,
             alignment: .top
         )
@@ -174,6 +184,7 @@ struct FamiliarView: View {
         }
         .onAppear {
             isPromptFocused = true
+            viewModel.evaluateInactivityReset()
         }
         .onExitCommand {
             FamiliarWindowController.shared.toggle()

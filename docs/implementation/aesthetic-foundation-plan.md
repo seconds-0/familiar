@@ -620,11 +620,145 @@ struct FamiliarWindowContent: View {
 
 ### 3.1 Transcript Grouping
 
-**File**: `FamiliarWindow.swift`
+**Goal**: Group the transcript by speaker using role-aware surfaces, timestamp chips, and zero-jitter streaming. Replace the monolithic transcript string with structured entries while preserving performance, accessibility, and token usage.
 
-**Goal**: Create `TranscriptEntryView` component with alternating backgrounds
+**Why now**: Improves readability and scannability, sets the stage for richer content (code blocks, diffs) in later 3.x tasks, and enforces streaming stability rules from the aesthetic system.
 
-**Reference**: visual-improvements.md:111-119
+**Files**:
+
+- New: `apps/mac/FamiliarApp/Sources/FamiliarApp/Models/TranscriptEntry.swift`
+- New: `apps/mac/FamiliarApp/Sources/FamiliarApp/UI/TranscriptEntryView.swift`
+- Update: `apps/mac/FamiliarApp/Sources/FamiliarApp/UI/FamiliarViewModel.swift`
+- Update: `apps/mac/FamiliarApp/Sources/FamiliarApp/UI/FamiliarWindow.swift`
+
+---
+
+#### Data Model
+
+- Add `TranscriptEntry` with minimal, stable fields:
+
+  ```swift
+  struct TranscriptEntry: Identifiable, Equatable {
+      enum Role { case user, assistant, system }
+      let id: UUID
+      let role: Role
+      var text: String
+      let timestamp: Date
+      var isStreaming: Bool
+  }
+  ```
+
+- ViewModel migration:
+  - Introduce `@Published var entries: [TranscriptEntry] = []`.
+  - Keep `transcript` temporarily for fallback; UI will switch to `entries` in this task. Remove `transcript` in 3.1 wrap-up.
+
+---
+
+#### ViewModel Changes
+
+- On submit:
+  - Append a `.user` entry with the prompt and `Date()`.
+  - Append an empty `.assistant` entry with `isStreaming = true` to receive streamed text.
+  - Clear `toolSummary`, `errorMessage`, reset loading state as today.
+
+- On `assistant_text` stream events:
+  - Append batch text to the last `.assistant` entry where `isStreaming == true`. If none exists, create it then append.
+  - Optional: coalesce chunks (20–30ms window) to avoid UI thrash.
+
+- On `result` or stream completion:
+  - Mark the last streaming assistant entry `isStreaming = false`.
+
+- Utilities:
+  - Add a static `DateFormatter` for chips (short time). Avoid per-entry formatter allocation.
+
+---
+
+#### UI: TranscriptEntryView
+
+- Create `TranscriptEntryView(entry:)` rendering role, text, and a timestamp chip.
+
+- Styling (use design tokens only):
+  - Outer: `RoundedRectangle(cornerRadius: FamiliarRadius.control)` with inner padding `FamiliarSpacing.sm` and vertical spacing `FamiliarSpacing.xs` between entries.
+  - User: default surface (no fill), `.font(.familiarBody)`, `.foregroundStyle(.familiarTextPrimary)`.
+  - Assistant: background tint `Color.familiarAccent.opacity(0.05)`; same font and text color as user.
+  - System (if used): softer surface `Color.secondary.opacity(0.08)` with `.familiarCaption` as appropriate.
+  - Timestamp chip: `Text(time).font(.familiarCaption).foregroundStyle(.secondary)`, aligned top- or bottom-trailing.
+  - Selection: `.textSelection(.enabled)`.
+  - Width: constrain content to a `maxWidth` of 680pt via container to satisfy streaming rules.
+
+---
+
+#### Window Integration
+
+- Replace the single `Text(viewModel.transcript)` with a list of entries:
+  - Use `ScrollViewReader` + `ScrollView(.vertical)` + `LazyVStack(spacing: FamiliarSpacing.xs)`.
+  - `ForEach(viewModel.entries) { TranscriptEntryView(entry: $0) }`.
+  - Maintain existing `ToolSummaryView` and error labels below the transcript stack.
+
+- Scrolling behavior:
+  - Auto-scroll to bottom as new text is appended to the active streaming assistant entry.
+  - Detect if the user has scrolled up beyond ~20pt from bottom; pause auto-scroll until they return near bottom.
+  - Implement with a bottom anchor (`scrollTo(lastId, anchor: .bottom)`) gated by a “userAtBottom” flag.
+
+---
+
+#### Streaming & Zero Jitter
+
+- Enforce constraints from the aesthetic system:
+  - Max width: 680pt container.
+  - Fixed line height target ~24pt: tune line spacing for `.familiarBody` so measured line height remains stable while streaming.
+  - Batch updates: coalesce incoming chunks; never update per character.
+  - Fade-in new entries only: `.transition(.opacity.animation(.familiar))`; avoid layout-affecting animations during streaming text changes.
+
+- Performance:
+  - Prefer `LazyVStack` and avoid heavy modifiers in `ForEach`.
+  - Keep frame and line metrics constant to prevent reflow.
+
+---
+
+#### Accessibility
+
+- VoiceOver:
+  - Accessibility labels per entry: “You said … at 10:24 AM” / “Assistant said … at 10:24 AM”.
+  - Ensure chips are read once; do not duplicate timestamp narration.
+
+- Keyboard:
+  - Transcript text remains selectable; Tab focuses actionable controls only.
+
+- Reduced Motion:
+  - Respect `prefersReducedMotion`: disable fade transitions; switch to instant updates.
+
+---
+
+#### Checklist
+
+- [ ] Add `TranscriptEntry.swift` model with `Role`, `id`, `text`, `timestamp`, `isStreaming`.
+- [ ] Introduce `entries: [TranscriptEntry]` in `FamiliarViewModel`.
+- [ ] On submit: append user + create streaming assistant entry.
+- [ ] Stream handling: coalesce and append to active assistant entry.
+- [ ] On completion: mark assistant entry `isStreaming = false`.
+- [ ] Create `TranscriptEntryView` with role styling, chips, tokens.
+- [ ] Swap `FamiliarWindow` transcript to `LazyVStack` of entries.
+- [ ] Implement bottom-anchor auto-scroll with 20pt threshold guard.
+- [ ] Constrain width to 680pt; keep line height stable (~24pt).
+- [ ] Verify 60fps while streaming long responses.
+- [ ] VoiceOver reads role + content + time naturally.
+- [ ] Reduced motion disables fade transitions.
+
+---
+
+#### Acceptance Criteria
+
+- Role grouping: user and assistant entries render with distinct, token-driven surfaces.
+- Stability: no line-height shifts or reflow jitter while streaming; auto-scroll sticks to bottom unless user scrolls up beyond ~20pt.
+- Tokens: all spacing, radius, fonts, and colors use Familiar tokens (no hardcoded values).
+- Accessibility: VoiceOver narration is clear; reduced motion respected.
+- Performance: smooth scroll and animations at 60fps with 200+ streamed lines.
+
+**References**:
+
+- `docs/design/visual-improvements.md:125–141` (Transcript Grouping)
+- `docs/design/aesthetic-system.md:563–693` (Tokens & Motion), `740–819` (Streaming constraints)
 
 ### 3.2 Enhanced Error/Loading Feedback
 

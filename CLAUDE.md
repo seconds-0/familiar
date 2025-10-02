@@ -49,6 +49,104 @@ Reference: docs/design/aesthetic-system.md:5-18
 
 Reference: docs/design/aesthetic-system.md:22-53
 
+## Context Engineering Principles
+
+Familiar integrates Claude Agent SDK, which means we must treat **context as a precious, finite resource**. Just as our three-layer abstraction hides UI complexity from users, context engineering hides _token complexity_ from Claude.
+
+### Core Philosophy
+
+- **Context is finite**: LLMs have limited attention budget
+- **Metadata-first**: Return lightweight identifiers, load content on-demand
+- **Progressive disclosure**: Just-in-time context loading
+- **Sub-agent composition**: Break complex tasks into focused agents
+
+**Reference**: [Anthropic Context Engineering Blog](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+**Documentation**: `docs/reference/claude-agent-sdk.md:Context-Engineering-Best-Practices`
+
+### Mandatory Patterns
+
+**When designing MCP tools**:
+
+- Single-purpose tools only (no functionality overlap)
+- Self-contained and robust to errors
+- Returns metadata-first by default
+- See `docs/reference/claude-agent-sdk.md` for detailed patterns
+
+**When building API responses**:
+
+```python
+# ❌ Bad: Load everything immediately
+def list_files(directory):
+    return [{"path": p, "content": read_file(p)} for p in paths]
+
+# ✅ Good: Metadata-first
+def list_files(directory):
+    return {
+        "summary": "47 files in Desktop/",
+        "files": [{"path": p, "size": size, "modified": date} for p in paths],
+        "note": "Use read_file(path) to load content for specific files"
+    }
+```
+
+**When handling file operations**:
+
+- Return previews truncated to ~1000 characters
+- Include expansion note: "... [N more chars]. Use read_file() for full content"
+- Never load full content unless explicitly requested
+
+**When orchestrating complex tasks**:
+
+- Main agent coordinates, doesn't accumulate context
+- Sub-agents return summaries, not full analysis
+- Persist state in backend (FastAPI), not context window
+- See `docs/reference/claude-agent-sdk.md:Sub-Agent-Orchestration`
+
+### Context Budgets
+
+All backend operations enforce these limits (defined in `backend/src/palette_sidecar/config.py`):
+
+```python
+MAX_FILE_PREVIEW_SIZE = 1000      # characters
+MAX_SEARCH_RESULTS = 20           # files
+MAX_DIRECTORY_LISTING = 50        # entries
+MAX_TOOL_OUTPUT_LENGTH = 5000     # characters
+```
+
+**Violations**: Log warning + truncate + append "request more" note
+
+### System Prompt Design
+
+All Claude sessions use structured prompts with these sections:
+
+```
+# Identity
+[Who is Claude in this context]
+
+# Capabilities
+[What tools/actions are available]
+
+# Constraints
+[What to avoid or require]
+
+# Response Format
+[Layer 1/2/3 guidance for output]
+```
+
+**Current prompt**: `backend/src/palette_sidecar/claude_service.py:31-36`
+**Template reference**: `docs/reference/claude-agent-sdk.md:Context-Engineering-Best-Practices`
+
+### Validation
+
+Before merging PRs that add/modify MCP tools or Claude interactions:
+
+1. ✅ Check context size stays reasonable (< 10K tokens typical)
+2. ✅ Verify metadata-first patterns used
+3. ✅ Confirm hard limits enforced
+4. ✅ Test with large files/directories (100K+ chars, 500+ files)
+5. ✅ Validate truncation includes expansion affordances
+
+**See**: `docs/implementation/steel-thread-v1.md:Context-Performance-Validation`
+
 ## Decision Frameworks
 
 ### The Three-Layer Abstraction System
@@ -183,6 +281,8 @@ Reference: docs/design/aesthetic-system.md:318-360
 1. **Always** consult `docs/reference/claude-agent-sdk.md`
 2. Understand Options, permissions, hooks, MCP servers
 3. Follow established patterns
+4. Apply context engineering principles from `docs/reference/claude-agent-sdk.md:Context-Engineering-Best-Practices`
+5. Ensure metadata-first responses and context budget compliance
 
 ## Core Vocabulary
 

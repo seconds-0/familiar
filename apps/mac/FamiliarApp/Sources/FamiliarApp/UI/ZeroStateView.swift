@@ -53,11 +53,6 @@ struct ZeroStateView: View {
                         .padding(FamiliarSpacing.md)
                 }
             }
-
-            Text("Or just type what you need...")
-                .font(.familiarCaption)
-                .foregroundStyle(Color.familiarTextSecondary)
-                .padding(.bottom, FamiliarSpacing.md)
         }
         .padding(FamiliarSpacing.lg)
         .task {

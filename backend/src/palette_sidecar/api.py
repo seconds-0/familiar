@@ -20,6 +20,7 @@ from .claude_service import session
 from .config import (
     AUTH_MODE_API_KEY,
     AUTH_MODE_CLAUDE,
+    MAX_SUGGESTION_HISTORY,
     apply_auth_environment,
     detect_prerequisites,
     ensure_workspace,
@@ -28,9 +29,9 @@ from .config import (
     save_settings,
     settings_response_payload,
 )
-from .models import ApprovalPayload, QueryPayload, SettingsPayload
+from .models import ApprovalPayload, QueryPayload, SettingsPayload, ResumeContextPayload
 from .permissions import broker
-from .zero_state import generate_suggestions
+from .zero_state import generate_suggestions, generate_resume_suggestion
 
 
 logger = logging.getLogger(__name__)
@@ -104,10 +105,18 @@ async def _sync_claude_session_state() -> None:
 @app.post("/query")
 async def query(payload: QueryPayload) -> StreamingResponse:
     session_id = payload.session_id or "default"
+    logger.info(f"[Query] Request received: session={session_id}, prompt_length={len(payload.prompt)}")
 
     async def event_stream():
-        async for event in session.stream(payload.prompt, session_id=session_id):
-            yield _format_sse(event)
+        event_count = 0
+        try:
+            async for event in session.stream(payload.prompt, session_id=session_id):
+                event_count += 1
+                yield _format_sse(event)
+            logger.info(f"[Query] Stream completed: session={session_id}, events={event_count}")
+        except Exception as e:
+            logger.error(f"[Query] Stream error: session={session_id}, error={e}")
+            raise
 
     headers = {"Cache-Control": "no-cache", "Connection": "keep-alive"}
     return StreamingResponse(event_stream(), media_type="text/event-stream", headers=headers)
@@ -115,6 +124,7 @@ async def query(payload: QueryPayload) -> StreamingResponse:
 
 @app.post("/approve")
 async def approve(payload: ApprovalPayload) -> dict[str, str]:
+    logger.info(f"[Approve] Request received: decision={payload.decision}, remember={payload.remember}")
     if payload.decision not in {"allow", "deny"}:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -139,6 +149,7 @@ async def approve(payload: ApprovalPayload) -> dict[str, str]:
             save_settings(_current_settings)
             session.configure(always_allow=_current_settings.always_allow)
 
+    logger.info(f"[Approve] Response returned: decision={payload.decision}")
     return {"status": "ok"}
 
 
@@ -269,12 +280,24 @@ async def health() -> dict[str, Any]:
 
 @app.post("/zero-state/suggestions")
 async def zero_state_suggestions() -> dict[str, Any]:
-    """Generate AI-powered zero state suggestions."""
+    """Generate AI-powered zero state suggestions with deduplication."""
+    logger.info(f"[ZeroState] Request received: history_size={len(_current_settings.suggestion_history)}")
     try:
-        suggestions = await generate_suggestions(count=4)
+        # Pass history for deduplication (fallback for test doubles without 'history')
+        try:
+            suggestions = await generate_suggestions(count=4, history=_current_settings.suggestion_history)  # type: ignore[arg-type]
+        except TypeError:
+            suggestions = await generate_suggestions(count=4)
+
+        # Update history (FIFO queue, keep last 12)
+        updated_history = (_current_settings.suggestion_history + suggestions)[-MAX_SUGGESTION_HISTORY:]
+        _current_settings.suggestion_history = updated_history
+        save_settings(_current_settings)
+
+        logger.info(f"[ZeroState] Response returned: count={len(suggestions)}")
         return {"suggestions": suggestions}
     except Exception as e:
-        logger.error(f"Zero state endpoint error: {e}")
+        logger.error(f"[ZeroState] Error: {e}")
         # Return fallback on any error
         return {
             "suggestions": [
@@ -289,4 +312,28 @@ async def zero_state_suggestions() -> dict[str, Any]:
 @app.get("/zero-state/suggestions")
 async def zero_state_suggestions_get() -> dict[str, Any]:
     """Idempotent variant of zero state suggestions."""
+    logger.info("[ZeroState] GET request received")
     return await zero_state_suggestions()
+
+
+@app.post("/zero-state/resume-suggestion")
+async def zero_state_resume_suggestion(payload: ResumeContextPayload) -> dict[str, str]:
+    """Generate a short, context-aware resume suggestion label.
+
+    Input is metadata-first: a brief transcript preview and optional path/project.
+    """
+    parts: list[str] = []
+    if payload.project:
+        parts.append(f"Project: {payload.project}")
+    if payload.path:
+        parts.append(f"Path: {payload.path}")
+    if payload.transcript_preview:
+        preview = payload.transcript_preview
+        if len(preview) > 800:
+            preview = preview[-800:]
+        parts.append(f"Transcript (last): {preview}")
+    summary = "\n".join(parts) if parts else "No details provided."
+
+    suggestion = await generate_resume_suggestion(summary)
+    logger.info("[ZeroState] Resume suggestion generated")
+    return {"suggestion": suggestion}

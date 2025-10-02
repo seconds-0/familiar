@@ -30,6 +30,23 @@ AUTH_MODE_CLAUDE = "claude_ai"
 
 DEFAULT_WORKSPACE_PATH = Path("/")
 
+# Context Engineering Limits
+# Reference: https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents
+# Documentation: docs/reference/claude-agent-sdk.md:Context-Engineering-Best-Practices
+
+MAX_FILE_PREVIEW_SIZE = 1000      # characters - truncate file previews
+MAX_SEARCH_RESULTS = 20           # files - limit search result count
+MAX_DIRECTORY_LISTING = 50        # entries - prevent directory explosion
+MAX_TOOL_OUTPUT_LENGTH = 5000     # characters - hard limit on tool responses
+MAX_ERROR_MESSAGE_LENGTH = 500    # characters - truncate stack traces
+
+# Token budgets (passed to Claude Agent SDK)
+DEFAULT_MAX_TOKENS = 4096         # per response
+DEFAULT_MAX_TURNS = 10            # conversation depth limit
+
+# Zero State Configuration
+MAX_SUGGESTION_HISTORY = 12       # Keep last 12 suggestions for deduplication (~3 sessions)
+
 
 @dataclass
 class Settings:
@@ -41,6 +58,7 @@ class Settings:
     auth_mode: str = AUTH_MODE_CLAUDE
     claude_session_active: bool = False
     claude_account: str | None = None
+    suggestion_history: list[str] = field(default_factory=list)
 
 
 def _serialise(settings: Settings) -> dict[str, Any]:
