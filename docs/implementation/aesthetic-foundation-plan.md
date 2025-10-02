@@ -691,7 +691,6 @@ struct FamiliarWindowContent: View {
 #### Window Integration
 
 - Replace the single `Text(viewModel.transcript)` with a list of entries:
-
   - Use `ScrollViewReader` + `ScrollView(.vertical)` + `LazyVStack(spacing: FamiliarSpacing.xs)`.
   - `ForEach(viewModel.entries) { TranscriptEntryView(entry: $0) }`.
   - Maintain existing `ToolSummaryView` and error labels below the transcript stack.
@@ -756,7 +755,8 @@ struct FamiliarWindowContent: View {
 - Accessibility: VoiceOver narration is clear; reduced motion respected.
 - Performance: smooth scroll and animations at 60fps with 200+ streamed lines.
 
-**References**: 
+**References**:
+
 - `docs/design/visual-improvements.md:125–141` (Transcript Grouping)
 - `docs/design/aesthetic-system.md:563–693` (Tokens & Motion), `740–819` (Streaming constraints)
 

@@ -69,24 +69,28 @@
 These tests ensure context engineering best practices are working:
 
 **Test 1: Large File Handling**
+
 1. Create a test file with 100,000+ characters in your workspace
 2. Ask: "What's in large-test-file.txt?"
 3. Verify the response shows a truncated preview with "... [N more characters]" note
 4. Confirm Claude didn't load the entire file into context immediately
 
 **Test 2: Directory Listing**
+
 1. Create a directory with 100+ files
 2. Ask: "What files are in test-directory/?"
 3. Verify response shows metadata (names, sizes, dates) not file contents
 4. Confirm response includes note like "Use read_file(path) for specific contents"
 
 **Test 3: Metadata-First Responses**
+
 1. Ask: "List all files in my workspace"
 2. Verify backend returns JSON with `summary` field and file metadata
 3. Confirm no file contents are loaded unless explicitly requested
 4. Check backend logs—context size should be < 5K tokens for typical workspace
 
 **Test 4: Context Budget Enforcement**
+
 1. Check `backend/src/palette_sidecar/config.py` constants are defined:
    - `MAX_FILE_PREVIEW_SIZE = 1000`
    - `MAX_SEARCH_RESULTS = 20`
@@ -95,13 +99,16 @@ These tests ensure context engineering best practices are working:
 3. Test with inputs exceeding limits—should truncate gracefully
 
 **Test 5: Token Usage Monitoring** (when measure-context.py is available)
+
 ```bash
 cd backend
 uv run python scripts/measure-context.py --prompt "Organize my desktop files"
 ```
+
 Expected: < 10K tokens for typical Steel Thread interaction
 
 **Success Criteria**:
+
 - File previews truncate at ~1000 characters with expansion note
 - Directory listings show metadata, not contents
 - Large operations remain under 10K total tokens

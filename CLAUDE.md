@@ -51,7 +51,7 @@ Reference: docs/design/aesthetic-system.md:22-53
 
 ## Context Engineering Principles
 
-Familiar integrates Claude Agent SDK, which means we must treat **context as a precious, finite resource**. Just as our three-layer abstraction hides UI complexity from users, context engineering hides *token complexity* from Claude.
+Familiar integrates Claude Agent SDK, which means we must treat **context as a precious, finite resource**. Just as our three-layer abstraction hides UI complexity from users, context engineering hides _token complexity_ from Claude.
 
 ### Core Philosophy
 
@@ -66,6 +66,7 @@ Familiar integrates Claude Agent SDK, which means we must treat **context as a p
 ### Mandatory Patterns
 
 **When designing MCP tools**:
+
 - Single-purpose tools only (no functionality overlap)
 - Self-contained and robust to errors
 - Returns metadata-first by default
@@ -88,11 +89,13 @@ def list_files(directory):
 ```
 
 **When handling file operations**:
+
 - Return previews truncated to ~1000 characters
 - Include expansion note: "... [N more chars]. Use read_file() for full content"
 - Never load full content unless explicitly requested
 
 **When orchestrating complex tasks**:
+
 - Main agent coordinates, doesn't accumulate context
 - Sub-agents return summaries, not full analysis
 - Persist state in backend (FastAPI), not context window

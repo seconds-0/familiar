@@ -628,30 +628,32 @@ Claude Agent SDK applications must treat **context as precious and finite**. LLM
 **Always return lightweight identifiers and metadata first**, loading full content only on explicit request.
 
 **Bad Pattern** (Context Explosion):
+
 ```typescript
 // ❌ Loads everything immediately
 function listWorkspaceFiles(directory: string) {
   const files = scanDirectory(directory);
-  return files.map(f => ({
+  return files.map((f) => ({
     path: f.path,
-    content: readFileSync(f.path, 'utf-8')  // 💥 Massive context usage
+    content: readFileSync(f.path, "utf-8"), // 💥 Massive context usage
   }));
 }
 ```
 
 **Good Pattern** (Metadata-First):
+
 ```typescript
 // ✅ Returns summary + metadata, content on-demand
 function listWorkspaceFiles(directory: string) {
   const files = scanDirectory(directory);
   return {
     summary: `${files.length} files in ${path.basename(directory)}/`,
-    files: files.map(f => ({
+    files: files.map((f) => ({
       path: f.path,
       size: f.stats.size,
       modified: f.stats.mtime,
     })),
-    note: "Use read_file(path) to load content for specific files"
+    note: "Use read_file(path) to load content for specific files",
   };
 }
 ```
@@ -665,15 +667,17 @@ Enable Claude to explore data progressively rather than loading everything upfro
 ```typescript
 // Return preview with expansion affordance
 function getFilePreview(path: string, maxChars: number = 1000) {
-  const content = readFileSync(path, 'utf-8');
+  const content = readFileSync(path, "utf-8");
 
   if (content.length <= maxChars) {
     return content;
   }
 
-  return content.slice(0, maxChars) +
+  return (
+    content.slice(0, maxChars) +
     `\n\n... [${content.length - maxChars} more characters]\n` +
-    `Use read_file("${path}") for full content`;
+    `Use read_file("${path}") for full content`
+  );
 }
 ```
 
@@ -683,8 +687,8 @@ Use `maxTokens` and `maxTurns` to enforce hard limits:
 
 ```typescript
 const options: Options = {
-  maxTokens: 4096,      // Per response
-  maxTurns: 10,         // Conversation depth
+  maxTokens: 4096, // Per response
+  maxTurns: 10, // Conversation depth
   // ... other options
 };
 
@@ -694,6 +698,7 @@ for await (const message of query({ prompt, options })) {
 ```
 
 **Recommended Limits**:
+
 - Simple tasks: 2048 tokens, 5 turns
 - Complex workflows: 4096 tokens, 10 turns
 - Long-running agents: 8192 tokens, 20 turns
@@ -703,29 +708,31 @@ for await (const message of query({ prompt, options })) {
 When creating custom MCP tools:
 
 **1. Single-Purpose Tools**
+
 ```typescript
 // ✅ Good: Focused, single responsibility
 tool({
   name: "search-files",
   description: "Search for files by name pattern",
   // ...
-})
+});
 
 tool({
   name: "read-file-content",
   description: "Read full content of a specific file",
   // ...
-})
+});
 
 // ❌ Bad: Kitchen-sink tool with overlapping concerns
 tool({
   name: "file-operations",
   description: "Do anything with files: search, read, write, delete...",
   // ...
-})
+});
 ```
 
 **2. Self-Contained Tools**
+
 ```typescript
 // ✅ Each tool returns complete, actionable results
 tool({
@@ -734,16 +741,17 @@ tool({
     const deps = await getDependencies();
     return {
       summary: `${deps.length} dependencies found`,
-      outdated: deps.filter(d => d.isOutdated).length,
-      vulnerable: deps.filter(d => d.hasVulnerability).length,
-      details: deps.map(d => ({ name: d.name, version: d.version })),
+      outdated: deps.filter((d) => d.isOutdated).length,
+      vulnerable: deps.filter((d) => d.hasVulnerability).length,
+      details: deps.map((d) => ({ name: d.name, version: d.version })),
       // Full analysis available without follow-up tool calls
     };
-  }
-})
+  },
+});
 ```
 
 **3. Clear, Minimal Purpose**
+
 - Tool name clearly indicates function
 - Description explains when to use it
 - No hidden side effects or state changes
@@ -758,25 +766,25 @@ async function organizeDesktop(workspace: string) {
   // Sub-agent 1: Analyze files (returns summary only)
   const analysis = await query({
     prompt: "Analyze files in desktop and categorize them",
-    options: { maxTokens: 2048 }
+    options: { maxTokens: 2048 },
   });
   // Extract: "47 images, 12 docs, 3 videos"
 
   // Sub-agent 2: Plan structure (returns plan only)
   const plan = await query({
     prompt: `Based on ${analysis}, propose folder structure`,
-    options: { maxTokens: 1024 }
+    options: { maxTokens: 1024 },
   });
   // Extract: Directory structure + rules
 
   // Sub-agent 3: Execute (returns outcome only)
   const result = await query({
     prompt: `Execute this plan: ${plan}`,
-    options: { maxTokens: 512 }
+    options: { maxTokens: 512 },
   });
   // Extract: "Moved 62 files into 4 folders"
 
-  return result;  // Not the full conversation history!
+  return result; // Not the full conversation history!
 }
 ```
 
@@ -785,24 +793,25 @@ async function organizeDesktop(workspace: string) {
 ### Anti-Patterns to Avoid
 
 **1. Eager Loading**
+
 ```typescript
 // ❌ Don't load all files upfront
-const allFiles = files.map(f => readFileSync(f));
+const allFiles = files.map((f) => readFileSync(f));
 return allFiles;
 ```
 
 **2. Unbounded Results**
+
 ```typescript
 // ❌ No limit on search results
-return searchResults;  // Could be 10,000 files!
+return searchResults; // Could be 10,000 files!
 
 // ✅ Enforce limits
-return searchResults.slice(0, 20).concat([
-  { note: `... ${searchResults.length - 20} more results. Refine search?` }
-]);
+return searchResults.slice(0, 20).concat([{ note: `... ${searchResults.length - 20} more results. Refine search?` }]);
 ```
 
 **3. Verbose Error Messages**
+
 ```typescript
 // ❌ Full stack traces in context
 catch (error) {
@@ -825,9 +834,9 @@ Log context usage to identify optimization opportunities:
 
 ```typescript
 for await (const message of query({ prompt, options })) {
-  if (message.type === 'system' && message.subtype === 'init') {
+  if (message.type === "system" && message.subtype === "init") {
     console.log(`Session started: ${message.sessionId}`);
-    console.log(`Context window: ${message.contextWindow || 'default'}`);
+    console.log(`Context window: ${message.contextWindow || "default"}`);
   }
 
   // Track token usage if available in message metadata

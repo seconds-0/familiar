@@ -140,12 +140,14 @@ Every interaction with Claude Agent SDK must follow **context engineering princi
 ### Before Adding MCP Tools
 
 **Checklist**:
+
 - [ ] Tool has single, clear purpose (no overlap with existing tools)
 - [ ] Tool returns metadata-first (summary + identifiers, not full content)
-- [ ] Tool respects context budgets (`config.py` MAX_* constants)
+- [ ] Tool respects context budgets (`config.py` MAX\_\* constants)
 - [ ] Tool is self-contained (no hidden dependencies)
 
 **Good Example**:
+
 ```python
 # ✅ Metadata-first file listing
 @mcp_tool
@@ -159,6 +161,7 @@ def list_workspace_files() -> dict:
 ```
 
 **Bad Example**:
+
 ```python
 # ❌ Context explosion - loads everything
 @mcp_tool
@@ -178,6 +181,7 @@ MAX_TOOL_OUTPUT_LENGTH = 5000     # characters
 ```
 
 **Implementation Pattern**:
+
 ```python
 def get_file_preview(path: str) -> str:
     content = read_file(path)
@@ -292,7 +296,7 @@ uv run python scripts/measure-context.py --prompt "your test prompt here"
 ## Context Engineering
 
 - [ ] Tools return metadata-first (not full content)
-- [ ] Respects MAX_* limits in config.py
+- [ ] Respects MAX\_\* limits in config.py
 - [ ] Tested with large files/directories (100K+ chars, 500+ files)
 - [ ] Context size measured (< 10K tokens for typical flow)
 - [ ] Truncation includes expansion affordances
