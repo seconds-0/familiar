@@ -766,10 +766,12 @@ struct FamiliarWindowContent: View {
 **Status**: In Progress
 
 **Done**:
+
 - [x] Added `StatusBannerView` with conversational summary + details disclosure
 - [x] Integrated banner into `FamiliarWindow` for error display
 
 **Next**:
+
 - [ ] Optional success/info variants where applicable
 
 **Reference**: visual-improvements.md:123-133
@@ -783,10 +785,12 @@ struct FamiliarWindowContent: View {
 **Status**: In Progress
 
 **Done**:
+
 - [x] Per-line backgrounds for +/−
 - [x] Monospaced, right-aligned line numbers
 
 **Next**:
+
 - [ ] Consider dimming metadata headers and emphasizing hunks
 
 **Reference**: visual-improvements.md:155-165

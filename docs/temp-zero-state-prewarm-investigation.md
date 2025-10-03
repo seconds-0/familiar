@@ -9,6 +9,7 @@
 ## Problem Statement
 
 ### Expected Behavior
+
 1. App launches
 2. Within 1-2 seconds, ViewModel initializes in background
 3. Zero-state suggestions fetched from backend (4 fresh AI-generated items)
@@ -17,6 +18,7 @@
 6. Window opens → zero state shows instantly from cache (no shimmer)
 
 ### Actual Behavior
+
 1. App launches
 2. **Nothing happens** (no ViewModel initialization)
 3. User presses hotkey
@@ -40,6 +42,7 @@
 ## Architecture Overview
 
 ### Component Chain
+
 ```
 App.swift
   └─> @NSApplicationDelegateAdaptor(AppDelegate.self)
@@ -57,6 +60,7 @@ App.swift
 ### Current Implementation
 
 **AppDelegate.swift** (Created to force initialization):
+
 ```swift
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -68,6 +72,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 ```
 
 **FamiliarWindowController.init()** (Creates hosting controller eagerly):
+
 ```swift
 private override init() {
     logger.info("🎮 Initializing controller")
@@ -78,6 +83,7 @@ private override init() {
 ```
 
 **FamiliarViewModel.init()** (Starts pre-warming):
+
 ```swift
 init() {
     logger.info("🧠 ViewModel initialized - pre-warming zero state")
@@ -92,6 +98,7 @@ init() {
 ## What We've Tried
 
 ### Attempt 1: @StateObject in App.swift
+
 **Approach**: Declared `@StateObject controller = FamiliarWindowController.shared` in App body
 
 **Reason**: Thought SwiftUI would initialize it when App creates
@@ -101,9 +108,11 @@ init() {
 ---
 
 ### Attempt 2: Force .shared Access in App.init()
+
 **Approach**: Added `_ = FamiliarWindowController.shared` to App.init()
 
 **Code**:
+
 ```swift
 init() {
     _ = FamiliarWindowController.shared
@@ -116,9 +125,11 @@ init() {
 ---
 
 ### Attempt 3: Make hostingController Non-Lazy
+
 **Approach**: Changed from `lazy var` to `let`, initialize in init()
 
 **Code**:
+
 ```swift
 private let hostingController: NSHostingController<FamiliarView>
 
@@ -133,6 +144,7 @@ private override init() {
 ---
 
 ### Attempt 4: Use controller Property in MenuBarExtra
+
 **Approach**: Changed `FamiliarWindowController.shared.toggle()` to `controller.toggle()` to force property use
 
 **Result**: Failed - MenuBarExtra body still doesn't render until clicked
@@ -140,9 +152,11 @@ private override init() {
 ---
 
 ### Attempt 5: AppDelegate with applicationDidFinishLaunching
+
 **Approach**: Use proper macOS lifecycle hook instead of SwiftUI init()
 
 **Code**:
+
 ```swift
 @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
@@ -158,6 +172,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 ---
 
 ### Attempt 6: Add Comprehensive Logging
+
 **Approach**: Added Logger throughout initialization chain to trace execution
 
 **Result**: Revealed that **no** initialization happens until window toggle - AppDelegate logs never appear
@@ -165,6 +180,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 ---
 
 ### Attempt 7: Start Log Viewer Before App
+
 **Approach**: Modified restart script to launch log viewer 1 second before app
 
 **Result**: Logs now capture from beginning, but still show initialization only happens at window toggle
@@ -178,11 +194,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 **Problem**: `@NSApplicationDelegateAdaptor` might not work with MenuBarExtra-only apps
 
 **Evidence**:
+
 - AppDelegate logs (`🚀 App launched`) never appear
 - `applicationDidFinishLaunching` never fires
 - MenuBarExtra apps don't have a traditional NSApplicationDelegate lifecycle
 
 **Mitigation**:
+
 ```swift
 // Option A: Use @main with NSApplicationMain directly
 @main
@@ -210,11 +228,13 @@ FamiliarAppMain.main()
 **Problem**: `static let shared = FamiliarWindowController()` creates instance, but SwiftUI's `@StateObject` wrapper might be preventing proper initialization timing
 
 **Evidence**:
+
 - @StateObject is designed for SwiftUI-managed lifecycle
 - We're mixing singleton pattern with SwiftUI state management
 - Logs show initialization happens when SwiftUI needs it, not when we access .shared
 
 **Mitigation**:
+
 ```swift
 // Remove @StateObject, use singleton only
 struct FamiliarAppMain: App {
@@ -235,11 +255,13 @@ struct FamiliarAppMain: App {
 **Problem**: Even though we create `NSHostingController(rootView: FamiliarView())` eagerly, SwiftUI might defer actual view creation until it's needed for rendering
 
 **Evidence**:
+
 - ViewModel logs appear right before window opens
 - Only 28ms gap between initialization and window open
 - Suggests SwiftUI is optimizing away early view creation
 
 **Mitigation**:
+
 ```swift
 // Force view to actually materialize
 private override init() {
@@ -259,11 +281,13 @@ private override init() {
 **Problem**: `log stream` command might not capture logs that happen in the first 1-2 seconds after app launch
 
 **Evidence**:
+
 - We only see logs from 13:14:07.993 onwards
 - Missing expected AppDelegate logs
 - Even with 1-second delay, might miss early events
 
 **Mitigation**:
+
 ```bash
 # Option A: Use Console.app instead (captures all logs retroactively)
 open -a Console
@@ -282,10 +306,12 @@ Logger.init(...).log("STARTUP MARKER")
 **Problem**: The `Task { await prewarmZeroState() }` might not actually run until the main run loop is fully active, which doesn't happen until UI renders
 
 **Evidence**:
+
 - Task fires right before window opens (when run loop becomes active for UI)
 - Pre-warming starts at 13:14:08.042, right after window open request
 
 **Mitigation**:
+
 ```swift
 // Use MainActor.run with higher priority
 init() {
@@ -310,6 +336,7 @@ init() {
 ## Recommended Next Steps (Prioritized)
 
 ### Priority 1: Verify AppDelegate Actually Runs
+
 **Test**: Add side effects that we can observe externally
 
 ```swift
@@ -329,6 +356,7 @@ Then check: `ls -la /tmp/familiar-app-started-*` to see if file was created at a
 ---
 
 ### Priority 2: Force View Materialization
+
 **Test**: Access the underlying NSView to force SwiftUI to build the view hierarchy
 
 ```swift
@@ -348,6 +376,7 @@ private override init() {
 ---
 
 ### Priority 3: Use Console.app to Capture ALL Logs
+
 **Action**: Open Console.app before running restart script
 
 1. Open Console.app
@@ -358,6 +387,7 @@ private override init() {
 ---
 
 ### Priority 4: Move to Traditional AppDelegate Pattern
+
 **Approach**: Don't use SwiftUI App lifecycle at all for menu bar app
 
 ```swift
@@ -375,6 +405,7 @@ app.run()
 ---
 
 ### Priority 5: Bypass SwiftUI State Management Entirely
+
 **Approach**: Create controller before SwiftUI even starts
 
 ```swift
@@ -400,17 +431,20 @@ struct FamiliarAppMain: App {
 ## Technical Constraints
 
 ### SwiftUI MenuBarExtra Limitations
+
 - MenuBarExtra doesn't have traditional window lifecycle hooks
 - Body doesn't render until menu is clicked
 - @StateObject initialization is deferred until body needs the value
 - No guaranteed "app did finish launching" equivalent in pure SwiftUI
 
 ### macOS Unified Logging Timing
+
 - `log stream` might miss logs from first 1-2 seconds
 - Logs written before log stream connects are lost
 - Console.app stores logs retroactively but requires manual checking
 
 ### Swift Concurrency + Main Thread
+
 - Task { } requires active RunLoop to schedule work
 - RunLoop might not be fully active until UI rendering starts
 - Async work can be deferred by system until "needed"
