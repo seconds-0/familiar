@@ -15,11 +15,25 @@ struct ActivityBarView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 2)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityDescription)
     }
 
     private var toolTitle: String {
         if let toolName, !toolName.isEmpty { return toolName }
         return "Tools"
+    }
+
+    private var accessibilityDescription: String {
+        guard let active else { return "Activity stages: Plan, Tools, Reply" }
+        switch active {
+        case .planning:
+            return "Currently planning. Stages: Plan, Tools, Reply"
+        case .tooling:
+            return "Currently using \(toolTitle). Stages: Plan, \(toolTitle), Reply"
+        case .replying:
+            return "Currently replying. Stages: Plan, Tools, Reply"
+        }
     }
 
     private func stageCapsule(title: String, stage: Stage) -> some View {

@@ -35,9 +35,9 @@ struct ShimmerLinesView: View {
         let glow = Color.white.opacity(0.22)
         return LinearGradient(
             gradient: Gradient(stops: [
-                .init(color: base, location: 0 + phase*0.0),
-                .init(color: glow, location: 0.5 + phase*0.0),
-                .init(color: base, location: 1 + phase*0.0)
+                .init(color: base, location: 0 + phase*0.5),
+                .init(color: glow, location: 0.5 + phase*0.5),
+                .init(color: base, location: 1 + phase*0.5)
             ]),
             startPoint: .leading, endPoint: .trailing
         )

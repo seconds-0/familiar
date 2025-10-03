@@ -284,7 +284,7 @@ struct FamiliarView: View {
                         }
                     }
                 }
-                .task(id: viewModel.entries.last?.text.count ?? 0) {
+                .task(id: viewModel.entries.count) {
                     guard viewModel.isStreaming else { return }
                     try? await Task.sleep(nanoseconds: 100_000_000)
                     guard !Task.isCancelled else { return }

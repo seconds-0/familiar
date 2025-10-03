@@ -17,4 +17,3 @@ struct TranscriptEntry: Identifiable, Equatable {
         self.isStreaming = isStreaming
     }
 }
-
