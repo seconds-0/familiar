@@ -49,7 +49,7 @@ actor SidecarClient {
         _ = try await sendJSON(path: "approve", method: "POST", payload: payload) as [String: Any]
     }
 
-    func updateSettings(apiKey: String?, workspace: String?, authMode: String?) async throws -> SidecarSettings {
+    func updateSettings(apiKey: String?, workspace: String?, authMode: String?, bypassPermissions: Bool? = nil) async throws -> SidecarSettings {
         var payload: [String: Any] = [:]
         if let apiKey {
             payload["anthropic_api_key"] = apiKey
@@ -59,6 +59,9 @@ actor SidecarClient {
         }
         if let authMode {
             payload["auth_mode"] = authMode
+        }
+        if let bypassPermissions {
+            payload["bypass_permissions"] = bypassPermissions
         }
         return try await sendDecodable(path: "settings", method: "POST", payload: payload)
     }

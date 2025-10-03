@@ -67,6 +67,7 @@ if _workspace_path:
         api_key=_current_settings.anthropic_api_key,
         workspace=_workspace_path,
         always_allow=_current_settings.always_allow,
+        bypass_permissions=_current_settings.bypass_permissions,
         auth_mode=_current_settings.auth_mode,
         claude_session_active=_current_settings.claude_session_active,
         claude_account=_current_settings.claude_account,
@@ -75,6 +76,7 @@ else:
     session.configure(
         api_key=_current_settings.anthropic_api_key,
         always_allow=_current_settings.always_allow,
+        bypass_permissions=_current_settings.bypass_permissions,
         auth_mode=_current_settings.auth_mode,
         claude_session_active=_current_settings.claude_session_active,
         claude_account=_current_settings.claude_account,
@@ -193,6 +195,9 @@ async def update_settings(payload: SettingsPayload) -> JSONResponse:
             except Exception as exc:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
 
+    if payload.bypass_permissions is not None:
+        _current_settings.bypass_permissions = bool(payload.bypass_permissions)
+
     apply_auth_environment(_current_settings)
 
     save_settings(_current_settings)
@@ -201,6 +206,7 @@ async def update_settings(payload: SettingsPayload) -> JSONResponse:
             api_key=_current_settings.anthropic_api_key,
             workspace=_workspace_path,
             always_allow=_current_settings.always_allow,
+            bypass_permissions=_current_settings.bypass_permissions,
             auth_mode=_current_settings.auth_mode,
             claude_session_active=_current_settings.claude_session_active,
             claude_account=_current_settings.claude_account,
@@ -209,6 +215,7 @@ async def update_settings(payload: SettingsPayload) -> JSONResponse:
         session.configure(
             api_key=_current_settings.anthropic_api_key,
             always_allow=_current_settings.always_allow,
+            bypass_permissions=_current_settings.bypass_permissions,
             auth_mode=_current_settings.auth_mode,
             claude_session_active=_current_settings.claude_session_active,
             claude_account=_current_settings.claude_account,

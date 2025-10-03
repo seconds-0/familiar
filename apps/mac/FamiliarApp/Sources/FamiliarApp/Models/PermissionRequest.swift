@@ -20,7 +20,36 @@ struct PermissionRequest: Identifiable {
 
         let input = event.toolInput ?? [:]
         let path = event.path ?? input["path"] as? String
-        let preview = input["content"] as? String
+
+        // Extract preview based on tool type
+        let preview: String? = {
+            // File content operations
+            if let content = input["content"] as? String {
+                return content
+            }
+
+            // Bash commands
+            if tool.lowercased() == "bash", let command = input["command"] as? String {
+                return command
+            }
+
+            // Search operations
+            if tool.lowercased() == "grep" || tool.lowercased() == "glob" {
+                if let pattern = input["pattern"] as? String {
+                    return "Pattern: \(pattern)"
+                }
+            }
+
+            // Fallback: show first available string parameter
+            for (key, value) in input {
+                if let stringValue = value as? String, !stringValue.isEmpty {
+                    return "\(key): \(stringValue)"
+                }
+            }
+
+            return nil
+        }()
+
         return PermissionRequest(
             id: requestId,
             toolName: tool,

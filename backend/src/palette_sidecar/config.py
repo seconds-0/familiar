@@ -55,6 +55,7 @@ class Settings:
     anthropic_api_key: str | None = None
     workspace: str | None = None
     always_allow: dict[str, list[str]] = field(default_factory=dict)
+    bypass_permissions: bool = True
     auth_mode: str = AUTH_MODE_CLAUDE
     claude_session_active: bool = False
     claude_account: str | None = None
@@ -155,6 +156,7 @@ def settings_response_payload(settings: Settings) -> dict[str, Any]:
         always_allow=settings.always_allow,
         default_workspace=str(DEFAULT_WORKSPACE_PATH),
         auth_mode=settings.auth_mode,
+        bypass_permissions=settings.bypass_permissions,
     )
 
     return response.model_dump(by_alias=True)

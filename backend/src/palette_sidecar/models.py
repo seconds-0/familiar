@@ -21,6 +21,7 @@ class SettingsPayload(BaseModel):
     anthropic_api_key: str | None = None
     workspace: str | None = None
     auth_mode: str | None = None
+    bypass_permissions: bool | None = None
 
 
 class SettingsResponse(BaseModel):
@@ -45,6 +46,7 @@ class SettingsResponse(BaseModel):
     always_allow: dict[str, list[str]] = Field(alias="alwaysAllow")
     default_workspace: str = Field(alias="defaultWorkspace")
     auth_mode: str = Field(alias="authMode")
+    bypass_permissions: bool = Field(alias="bypassPermissions")
 
 
 class ResumeContextPayload(BaseModel):
