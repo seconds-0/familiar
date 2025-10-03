@@ -102,10 +102,23 @@ struct FamiliarView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.vertical, 1) // Prevent content from touching scroll edges
                         }
-                        .onChange(of: viewModel.transcript) { _ in
-                            withAnimation(.easeOut(duration: 0.2)) {
+                        .onChange(of: viewModel.isStreaming) { isStreaming in
+                            // Scroll to bottom when streaming starts or stops
+                            if isStreaming {
                                 proxy.scrollTo("BOTTOM", anchor: .bottom)
+                            } else {
+                                // Final scroll when streaming completes
+                                withAnimation(.easeOut(duration: 0.2)) {
+                                    proxy.scrollTo("BOTTOM", anchor: .bottom)
+                                }
                             }
+                        }
+                        .task(id: viewModel.transcript.count) {
+                            // Debounced scroll during streaming (only when transcript length changes)
+                            guard viewModel.isStreaming else { return }
+                            try? await Task.sleep(nanoseconds: 100_000_000) // 100ms debounce
+                            guard !Task.isCancelled else { return }
+                            proxy.scrollTo("BOTTOM", anchor: .bottom)
                         }
                     }
                     .frame(maxHeight: .infinity, alignment: .top)

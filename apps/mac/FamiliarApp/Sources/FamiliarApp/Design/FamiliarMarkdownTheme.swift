@@ -65,6 +65,8 @@ extension Theme {
             .padding(.vertical, FamiliarSpacing.xs)
         }
         // Inline code with subtle background
+        // Note: MarkdownUI doesn't support explicit padding for inline code,
+        // but the background color provides visual separation
         .code {
             FontFamilyVariant(.monospaced)
             FontSize(14)

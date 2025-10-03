@@ -248,10 +248,6 @@ final class FamiliarViewModel: ObservableObject {
 
     private func handleAssistantText(_ event: SidecarEvent) {
         if let text = event.text {
-            // Debug logging to diagnose text concatenation issues
-            logger.debug("📝 Received text chunk: \(text.debugDescription)")
-            logger.debug("📊 Chunk length: \(text.count), hasPrefix space: \(text.hasPrefix(" ")), hasSuffix space: \(text.hasSuffix(" "))")
-
             if typingEffectEnabled {
                 revealBuffer.append(text)
             } else {
