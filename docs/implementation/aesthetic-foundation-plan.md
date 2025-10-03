@@ -117,9 +117,9 @@ extension Animation {
 - [ ] Implement FamiliarRadius.swift
 - [ ] Implement FamiliarTypography.swift
 - [ ] Implement FamiliarColor.swift
-- [ ] Implement FamiliarMotion.swift
-- [ ] Add unit tests for token values
-- [ ] Document usage in code comments
+- [x] Implement FamiliarMotion.swift
+- [x] Add unit tests for token values
+- [x] Document usage in code comments
 
 **Reference**: aesthetic-system.md:522-663
 
@@ -159,13 +159,13 @@ extension Animation {
 
 **Checklist**:
 
-- [ ] Audit ApprovalSheet.swift button text
-- [ ] Update SettingsView.swift labels
-- [ ] Review FamiliarWindow.swift status messages
-- [ ] Update error messages in FamiliarViewModel.swift
-- [ ] Check ToolSummaryView.swift for corporate language
-- [ ] Test all text changes in light and dark mode
-- [ ] Verify VoiceOver reads naturally
+- [x] Audit ApprovalSheet.swift button text
+- [x] Update SettingsView.swift labels
+- [x] Review FamiliarWindow.swift status messages
+- [x] Update error messages in FamiliarViewModel.swift
+- [x] Check ToolSummaryView.swift for corporate language
+- [x] Test all text changes in light and dark mode
+- [x] Verify VoiceOver reads naturally
 
 **Reference**: aesthetic-system.md:283-313, visual-improvements.md:584-627
 
@@ -184,17 +184,17 @@ extension Animation {
 - Replace border color with `Color.familiarAccent.opacity(0.35)`
 - Add subtle inner shadow for depth
 - Italicize preview text with quaternary color
-- Increase corner radius to 12pt (using `FamiliarRadius.control`)
+- Increase corner radius to 12pt (using `FamiliarRadius.field`)
 - Use `FamiliarSpacing` for padding
 
 **Checklist**:
 
-- [ ] Update border styling
-- [ ] Add inner shadow
-- [ ] Style preview text
-- [ ] Apply corner radius from tokens
-- [ ] Apply spacing from tokens
-- [ ] Test in light/dark mode
+- [x] Update border styling
+- [x] Add inner shadow
+- [x] Style preview text (italic + tertiary)
+- [x] Apply corner radius from tokens (`FamiliarRadius.field`)
+- [x] Apply spacing from tokens (16/8)
+- [x] Test in light/dark mode
 
 **Reference**: visual-improvements.md:91-99
 
@@ -215,12 +215,12 @@ extension Animation {
 
 **Checklist**:
 
-- [ ] Add text labels to buttons
-- [ ] Apply button styles
-- [ ] Set distinct colors
-- [ ] Verify 44pt tap targets
-- [ ] Test accessibility with VoiceOver
-- [ ] Add keyboard shortcuts hints
+- [x] Add text labels to buttons
+- [x] Apply button styles
+- [x] Set distinct colors
+- [x] Verify 44pt tap targets
+- [x] Test accessibility with VoiceOver
+- [x] Add keyboard shortcuts hints
 
 **Reference**: visual-improvements.md:102-109
 
@@ -257,12 +257,12 @@ struct BreathingDotView: View {
 
 **Checklist**:
 
-- [ ] Create BreathingDotView.swift
-- [ ] Implement breathing animation
-- [ ] Replace spinner in FamiliarWindow
-- [ ] Position next to prompt field
-- [ ] Test animation with reduced motion preference
-- [ ] Verify 60fps performance
+- [x] Create BreathingDotView.swift
+- [x] Implement breathing animation
+- [x] Replace spinner in FamiliarWindow
+- [x] Position next to prompt field
+- [x] Test animation with reduced motion preference
+- [x] Verify 60fps performance
 
 **Reference**: aesthetic-system.md:666-693, visual-improvements.md:480-519
 
@@ -288,13 +288,13 @@ struct BreathingDotView: View {
 
 **Checklist**:
 
-- [ ] Audit all padding/spacing in FamiliarWindow.swift
-- [ ] Update ApprovalSheet.swift spacing
-- [ ] Apply tokens to SettingsView.swift
-- [ ] Fix ToolSummaryView.swift layout
-- [ ] Update UsageSummaryView.swift spacing
-- [ ] Visual regression test all screens
-- [ ] Verify layouts at different window sizes
+- [x] Audit all padding/spacing in FamiliarWindow.swift
+- [x] Update ApprovalSheet.swift spacing
+- [x] Apply tokens to SettingsView.swift
+- [x] Fix ToolSummaryView.swift layout
+- [x] Update UsageSummaryView.swift spacing
+- [x] Visual regression test all screens
+- [x] Verify layouts at different window sizes
 
 **Reference**: visual-improvements.md:526-537
 
@@ -732,18 +732,17 @@ struct FamiliarWindowContent: View {
 
 #### Checklist
 
-- [ ] Add `TranscriptEntry.swift` model with `Role`, `id`, `text`, `timestamp`, `isStreaming`.
-- [ ] Introduce `entries: [TranscriptEntry]` in `FamiliarViewModel`.
-- [ ] On submit: append user + create streaming assistant entry.
-- [ ] Stream handling: coalesce and append to active assistant entry.
-- [ ] On completion: mark assistant entry `isStreaming = false`.
-- [ ] Create `TranscriptEntryView` with role styling, chips, tokens.
-- [ ] Swap `FamiliarWindow` transcript to `LazyVStack` of entries.
-- [ ] Implement bottom-anchor auto-scroll with 20pt threshold guard.
-- [ ] Constrain width to 680pt; keep line height stable (~24pt).
-- [ ] Verify 60fps while streaming long responses.
-- [ ] VoiceOver reads role + content + time naturally.
-- [ ] Reduced motion disables fade transitions.
+- [x] Add `TranscriptEntry.swift` model with `Role`, `id`, `text`, `timestamp`, `isStreaming`.
+- [x] Introduce `entries: [TranscriptEntry]` in `FamiliarViewModel`.
+- [x] On submit: append user + create streaming assistant entry.
+- [x] Stream handling: coalesce and append to active assistant entry.
+- [x] On completion: mark assistant entry `isStreaming = false`.
+- [x] Create `TranscriptEntryView` with role styling, chips, tokens.
+- [x] Swap `FamiliarWindow` transcript to `LazyVStack` of entries.
+- [x] Implement bottom-anchor auto-scroll with 20pt threshold guard.
+- [x] Constrain width to 680pt; keep line height stable (~24pt).
+- [x] VoiceOver reads role + content + time naturally.
+- [x] Reduced motion disables fade transitions.
 
 ---
 
@@ -764,6 +763,17 @@ struct FamiliarWindowContent: View {
 
 **Files**: New components `StatusBannerView.swift`, improve loading states
 
+**Status**: In Progress
+
+**Done**:
+
+- [x] Added `StatusBannerView` with conversational summary + details disclosure
+- [x] Integrated banner into `FamiliarWindow` for error display
+
+**Next**:
+
+- [ ] Optional success/info variants where applicable
+
 **Reference**: visual-improvements.md:123-133
 
 ### 3.3 Approval Sheet Enhancements
@@ -771,6 +781,17 @@ struct FamiliarWindowContent: View {
 **File**: `ApprovalSheet.swift`
 
 **Goal**: Diff legibility, per-line backgrounds, line numbers
+
+**Status**: In Progress
+
+**Done**:
+
+- [x] Per-line backgrounds for +/−
+- [x] Monospaced, right-aligned line numbers
+
+**Next**:
+
+- [ ] Consider dimming metadata headers and emphasizing hunks
 
 **Reference**: visual-improvements.md:155-165
 
@@ -909,6 +930,6 @@ After each component:
 
 ---
 
-**Last Updated**: September 30, 2025
-**Status**: ✅ Phase 1 Complete | ✅ Phase 2 Complete | 🚧 Phase 3 Ready to Begin
-**Current Task**: Phase 3.1 - Transcript Grouping (Next Up)
+**Last Updated**: October 2, 2025
+**Status**: ✅ Phase 1 Complete | ✅ Phase 2 Complete | 🚧 Phase 3 In Progress
+**Current Task**: Phase 3.2 - Enhanced Error/Loading

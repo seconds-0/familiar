@@ -8,6 +8,7 @@ private let logger = Logger(subsystem: "com.familiar.app", category: "FamiliarVi
 final class FamiliarViewModel: ObservableObject {
     @Published var prompt: String = ""
     @Published var transcript: String = ""
+    @Published var entries: [TranscriptEntry] = []
     @Published var toolSummary: ToolSummary?
     @Published var errorMessage: String?
     @Published var isStreaming: Bool = false {
@@ -40,6 +41,15 @@ final class FamiliarViewModel: ObservableObject {
     @Published var promptPreview: String?
     @Published private(set) var usageTotals = UsageTotals()
     @Published private(set) var lastUsage: UsageTotals?
+
+    // Activity phase and log for richer waiting state
+    enum Phase: Equatable {
+        case planning
+        case tooling(toolName: String?)
+        case replying
+    }
+    @Published var currentPhase: Phase?
+    @Published var activityLog: [String] = []
 
     private var streamTask: Task<Void, Never>?
     private let client = SidecarClient.shared
@@ -104,6 +114,10 @@ final class FamiliarViewModel: ObservableObject {
 
         streamTask?.cancel()
         transcript = ""
+        // Transcript entries: add user and create streaming assistant placeholder
+        entries.removeAll(keepingCapacity: false)
+        entries.append(TranscriptEntry(role: .user, text: trimmed, isStreaming: false))
+        entries.append(TranscriptEntry(role: .assistant, text: "", isStreaming: true))
         toolSummary = nil
         errorMessage = nil
         permissionRequest = nil
@@ -111,6 +125,8 @@ final class FamiliarViewModel: ObservableObject {
         lastUsage = nil
         promptPreview = nil
         startLoadingMessages()
+        currentPhase = .planning
+        logActivity("Planning the best way to help…")
 
         // Reset typing effect state
         stopRevealLoop()
@@ -144,6 +160,8 @@ final class FamiliarViewModel: ObservableObject {
         flushRevealBuffer()
         stopRevealLoop()
         promptPreview = nil
+        currentPhase = nil
+        endActiveAssistantStream()
     }
 
     func respond(to request: PermissionRequest, decision: String, remember: Bool) {
@@ -251,7 +269,13 @@ final class FamiliarViewModel: ObservableObject {
             if typingEffectEnabled {
                 revealBuffer.append(text)
             } else {
+                appendToActiveAssistant(text)
                 transcript.append(text)
+            }
+            // First visible reply chunk switches phase to replying
+            if currentPhase != .replying {
+                currentPhase = .replying
+                logActivity("Writing the response…")
             }
         }
         markActivity()
@@ -259,12 +283,24 @@ final class FamiliarViewModel: ObservableObject {
 
     private func handleToolResult(_ event: SidecarEvent) {
         toolSummary = ToolSummary.from(event: event)
+        if currentPhase != .replying {
+            currentPhase = .tooling(toolName: event.toolName)
+        }
+        if let name = event.toolName {
+            logActivity("Used \(name)")
+        } else {
+            logActivity("Used a tool")
+        }
         markActivity()
     }
 
     private func handlePermissionRequest(_ event: SidecarEvent) {
         permissionRequest = PermissionRequest.from(event: event)
         isProcessingPermission = false
+        if currentPhase != .replying {
+            currentPhase = .tooling(toolName: event.toolName)
+            logActivity("Needs your approval to continue")
+        }
         markActivity()
     }
 
@@ -289,6 +325,8 @@ final class FamiliarViewModel: ObservableObject {
             stopRevealLoop()
         }
         isStreaming = false
+        endActiveAssistantStream()
+        currentPhase = nil
         markActivity()
     }
 
@@ -299,6 +337,8 @@ final class FamiliarViewModel: ObservableObject {
             stopRevealLoop()
         }
         isStreaming = false
+        endActiveAssistantStream()
+        currentPhase = nil
         markActivity()
     }
 
@@ -352,6 +392,7 @@ final class FamiliarViewModel: ObservableObject {
                 }
                 let prefix = String(self.revealBuffer.prefix(chunk))
                 self.revealBuffer.removeFirst(prefix.count)
+                self.appendToActiveAssistant(prefix)
                 self.transcript.append(prefix)
             }
         }
@@ -364,6 +405,7 @@ final class FamiliarViewModel: ObservableObject {
 
     private func flushRevealBuffer() {
         if !revealBuffer.isEmpty {
+            appendToActiveAssistant(revealBuffer)
             transcript.append(revealBuffer)
             revealBuffer.removeAll(keepingCapacity: false)
         }
@@ -414,6 +456,11 @@ final class FamiliarViewModel: ObservableObject {
         toolSummary = snapshot.toolSummary
         usageTotals = snapshot.usageTotals
         lastUsage = snapshot.lastUsage
+        // Fallback: put transcript back as a single assistant entry
+        entries.removeAll(keepingCapacity: false)
+        if !snapshot.transcript.isEmpty {
+            entries.append(TranscriptEntry(role: .assistant, text: snapshot.transcript, isStreaming: false))
+        }
         previousSession = nil
         SessionStore.shared.clear()
         markActivity()
@@ -421,5 +468,26 @@ final class FamiliarViewModel: ObservableObject {
 
     private func markActivity() {
         lastActivityAt = Date()
+    }
+
+    private func logActivity(_ message: String) {
+        activityLog.append(message)
+        if activityLog.count > 8 { activityLog.removeFirst(activityLog.count - 8) }
+    }
+
+    // MARK: - Transcript Entries Helpers
+
+    private func appendToActiveAssistant(_ chunk: String) {
+        if let idx = entries.lastIndex(where: { $0.role == .assistant && $0.isStreaming }) {
+            entries[idx].text.append(chunk)
+        } else {
+            entries.append(TranscriptEntry(role: .assistant, text: chunk, isStreaming: true))
+        }
+    }
+
+    private func endActiveAssistantStream() {
+        if let idx = entries.lastIndex(where: { $0.role == .assistant && $0.isStreaming }) {
+            entries[idx].isStreaming = false
+        }
     }
 }
