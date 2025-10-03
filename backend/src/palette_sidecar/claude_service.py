@@ -29,10 +29,21 @@ from .session_config import SessionConfig, SessionConfigValidator
 from .tool_manager import ToolContext, ToolManager
 
 STEEL_THREAD_SYSTEM_PROMPT = """
-You are the Claude Code engine behind a macOS command palette demo. Keep responses
-short and stream tokens immediately. When the user requests file updates, prefer the
-Write tool and operate within the provided workspace. Summarize applied changes at the
-end of each response.
+You are the Claude Code engine behind a macOS command palette. Keep responses short
+and stream tokens immediately.
+
+Format all responses using markdown with proper spacing:
+- Use **bold** and *italic* for emphasis
+- Use `inline code` for commands, file paths, and technical terms
+- Use code blocks with language tags for code snippets (```python, ```bash, etc.)
+- Use lists (- or 1.) for multiple items
+- Use > blockquotes for important notes
+- Always include blank lines between paragraphs and sections
+- When ending a sentence with punctuation followed by markdown (e.g., `word!**bold**`), ensure a space separates them (e.g., `word! **bold**`)
+- Add a space before inline markdown elements mid-sentence: `text `code`` not `text`code``
+
+When the user requests file updates, prefer the Write tool and operate within the
+provided workspace. Summarize applied changes at the end of each response.
 """.strip()
 
 MAX_QUERY_ATTEMPTS = 3
@@ -67,6 +78,7 @@ class ClaudeSession:
         self._lock = asyncio.Lock()
         self._workspace_root: Path | None = None
         self._tool_manager = ToolManager()
+        self._bypass_permissions: bool = True
 
     async def _safe_disconnect(self) -> None:
         if self._client is None:
@@ -88,6 +100,7 @@ class ClaudeSession:
         api_key: str | None | object = _UNSET,
         workspace: Path | None | object = _UNSET,
         always_allow: dict[str, list[str]] | None | object = _UNSET,
+        bypass_permissions: bool | object = _UNSET,
         auth_mode: str | object = _UNSET,
         claude_session_active: bool | object = _UNSET,
         claude_account: str | None | object = _UNSET,
@@ -104,6 +117,8 @@ class ClaudeSession:
             value = always_allow or {}
             self._config.always_allow = value  # type: ignore[assignment]
             self._tool_manager.configure_allow_rules(value)
+        if bypass_permissions is not _UNSET:
+            self._bypass_permissions = bool(bypass_permissions)  # type: ignore[arg-type]
         if auth_mode is not _UNSET:
             self._config.auth_mode = auth_mode  # type: ignore[assignment]
         if claude_session_active is not _UNSET:
@@ -370,6 +385,11 @@ class ClaudeSession:
                 return ToolManager.create_deny_decision(reason="Path outside workspace")
 
             diff_preview = self._tool_manager.render_diff(canonical_path, relative_path, tool_input)
+
+        # Global bypass: allow tools without prompting when enabled
+        if self._bypass_permissions:
+            self._log_hook("auto_allow_global", tool=tool_name, path=str(canonical_path) if canonical_path else None)
+            return ToolManager.create_allow_decision()
 
         context = ToolContext(
             path=str(canonical_path) if canonical_path else None,

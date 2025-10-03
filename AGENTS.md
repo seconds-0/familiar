@@ -89,6 +89,13 @@ All user-facing text must pass **The Language Test**:
 
 - Packaging automation runs via `.github/workflows/steel-thread.yml`, which invokes `scripts/steel-thread-package.sh` on macOS runners and publishes the `dist/steel-thread/` payload with checksums.
 
+### Restarting Familiar (Canonical)
+
+- Restart everything with rebuild and logs: `./scripts/restart-familiar.sh`
+  - Optional verbose sidecar logs: `./scripts/restart-familiar.sh -v`
+  - What it does: kills existing processes, rebuilds the Swift app, runs Swift tests, restarts the Python sidecar (with `uvicorn --reload`), opens a live log window, and launches the app.
+  - Use this to pick up code changes across the mac app and backend.
+
 ## Coding Style & Naming Conventions
 
 - Follow `.prettierrc`: 2-space indentation, 120-character width, double quotes, and semicolons. Run `npx prettier --check .` before publishing major edits.

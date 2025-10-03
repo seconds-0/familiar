@@ -3,16 +3,20 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var appState: AppState
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: SettingsViewModel
+    private let autoDismissOnSave: Bool
 
-    init(appState: AppState) {
+    init(appState: AppState, autoDismissOnSave: Bool = false) {
         _viewModel = StateObject(wrappedValue: SettingsViewModel(appState: appState))
+        self.autoDismissOnSave = autoDismissOnSave
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: FamiliarSpacing.md) {
             authenticationSection
             workspaceSection
+            permissionsSection
 
             if let statusMessage = viewModel.statusMessage {
                 Text(statusMessage)
@@ -34,6 +38,14 @@ struct SettingsView: View {
         .padding(FamiliarSpacing.md)
         .frame(width: 520, height: 360)
         .task { await viewModel.loadSettings() }
+        .onAppear {
+            if autoDismissOnSave {
+                viewModel.onSaved = { dismiss() }
+            }
+        }
+        .onDisappear {
+            viewModel.onSaved = nil
+        }
         .onChange(of: viewModel.selectedAuthMode) { _ in
             guard !viewModel.isApplyingAuthMode else { return }
             viewModel.handleAuthModeChange()
@@ -106,6 +118,20 @@ struct SettingsView: View {
                     }
                 }
             }
+        }
+    }
+
+    private var permissionsSection: some View {
+        VStack(alignment: .leading, spacing: FamiliarSpacing.xs) {
+            Text("Permissions")
+                .font(.familiarHeading)
+            Toggle(isOn: $viewModel.bypassPermissions) {
+                Text("Bypass permissions (recommended)")
+            }
+            .toggleStyle(.switch)
+            Text("The model will check in if something looks risky.")
+                .font(.familiarCaption)
+                .foregroundStyle(.secondary)
         }
     }
 }

@@ -25,6 +25,10 @@ final class SettingsViewModel: ObservableObject {
     @Published var isRefreshingAuth = false
     @Published var isApplyingAuthMode = false
     @Published var isLogoutConfirmationPresented = false
+    @Published var bypassPermissions: Bool = true
+
+    // Called after a successful save when the view wants to react (e.g., dismiss)
+    var onSaved: (() -> Void)?
 
     // MARK: - Types
 
@@ -74,7 +78,8 @@ final class SettingsViewModel: ObservableObject {
                     settings = try await SidecarClient.shared.updateSettings(
                         apiKey: selectedAuthMode == .apiKey ? apiKey : nil,
                         workspace: fallback,
-                        authMode: nil
+                        authMode: nil,
+                        bypassPermissions: bypassPermissions
                     )
                 } catch {
                     statusMessage = "Failed to apply default workspace: \(error.localizedDescription)"
@@ -122,7 +127,8 @@ final class SettingsViewModel: ObservableObject {
                 let settings = try await SidecarClient.shared.updateSettings(
                     apiKey: selectedAuthMode == .apiKey ? trimmedKey : nil,
                     workspace: trimmedWorkspace,
-                    authMode: selectedAuthMode.rawValue
+                    authMode: selectedAuthMode.rawValue,
+                    bypassPermissions: bypassPermissions
                 )
 
                 applySettings(settings)
@@ -138,6 +144,9 @@ final class SettingsViewModel: ObservableObject {
                 } else {
                     updateStatusForClaudeMode()
                 }
+
+                // Notify listener that save completed successfully
+                onSaved?()
             } catch {
                 statusMessage = "Failed to save: \(error.localizedDescription)"
                 statusColor = .red
@@ -265,6 +274,7 @@ final class SettingsViewModel: ObservableObject {
         if let workspace = settings.workspace {
             workspacePath = workspace
         }
+        bypassPermissions = settings.bypassPermissions
 
         let newMode = defaultAuthMode(for: settings)
         if selectedAuthMode != newMode {

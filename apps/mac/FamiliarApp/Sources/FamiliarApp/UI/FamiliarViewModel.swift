@@ -12,13 +12,30 @@ final class FamiliarViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var isStreaming: Bool = false {
         didSet {
+            if isStreaming != oldValue {
+                if isStreaming {
+                    AgentActivityCenter.shared.beginActivity(.streaming)
+                } else {
+                    AgentActivityCenter.shared.endActivity(.streaming)
+                }
+            }
             if !isStreaming {
                 stopLoadingMessages()
             }
         }
     }
     @Published var permissionRequest: PermissionRequest?
-    @Published var isProcessingPermission: Bool = false
+    @Published var isProcessingPermission: Bool = false {
+        didSet {
+            if isProcessingPermission != oldValue {
+                if isProcessingPermission {
+                    AgentActivityCenter.shared.beginActivity(.permission)
+                } else {
+                    AgentActivityCenter.shared.endActivity(.permission)
+                }
+            }
+        }
+    }
     @Published var loadingMessage: String?
     @Published var promptPreview: String?
     @Published private(set) var usageTotals = UsageTotals()
@@ -36,6 +53,17 @@ final class FamiliarViewModel: ObservableObject {
         "Sharpening the spell quill…",
         "Puzzling through the arcane diagrams…"
     ])
+
+    // Typing effect (env toggle: FAMILIAR_TYPING_EFFECT)
+    private let typingEffectEnabled: Bool = {
+        let env = ProcessInfo.processInfo.environment["FAMILIAR_TYPING_EFFECT"]?.lowercased()
+        guard let env else { return true } // default ON
+        if ["0", "false", "no", "off"].contains(env) { return false }
+        if ["1", "true", "yes", "on"].contains(env) { return true }
+        return true
+    }()
+    private var revealTask: Task<Void, Never>?
+    private var revealBuffer: String = ""
 
     // Session inactivity management
     private(set) var lastActivityAt: Date = Date()
@@ -60,7 +88,18 @@ final class FamiliarViewModel: ObservableObject {
     }
 
     func submit() {
-        let trimmed = prompt.trimmingCharacters(in: .whitespacesAndNewlines)
+        let text = prompt
+        prompt = ""  // Clear immediately before submission
+        submitInternal(text)
+    }
+
+    func submitPrompt(_ text: String) {
+        submitInternal(text)
+    }
+
+    /// Internal submission handler that bypasses the prompt field
+    private func submitInternal(_ text: String) {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
 
         streamTask?.cancel()
@@ -72,6 +111,13 @@ final class FamiliarViewModel: ObservableObject {
         lastUsage = nil
         promptPreview = nil
         startLoadingMessages()
+
+        // Reset typing effect state
+        stopRevealLoop()
+        revealBuffer = ""
+        if typingEffectEnabled {
+            startRevealLoop()
+        }
 
         markActivity()
         streamTask = Task { @MainActor in
@@ -87,13 +133,7 @@ final class FamiliarViewModel: ObservableObject {
             }
             isStreaming = false
             stopLoadingMessages()
-            prompt = ""
         }
-    }
-
-    func submitPrompt(_ text: String) {
-        self.prompt = text
-        submit()
     }
 
     func cancelStreaming() {
@@ -101,6 +141,8 @@ final class FamiliarViewModel: ObservableObject {
         streamTask = nil
         isStreaming = false
         stopLoadingMessages()
+        flushRevealBuffer()
+        stopRevealLoop()
         promptPreview = nil
     }
 
@@ -206,7 +248,11 @@ final class FamiliarViewModel: ObservableObject {
 
     private func handleAssistantText(_ event: SidecarEvent) {
         if let text = event.text {
-            transcript.append(text)
+            if typingEffectEnabled {
+                revealBuffer.append(text)
+            } else {
+                transcript.append(text)
+            }
         }
         markActivity()
     }
@@ -237,12 +283,21 @@ final class FamiliarViewModel: ObservableObject {
             usageTotals = usageTotals.adding(totals)
             lastUsage = totals
         }
+        // If typing effect is enabled, let the reveal loop drain remaining text
+        if !typingEffectEnabled {
+            flushRevealBuffer()
+            stopRevealLoop()
+        }
         isStreaming = false
         markActivity()
     }
 
     private func handleError(_ event: SidecarEvent) {
         errorMessage = event.message ?? "Unknown error"
+        if !typingEffectEnabled {
+            flushRevealBuffer()
+            stopRevealLoop()
+        }
         isStreaming = false
         markActivity()
     }
@@ -268,6 +323,50 @@ final class FamiliarViewModel: ObservableObject {
         loadingTask = nil
         loadingMessage = nil
         loadingController.reset()
+    }
+
+    // MARK: - Typing Effect (Typewriter)
+
+    private func startRevealLoop() {
+        guard revealTask == nil else { return }
+        revealTask = Task { @MainActor [weak self] in
+            let tickNs: UInt64 = 15_000_000 // 15ms
+            while !(Task.isCancelled) {
+                try? await Task.sleep(nanoseconds: tickNs)
+                guard let self else { break }
+                let backlog = self.revealBuffer.count
+                if backlog == 0 {
+                    if !self.isStreaming { break }
+                    continue
+                }
+                // Adaptive chunking: catch up if backlog grows
+                let chunk: Int
+                if backlog > 1000 {
+                    chunk = min(150, backlog)
+                } else if backlog > 400 {
+                    chunk = min(40, backlog)
+                } else if backlog > 120 {
+                    chunk = min(12, backlog)
+                } else {
+                    chunk = min(5, backlog) // ~333 cps
+                }
+                let prefix = String(self.revealBuffer.prefix(chunk))
+                self.revealBuffer.removeFirst(prefix.count)
+                self.transcript.append(prefix)
+            }
+        }
+    }
+
+    private func stopRevealLoop() {
+        revealTask?.cancel()
+        revealTask = nil
+    }
+
+    private func flushRevealBuffer() {
+        if !revealBuffer.isEmpty {
+            transcript.append(revealBuffer)
+            revealBuffer.removeAll(keepingCapacity: false)
+        }
     }
 
     var usageTotalsDisplay: UsageTotals? {

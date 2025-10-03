@@ -444,6 +444,12 @@ cd backend && uv run pytest tests/ -v
 ./test-swift.sh && cd backend && uv run pytest tests/ -v
 ```
 
+### Restarting Familiar (Canonical)
+
+- Use `./scripts/restart-familiar.sh` to rebuild and restart the full stack and pick up changes.
+  - Add `-v` for verbose sidecar logs.
+  - Script flow: kill existing instances → rebuild Swift app → run Swift tests → start sidecar with reload → open log stream → launch app.
+
 ## Architecture Requirements
 
 - Full Claude Agent SDK integration, including MCP servers and shell tool execution

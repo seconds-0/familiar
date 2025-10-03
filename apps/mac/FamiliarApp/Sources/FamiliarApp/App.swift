@@ -22,7 +22,7 @@ struct FamiliarAppMain: App {
     }
 
     var body: some Scene {
-        MenuBarExtra("Familiar", systemImage: "sparkles") {
+        MenuBarExtra {
             Label(appState.status.label, systemImage: appState.status.systemImage)
             if let detail = appState.statusDetail {
                 Text(detail)
@@ -52,6 +52,8 @@ struct FamiliarAppMain: App {
             Button("Quit") {
                 NSApp.terminate(nil)
             }
+        } label: {
+            MenuBarIconView()
         }
         .menuBarExtraStyle(.window)
 

@@ -2,6 +2,7 @@ import AppKit
 import KeyboardShortcuts
 import SwiftUI
 import OSLog
+import MarkdownUI
 
 private let logger = Logger(subsystem: "com.familiar.app", category: "FamiliarWindow")
 
@@ -56,6 +57,8 @@ final class FamiliarWindowController: NSObject, ObservableObject {
 struct FamiliarView: View {
     @StateObject private var viewModel = FamiliarViewModel()
     @FocusState private var isPromptFocused: Bool
+    @State private var isSettingsPresented = false
+    @StateObject private var settingsAppState = AppState(startMonitoring: false)
 
     var body: some View {
         VStack(spacing: FamiliarSpacing.sm) {
@@ -72,28 +75,57 @@ struct FamiliarView: View {
                     )
                     .transition(.opacity.animation(.familiar))
                 } else {
-                    ScrollView(.vertical, showsIndicators: true) {
-                        LazyVStack(alignment: .leading, spacing: FamiliarSpacing.sm) {
-                            if !viewModel.transcript.isEmpty {
-                                Text(viewModel.transcript)
-                                    .font(.familiarMono)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .textSelection(.enabled)
-                            }
+                    ScrollViewReader { proxy in
+                        ScrollView(.vertical, showsIndicators: true) {
+                            LazyVStack(alignment: .leading, spacing: FamiliarSpacing.sm) {
+                                if !viewModel.transcript.isEmpty {
+                                    Markdown(viewModel.transcript)
+                                        .markdownTheme(.familiar)
+                                        .textSelection(.enabled)
+                                        .lineSpacing(2) // Ensure minimum spacing to prevent concatenation
+                                        .transaction { $0.animation = nil } // Prevent jitter while streaming
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
 
-                            if let summary = viewModel.toolSummary {
-                                ToolSummaryView(summary: summary)
-                            }
+                                if let summary = viewModel.toolSummary {
+                                    ToolSummaryView(summary: summary)
+                                }
 
-                            if let error = viewModel.errorMessage {
-                                Label(error, systemImage: "exclamationmark.circle")
-                                    .foregroundStyle(Color.familiarError)
+                                if let error = viewModel.errorMessage {
+                                    Label(error, systemImage: "exclamationmark.circle")
+                                        .foregroundStyle(Color.familiarError)
+                                }
+
+                                // Bottom anchor for auto-scroll during streaming
+                                Color.clear.frame(height: 1).id("BOTTOM")
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.vertical, 1) // Prevent content from touching scroll edges
+                        }
+                        .onChange(of: viewModel.isStreaming) { isStreaming in
+                            // Scroll to bottom when streaming starts or stops
+                            if isStreaming {
+                                proxy.scrollTo("BOTTOM", anchor: .bottom)
+                            } else {
+                                // Final scroll when streaming completes
+                                withAnimation(.easeOut(duration: 0.2)) {
+                                    proxy.scrollTo("BOTTOM", anchor: .bottom)
+                                }
                             }
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.vertical, 1) // Prevent content from touching scroll edges
+                        .task(id: viewModel.transcript.count) {
+                            // Debounced scroll during streaming (only when transcript length changes)
+                            guard viewModel.isStreaming else { return }
+                            try? await Task.sleep(nanoseconds: 100_000_000) // 100ms debounce
+                            guard !Task.isCancelled else { return }
+                            proxy.scrollTo("BOTTOM", anchor: .bottom)
+                        }
                     }
-                    .frame(maxHeight: 300)
+                    .frame(maxHeight: .infinity, alignment: .top)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: FamiliarRadius.card)
+                            .stroke(Color(nsColor: .separatorColor).opacity(0.25), lineWidth: 1)
+                    )
                 }
             }
 
@@ -158,6 +190,25 @@ struct FamiliarView: View {
                 }
             }
         }
+        // Gear button overlay (top-right)
+        .overlay(alignment: .topTrailing) {
+            Button {
+                isSettingsPresented = true
+            } label: {
+                Image(systemName: "gearshape")
+                    .imageScale(.medium)
+                    .foregroundStyle(.secondary)
+                    .padding(FamiliarSpacing.xs)
+                    .background(
+                        RoundedRectangle(cornerRadius: FamiliarRadius.control)
+                            .fill(Color.familiarSurfaceElevated.opacity(0.6))
+                    )
+            }
+            .buttonStyle(.borderless)
+            .help("Open Settings")
+            .padding(.trailing, FamiliarSpacing.sm)
+            .padding(.top, FamiliarSpacing.sm)
+        }
         .padding(EdgeInsets(
             top: FamiliarSpacing.md,
             leading: FamiliarSpacing.md,
@@ -182,6 +233,10 @@ struct FamiliarView: View {
                 )
             }
         }
+        .sheet(isPresented: $isSettingsPresented) {
+            SettingsView(appState: settingsAppState, autoDismissOnSave: true)
+                .environmentObject(settingsAppState)
+        }
         .onAppear {
             isPromptFocused = true
             viewModel.evaluateInactivityReset()
@@ -189,5 +244,26 @@ struct FamiliarView: View {
         .onExitCommand {
             FamiliarWindowController.shared.toggle()
         }
+        // Confirm external link opens from Markdown content
+        .environment(\.openURL,
+            OpenURLAction { url in
+                guard let scheme = url.scheme?.lowercased(), ["http", "https"].contains(scheme) else {
+                    return .discarded
+                }
+                let alert = NSAlert()
+                alert.messageText = "Open link?"
+                let host = url.host ?? url.absoluteString
+                alert.informativeText = "Open \(host) in your browser?"
+                alert.addButton(withTitle: "Yes, open")
+                alert.addButton(withTitle: "Not right now")
+                let response = alert.runModal()
+                if response == .alertFirstButtonReturn {
+                    NSWorkspace.shared.open(url)
+                    return .handled
+                } else {
+                    return .discarded
+                }
+            }
+        )
     }
 }

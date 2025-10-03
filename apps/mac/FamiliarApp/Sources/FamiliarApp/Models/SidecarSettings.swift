@@ -33,6 +33,9 @@ struct SidecarSettings: Decodable {
     /// Connected Claude.ai account email (if authenticated via claude_ai mode)
     let claudeAccountEmail: String?
 
+    /// When true, bypass permission prompts (model self-checks for risky actions)
+    let bypassPermissions: Bool
+
     private enum CodingKeys: String, CodingKey {
         case hasApiKey
         case hasClaudeSession
@@ -42,6 +45,7 @@ struct SidecarSettings: Decodable {
         case defaultWorkspace
         case authMode
         case claudeAccountEmail
+        case bypassPermissions
     }
 
     init(from decoder: Decoder) throws {
@@ -54,6 +58,7 @@ struct SidecarSettings: Decodable {
         defaultWorkspace = try container.decodeIfPresent(String.self, forKey: .defaultWorkspace)
         authMode = try container.decodeIfPresent(String.self, forKey: .authMode)
         claudeAccountEmail = try container.decodeIfPresent(String.self, forKey: .claudeAccountEmail)
+        bypassPermissions = try container.decodeIfPresent(Bool.self, forKey: .bypassPermissions) ?? true
     }
 
     var workspaceURL: URL? {
