@@ -120,15 +120,25 @@ private struct DiffPreviewView: View {
                 .font(.familiarCaption)
                 .foregroundStyle(.secondary)
             ScrollView(.vertical, showsIndicators: true) {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 0) {
                     ForEach(Array(lines.enumerated()), id: \.offset) { pair in
+                        let idx = pair.offset + 1
                         let line = pair.element
-                        Text(line)
-                            .font(.familiarMono)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.vertical, 1)
-                            .foregroundStyle(color(for: line))
-                            .textSelection(.enabled)
+                        HStack(alignment: .top, spacing: FamiliarSpacing.xs) {
+                            Text(String(format: "%4d", idx))
+                                .font(.familiarMono)
+                                .foregroundStyle(.secondary)
+                                .frame(width: 36, alignment: .trailing)
+
+                            Text(line)
+                                .font(.familiarMono)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .foregroundStyle(color(for: line))
+                                .textSelection(.enabled)
+                        }
+                        .padding(.vertical, 2)
+                        .padding(.horizontal, FamiliarSpacing.xs)
+                        .background(rowBackground(for: line))
                     }
                 }
                 .padding(.vertical, 4)
@@ -154,5 +164,15 @@ private struct DiffPreviewView: View {
             return .familiarError
         }
         return .primary
+    }
+
+    private func rowBackground(for line: String) -> some View {
+        if line.hasPrefix("+") {
+            return AnyView(Color.familiarSuccess.opacity(0.08))
+        } else if line.hasPrefix("-") {
+            return AnyView(Color.familiarError.opacity(0.08))
+        } else {
+            return AnyView(Color.clear)
+        }
     }
 }

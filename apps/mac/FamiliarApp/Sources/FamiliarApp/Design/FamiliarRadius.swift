@@ -17,4 +17,7 @@ enum FamiliarRadius {
 
     /// Card: 16pt - Panels, sheets, containers, larger surfaces
     static let card: CGFloat = 16
+
+    /// Field: 12pt - Text inputs, prompt composer
+    static let field: CGFloat = 12
 }

@@ -12,7 +12,7 @@ struct PromptTextEditor: View {
     @State private var isEditing: Bool = false
 
     private let maxVisibleLines: CGFloat = 6
-    private let textInsets = NSSize(width: 12, height: 8)
+    private let textInsets = NSSize(width: FamiliarSpacing.sm, height: FamiliarSpacing.xs)
     private let font = NSFont.preferredFont(forTextStyle: .body)
 
     private var lineHeight: CGFloat { Self.lineHeight(for: font) }
@@ -35,7 +35,7 @@ struct PromptTextEditor: View {
     }
 
     var body: some View {
-        let backgroundShape = RoundedRectangle(cornerRadius: FamiliarRadius.control, style: .continuous)
+        let backgroundShape = RoundedRectangle(cornerRadius: FamiliarRadius.field, style: .continuous)
 
         return PromptTextViewRepresentable(
             text: $text,
@@ -60,7 +60,8 @@ struct PromptTextEditor: View {
             if text.isEmpty && !isEditing {
                 Text(placeholder)
                     .font(.familiarBody)
-                    .foregroundStyle(.secondary)
+                    .italic()
+                    .foregroundStyle(.tertiary)
                     .padding(.top, textInsets.height)
                     .padding(.leading, textInsets.width)
                     .allowsHitTesting(false)
@@ -73,6 +74,7 @@ struct PromptTextEditor: View {
             backgroundShape
                 .stroke(Color.familiarAccent.opacity(0.35), lineWidth: 1)
         )
+        .shadow(color: Color.black.opacity(0.03), radius: 1, x: 0, y: 1)
     }
 }
 
