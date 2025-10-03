@@ -7,6 +7,7 @@ struct PromptTextEditor: View {
     let onSubmit: () -> Void
     let onPaste: (String) -> Void
     let onBeginEditing: () -> Void
+    var isFocused: Bool = false
 
     @State private var contentHeight: CGFloat = 0
     @State private var isEditing: Bool = false
@@ -72,7 +73,7 @@ struct PromptTextEditor: View {
         .clipShape(backgroundShape)
         .overlay(
             backgroundShape
-                .stroke(Color.familiarAccent.opacity(0.35), lineWidth: 1)
+                .stroke(Color.familiarAccent.opacity(isFocused ? 0.55 : 0.35), lineWidth: isFocused ? 1.2 : 1)
         )
         .shadow(color: Color.black.opacity(0.03), radius: 1, x: 0, y: 1)
     }

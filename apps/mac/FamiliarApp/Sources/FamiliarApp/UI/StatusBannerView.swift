@@ -2,6 +2,8 @@ import SwiftUI
 import AppKit
 
 struct StatusBannerView: View {
+    enum Kind { case info, success, warning, error }
+    let kind: Kind
     let summary: String
     let details: String?
 
@@ -10,8 +12,8 @@ struct StatusBannerView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: FamiliarSpacing.xs) {
             HStack(alignment: .center, spacing: FamiliarSpacing.xs) {
-                Image(systemName: "exclamationmark.triangle.fill")
-                    .foregroundStyle(Color.familiarWarning)
+                Image(systemName: iconName)
+                    .foregroundStyle(iconColor)
                 Text(summary)
                     .font(.familiarBody)
                     .foregroundStyle(Color.familiarTextPrimary)
@@ -56,5 +58,23 @@ struct StatusBannerView: View {
                 .fill(Color.familiarSurfaceElevated)
         )
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var iconName: String {
+        switch kind {
+        case .info: return "info.circle.fill"
+        case .success: return "checkmark.seal.fill"
+        case .warning: return "exclamationmark.triangle.fill"
+        case .error: return "xmark.octagon.fill"
+        }
+    }
+
+    private var iconColor: Color {
+        switch kind {
+        case .info: return .familiarInfo
+        case .success: return .familiarSuccess
+        case .warning: return .familiarWarning
+        case .error: return .familiarError
+        }
     }
 }
