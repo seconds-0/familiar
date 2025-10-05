@@ -355,3 +355,293 @@ See: docs/design/aesthetic-system.md:318-360
 
 **"Which layer of detail?"**
 → Layer 1 (outcomes) by default. Layer 2/3 collapsed and optional.
+
+## AI Assistant Integration Guidelines
+
+### Claude Agent SDK Best Practices
+
+**Always consult `CLAUDE.md`** for SDK-specific guidance before implementing Claude integrations.
+
+#### Context Engineering (Critical)
+
+- **Metadata-first responses**: Return summaries and identifiers, not full content
+- **Progressive disclosure**: Load details on-demand only
+- **Context budgets**: Respect MAX_* limits in `backend/src/palette_sidecar/config.py`
+- **Sub-agent composition**: Break complex tasks into focused agents that return summaries
+
+#### MCP Tool Design
+
+**Before adding any MCP tool**:
+
+- [ ] Single, clear purpose (no overlap with existing tools)
+- [ ] Self-contained (no hidden dependencies)
+- [ ] Returns metadata-first by default
+- [ ] Includes expansion affordances for full content
+- [ ] Respects context budget limits
+
+**Example Pattern**:
+```python
+# ✅ Good: Metadata-first
+def list_files(directory):
+    files = scan_directory(directory)
+    return {
+        "summary": f"{len(files)} files in {directory.name}/",
+        "files": [{"path": f.path, "size": f.size, "modified": f.mtime} for f in files],
+        "note": "Use read_file(path) for full content"
+    }
+
+# ❌ Bad: Context explosion
+def list_files(directory):
+    return [{"path": f, "content": read_file(f)} for f in scan_directory(directory)]
+```
+
+#### System Prompt Structure
+
+All Claude sessions use structured prompts:
+
+```
+# Identity
+[Who is Claude in this context]
+
+# Capabilities  
+[What tools/actions are available]
+
+# Constraints
+[What to avoid or require]
+
+# Response Format
+[Layer 1/2/3 guidance for output]
+```
+
+**Requirements**:
+- Keep total prompt under 500 tokens
+- Use conversational, human language
+- Reference Layer 1/2/3 abstraction for response guidance
+- Pass The Language Test (would you say this to a friend?)
+
+#### Permission Patterns
+
+**Always use the permission template**:
+```
+I can [action] for you:
+• [Specific detail with real numbers]
+• [Another specific detail]
+
+Is that ok?
+
+[Show me how ▼]  [Not right now]  [Yes, do it]
+```
+
+**Implementation**:
+- Show exactly what will happen with real numbers
+- Make approval collaborative, not bureaucratic
+- Use conversational language ("Is that ok?" not "Approve?")
+- Provide expansion affordances ("Show me how")
+
+### EXA-CODE MCP Server Usage
+
+**MANDATORY: Always use EXA-CODE for framework research**
+
+For all framework-related questions, implementation patterns, and API research:
+
+**Before implementing any feature**:
+```
+Use get_code_context_exa to search for:
+- "SwiftUI [specific component] best practices examples"
+- "FastAPI [specific pattern] implementation guide"  
+- "Claude Agent SDK [functionality] usage examples"
+```
+
+**For debugging and troubleshooting**:
+```
+Use get_code_context_exa to find:
+- "SwiftUI [error/issue] solutions GitHub"
+- "FastAPI [problem] troubleshooting examples"
+- "Claude Agent SDK [specific issue] workarounds"
+```
+
+**Integration workflow**:
+1. **First**: Use `get_code_context_exa` for external framework knowledge
+2. **Then**: Use targeted `rg` queries for local codebase exploration  
+3. **Finally**: Reference `docs/` for project-specific architectural decisions
+
+### Performance Optimization Patterns
+
+#### Scroll Trigger Granularity
+
+When implementing auto-scroll during streaming, trigger on *structural changes* not *incremental updates*:
+
+```swift
+// ❌ Bad: Triggers on every character (300-500 times per response)
+.task(id: viewModel.entries.last?.text.count ?? 0)
+
+// ✅ Good: Triggers only when new entries appear (10-20 times)
+.task(id: viewModel.entries.count)
+```
+
+**Key insight**: Scroll when new content appears (new entry), not when existing content changes (characters streaming).
+
+#### Accessibility Implementation
+
+**VoiceOver Element Grouping**:
+```swift
+.accessibilityElement(children: .combine)
+.accessibilityLabel(accessibilityDescription)
+
+private var accessibilityDescription: String {
+    guard let active else { return "Activity stages: Plan, Tools, Reply" }
+    switch active {
+    case .planning: return "Currently planning. Stages: Plan, Tools, Reply"
+    case .tooling: return "Currently using \(toolTitle). Stages: Plan, \(toolTitle), Reply"
+    case .replying: return "Currently replying. Stages: Plan, Tools, Reply"
+    }
+}
+```
+
+**Key insight**: Without `.combine`, VoiceOver announces each element separately. Dynamic descriptions provide context-aware information.
+
+### Git Workflow Patterns
+
+#### Merging PRs with Local WIP
+
+When merging pull requests while having uncommitted local changes:
+
+```bash
+# ✅ Good: Stash → merge → pop
+git stash push -m "Description of local WIP"
+gh pr merge <number> --squash --delete-branch
+git checkout main && git pull
+git stash pop
+```
+
+**Key insight**: Avoids complex three-way merges and keeps local experiments isolated.
+
+#### Code Review Response
+
+**Systematic Issue Resolution**:
+1. **Categorize issues** (critical, accessibility, code quality)
+2. **Fix all items systematically** (don't cherry-pick)
+3. **Document decisions** in commit messages when disagreeing with feedback
+4. **Verify with tests** before pushing fixes
+
+**Key insight**: Not all review feedback is correct. When disagreeing, verify implementation and document why feedback doesn't apply.
+
+### Validation & Testing
+
+#### Context Size Validation
+
+Before merging PRs that add/modify MCP tools or Claude interactions:
+
+- [ ] Context size stays reasonable (< 10K tokens typical)
+- [ ] Metadata-first patterns used
+- [ ] Hard limits enforced (`config.py` MAX_* constants)
+- [ ] Tested with large files/directories (100K+ chars, 500+ files)
+- [ ] Truncation includes expansion affordances
+
+#### Testing Commands
+
+**Swift Tests**:
+```bash
+# Option 1: Direct
+swift test --package-path apps/mac/FamiliarApp
+
+# Option 2: Script
+./test-swift.sh
+
+# Option 3: With filters
+./test-swift.sh --filter PromptTextEditorTests
+```
+
+**Backend Tests**:
+```bash
+cd backend && uv run pytest tests/ -v
+```
+
+**Full Stack Restart**:
+```bash
+./scripts/restart-familiar.sh
+# Optional verbose: ./scripts/restart-familiar.sh -v
+```
+
+### Error Handling & User Experience
+
+#### Error Message Standards
+
+**Follow The Language Test**:
+
+✅ **Good**:
+- "Hmm, something went wrong"
+- "I can't access that file"
+- "Is that ok?"
+
+❌ **Bad**:
+- "Error: Permission denied [Errno 13]"
+- "Operation completed successfully"
+- "Approve?"
+
+#### Loading States
+
+**Use The Familiar Spring** for all animations:
+```swift
+.animation(.spring(response: 0.3, dampingFraction: 0.7), value: state)
+```
+
+**Loading Patterns**:
+- **Breathing Dot**: Subtle progress, not spinner
+- **Skeleton Loading**: Shimmer lines with phase-based gradient animation
+- **Progressive Disclosure**: Show outcomes first, details on demand
+
+### Security & Privacy
+
+#### Secrets Management
+
+- **Never commit secrets**: API keys, tokens, personal data
+- **Use secure storage**: macOS Keychain, environment variables
+- **Reference secure patterns**: Document setup steps without exposing secrets
+
+#### Permission Philosophy
+
+Permissions exist to **build trust, not satisfy legal requirements**:
+
+- Show exactly what will happen
+- Use real numbers (47 images, not "files")
+- Make approval collaborative
+- Provide expansion affordances
+
+### Documentation Standards
+
+#### Required References
+
+**Always reference these files**:
+- `docs/design/aesthetic-system.md` - Core design system (READ FIRST)
+- `docs/reference/claude-agent-sdk.md` - Complete SDK reference
+- `docs/implementation/phased-enhancements.md` - Future phases
+- `CLAUDE.md` - Claude-specific guidance and context engineering
+
+#### Documentation Updates
+
+When modifying code that affects:
+- **Design system**: Update `docs/design/aesthetic-system.md`
+- **SDK integration**: Update `docs/reference/claude-agent-sdk.md`
+- **Implementation patterns**: Update `docs/implementation/`
+- **Workflow changes**: Update `AGENTS.md` and `CLAUDE.md`
+
+### Quick Decision Framework
+
+**"Should I add this feature?"**
+→ Apply The Test from `docs/design/hidden-delights.md:493-516`
+
+**"How should this look?"**
+→ Check design tokens in `docs/design/aesthetic-system.md:522-663`
+
+**"What should this text say?"**
+→ Apply The Language Test: Would you say this to a friend?
+
+**"How should this animate?"**
+→ Use The Familiar Spring: `response: 0.3, dampingFraction: 0.7`
+
+**"Should there be sound?"**
+→ Default: No. UI sounds are OFF by default. Voice output only when enabled.
+
+**"Which layer of detail?"**
+→ Layer 1 (outcomes) by default. Layer 2/3 collapsed and optional.

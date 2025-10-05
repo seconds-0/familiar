@@ -463,3 +463,107 @@ cd backend && uv run pytest tests/ -v
 - Document any network access, update mechanisms, or background services in `docs/` so reviewers can evaluate threat surfaces early.
 
 Following these guidelines keeps the project focused on shipping a robust native macOS companion for Claude Code.
+
+## Development Insights
+
+Key patterns and learnings discovered during implementation, preserved for future reference.
+
+### Performance Optimization Patterns
+
+**Scroll Trigger Granularity** (FamiliarWindow.swift:287)
+
+When implementing auto-scroll during streaming, trigger on *structural changes* not *incremental updates*:
+
+```swift
+// ❌ Bad: Triggers on every character (300-500 times per response)
+.task(id: viewModel.entries.last?.text.count ?? 0)
+
+// ✅ Good: Triggers only when new entries appear (10-20 times)
+.task(id: viewModel.entries.count)
+```
+
+**Key insight**: We only need to scroll when new content appears (new entry), not when existing content changes (characters streaming into current entry). This pattern applies broadly across reactive UI updates.
+
+**Impact**: 98% reduction in scroll operations, eliminating visual jank and unnecessary re-layouts.
+
+### Accessibility Implementation Patterns
+
+**VoiceOver Element Grouping** (ActivityBarView.swift:18-37)
+
+When displaying multiple related UI elements, combine them into a single VoiceOver element with context-aware descriptions:
+
+```swift
+.accessibilityElement(children: .combine)
+.accessibilityLabel(accessibilityDescription)
+
+private var accessibilityDescription: String {
+    guard let active else { return "Activity stages: Plan, Tools, Reply" }
+    switch active {
+    case .planning: return "Currently planning. Stages: Plan, Tools, Reply"
+    case .tooling: return "Currently using \(toolTitle). Stages: Plan, \(toolTitle), Reply"
+    case .replying: return "Currently replying. Stages: Plan, Tools, Reply"
+    }
+}
+```
+
+**Key insight**: Without `.combine`, VoiceOver announces each capsule separately, creating confusion. Dynamic descriptions adapt based on active stage, providing context-aware information.
+
+**Impact**: VoiceOver users understand current workflow state in one announcement instead of three disconnected fragments.
+
+### Animation Implementation Patterns
+
+**Phase-Based Gradient Animation** (ShimmerLinesView.swift:38-40)
+
+Animated gradients must calculate stop locations using the phase value, not multiply by zero:
+
+```swift
+// ❌ Bad: Gradient never moves (phase*0.0 always equals 0)
+.init(color: base, location: 0 + phase*0.0)
+
+// ✅ Good: Gradient animates across the view
+.init(color: base, location: 0 + phase*0.5)
+```
+
+**Key insight**: The phase coefficient controls animation speed. Larger values (0.5-1.0) create faster movement, smaller values (0.1-0.3) create subtle shifts. Zero eliminates animation entirely.
+
+**Impact**: Skeleton loading states feel alive and indicate active processing rather than appearing frozen.
+
+### Git Workflow Patterns
+
+**Merging PRs with Local WIP**
+
+When merging pull requests while having uncommitted local changes:
+
+```bash
+# ❌ Bad: Try to merge from feature branch with local changes
+# Results in complex three-way merges
+
+# ✅ Good: Stash → merge → pop
+git stash push -m "Description of local WIP"
+gh pr merge <number> --squash --delete-branch
+git checkout main && git pull
+git stash pop
+```
+
+**Key insight**: This workflow avoids complex three-way merges and keeps local experiments isolated until you're ready to commit them. The stash acts as a temporary shelf for unfinished work.
+
+**Impact**: Clean merge history without losing experimental features or forcing premature commits.
+
+### Code Review Response Patterns
+
+**Systematic Issue Resolution**
+
+When addressing bot review feedback:
+
+1. **Categorize issues** (critical, accessibility, code quality)
+2. **Fix all items systematically** (don't cherry-pick)
+3. **Document decisions** in commit messages when disagreeing with feedback
+4. **Verify with tests** before pushing fixes
+
+**Example from PR #16**:
+- Bot flagged "activityLog never displayed" → Verified it IS used in ActivityDetailsCard → Documented in commit
+- Bot flagged "StatusBannerView name misleading" → Verified it supports all severities → Documented decision
+
+**Key insight**: Not all review feedback is correct. When you disagree, verify your implementation is correct and document why the feedback doesn't apply. This creates a record for future reviewers.
+
+**Impact**: Maintains code quality while avoiding unnecessary refactoring based on incomplete analysis.

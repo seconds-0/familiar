@@ -653,6 +653,244 @@ Transform Claude Code's invisible agent orchestration into transparent, delightf
 
 ### Code Simplification Targets
 
+
+---
+
+# Detailed Plan (All Phases)
+
+The sections below expand each phase with concrete deliverables, API/UI specs, acceptance criteria, validation plans, risks, dependencies, estimates, and rollout notes. Use these as implementation checklists and PR planning guides.
+
+## Phase 1 — Claude Login Polish (1 week)
+
+### Deliverables
+- Frontend: `ClaudeLoginState` enum and a dedicated login view model driving `ClaudeLoginSection`
+- Frontend: Security indicator showing trusted domain before/while redirecting
+- Frontend: “Copy Login URL” fallback with toast feedback and VoiceOver label
+- Frontend: Success animation (Familiar Spring) and haptic on auth completion
+- Frontend: Error display that maps technical failures to conversational guidance with recovery actions
+- Backend: Ensure `loginUrl` present whenever available; maintain current JSON contract (`active`, `account`, `message`, `pending`, `loginUrl`)
+- Backend: Normalize common auth error messages (timeout, CLI unavailable) to be user-friendly without leaking internals
+
+### Tasks by Track
+- Backend
+  - Confirm `_auth_response` always forwards `loginUrl` when present (done)
+  - Add message normalization helpers in `auth_coordinator.py` for common failures (timeout, CLI missing)
+  - Ensure pending state is consistently set during CLI login; keep message non-empty during pending
+  - Tests: extend `test_auth_endpoints.py` to assert `loginUrl` passthrough and friendly messages
+- Frontend
+  - Add `ClaudeLoginState` with states: `notAuthenticated`, `initiating`, `waitingForUser(URL)`, `verifying`, `authenticated(account)`, `error(message)`
+  - Extract state transitions into `SettingsViewModel` (or a focused `LoginStateModel`)
+  - Update `ClaudeLoginSection` to render by state (labels, spinners, icons) with `.animation(.familiar)`
+  - Add security indicator (lock + “api.claude.ai”) and conditionally show when state is `.waitingForUser`
+  - Add “Copy Login URL” button (uses `NSPasteboard`) and non-blocking toast: “Copied! Paste in your browser”
+  - Add success haptic via `NSHapticFeedbackManager`; respect `prefersReducedMotion`
+  - Map error messages from backend to conversational strings with optional primary action (e.g., Retry, Get Help)
+  - Wire polling loop to move from `waitingForUser` → `verifying` → `authenticated|error`
+- Docs
+  - Update `docs/design/visual-improvements.md` with screenshots of states
+  - Note error copy in `docs/design/aesthetic-system.md` Language section
+
+### API/UI Spec
+- API stays stable: `GET /auth/claude/status`, `POST /auth/claude/login`, `POST /auth/claude/logout`
+- Response fields used by UI: `active:boolean`, `account:string|null`, `pending:boolean`, `message?:string`, `loginUrl?:string`
+- UI states and triggers:
+  - Click “Sign In” → `.initiating` → backend `login` → set `.waitingForUser(url)` when `loginUrl` present
+  - Background poll every 1s up to 120s; switch to `.verifying` on status change, then finalize
+
+### Acceptance Criteria
+- Visual indicator of login state is always present and unambiguous
+- Security domain visible before launching browser or copying link
+- “Copy Login URL” copies the exact value from backend and shows confirmation
+- On success, haptic fires (supported hardware) and a brief celebratory animation runs; respects reduced motion
+- Errors show conversational copy and provide a clear next step
+
+### Validation & QA
+- Unit tests: view-model state transitions and copy action invoked; backend tests for message normalization
+- Manual scenarios: slow network, default browser missing, CLI missing, intermittent CLI output, firewall blocks
+- Accessibility: VoiceOver reads state label; tab navigation reaches “Copy URL”; color contrast meets minimums
+
+### Risks & Mitigations
+- CLI output variability → Already handled via JSON/text fallbacks; keep tests mirroring both paths
+- Browser open fails → Surface “Copy URL” prominently; never block on open
+- Over-animating → Respect `.accessibilityReduceMotion` and keep animation brief
+
+### Estimate & Rollout
+- Estimate: 3–4 days frontend, 1–2 days backend + tests
+- Rollout: ship behind a lightweight preference key `LoginPolishEnabled` defaulting true; revert path is to show current static UI
+
+---
+
+## Phase 2 — Settings UX Overhaul (2 weeks)
+
+### Deliverables
+- First-run `OnboardingFlow` with 3 steps (Welcome → Auth choice → Workspace selection), gated by `hasCompletedOnboarding`
+- Auth comparison cards clarifying trade-offs (Claude Login vs API Key)
+- Empty-state illustrations and helper text for unconfigured sections
+- Inline help tooltip/popover for “Workspace” concept
+- Real-time validation for API key field (prefix, length heuristics); non-blocking hints
+
+### Tasks by Track
+- Frontend
+  - Build `OnboardingFlow` view; persist completion via `UserDefaults`
+  - Add comparison cards using design tokens; include “Learn more” links
+  - Add popover help for workspace with clear, conversational copy
+  - Add API key validation and inline feedback (uses pattern rules only client-side)
+  - Update `SettingsView` layout spacing to 8pt grid; ensure consistent typography
+- Backend
+  - No new endpoints required; ensure `/settings` gracefully handles missing workspace by returning `defaultWorkspace`
+- Docs
+  - Document onboarding skip/restore steps in README and `docs/00-README.md`
+
+### Acceptance Criteria
+- First launch opens onboarding automatically; subsequent launches do not
+- Users can switch auth methods during onboarding without losing progress
+- Empty states provide a clear CTA; validation fires as the user types
+- All UI respects 8pt grid, uses Familiar tokens, and passes Language Test
+
+### Validation & QA
+- Manual: fresh install flow, switching auth methods mid-flow, selecting invalid workspace, reduced motion enabled
+- Accessibility: VoiceOver step labels, focus order, popover dismissibility, keyboard navigation
+
+### Risks & Mitigations
+- Users stuck in onboarding → Provide “Skip for now” and “Open Settings” options
+- Validation false positives → Keep checks advisory (non-blocking) and conversational
+
+### Estimate & Rollout
+- Estimate: ~8–10 days frontend polish + iterations
+- Rollout: feature-guard onboarding with `OnboardingEnabled`; fallback to current Settings
+
+---
+
+## Phase 3 — SDK Feature Exposure (3 weeks)
+
+### Deliverables
+- Slash commands autocomplete in `PromptTextEditor` for `.claude/commands`
+- Backend `GET /commands` endpoint (metadata-first; respects MAX_* limits)
+- In-app `CLAUDE.md` memory viewer/editor with preview and history templates
+- Cost dashboard with budget setting and 80% alert; persisted in settings
+- MCP server gallery (read-only list first), with install/config flows planned
+- Tool execution history viewer (recent N) with input/output previews and metadata
+
+### API/UI Spec
+- `GET /commands` → `{ summary, commands: [{ name, description, path? }] }` (no file contents)
+- `GET /memory` → `{ preview, totalChars }` truncated to `MAX_FILE_PREVIEW_SIZE`; `PUT /memory` to save changes
+- `GET /usage/costs` → `{ totals, daily }` for dashboard
+- `GET /mcp/registry` → curated JSON from assets; `GET /mcp/status`; (future) `POST /mcp/install`
+- `GET /tools/history?limit=50` → recent tool events with metadata-only snippets
+
+### Tasks by Track
+- Backend
+  - Implement `/commands` with directory scan of `.claude/commands` and metadata-first payload
+  - Add memory preview/save with size enforcement and newline-preserving writes
+  - Expose usage totals accumulator (session + daily) and simple in-memory ring buffer for tool history
+  - Serve MCP registry JSON from assets and health summaries per server
+- Frontend
+  - `PromptTextEditor`: when `/` typed, show picker with filtered commands; on select insert `/<name> `
+  - Settings → Memory tab with editor, preview, “History” placeholder and templates
+  - Cost dashboard card with budget input and alert toggle
+  - Integrations tab: MCP gallery cards (Install/Configure disabled until Phase 3.4 backend ready)
+  - Tool History view with disclosure rows (input/output previews are monospaced, truncated)
+
+### Acceptance Criteria
+- Slash commands discoverable with keyboard; insert is instant and keeps focus
+- Memory tab edits persist; previews reflect truncation affordance
+- Budget dashboard shows totals; alert visually distinct at threshold
+- MCP gallery lists known servers and shows installed status
+- Tool history displays recent actions with durations and status colors
+
+### Validation & QA
+- Large repos: `.claude/commands` with 100+ files still returns within limits
+- Memory file >1000 chars shows preview + “[N total chars…]” affordance
+- Cost values stable across windows; currency formatting correct
+- Accessibility: picker is navigable; history details are readable with VoiceOver
+
+### Risks & Mitigations
+- Context explosion → Enforce `MAX_*` constants on all endpoints
+- MCP install security → Defer install execution to a later milestone; start with read-only registry
+
+### Estimate & Rollout
+- Estimate: ~10–12 days across backend/frontend
+- Rollout: land endpoints gated; UI surfaces features progressively (tabs visible but non-blocking)
+
+---
+
+## Phase 4 — Agent Visualization (4 weeks)
+
+### Deliverables
+- Right sidebar showing active agents; resizable; collapsible to icons
+- Deterministic sigils (SHA1-based) for sessions/tools; Canvas-based rendering
+- Motion system: spawn, working, complete animations; respects reduced motion
+- Haiku-style status summaries with low-cost calls; template fallback
+- Agent hierarchy tree with expand/collapse
+
+### Tasks by Track
+- Frontend
+  - Sidebar container with 60fps target; virtualization for 10+ agents
+  - Sigil generator (seed = `sessionId|prompt|path|tool`); memoized and stable
+  - Animation choreography using Familiar Spring; disable on reduced motion
+  - Status summaries component with template fallback when network fails
+  - Tree view with indentation and connective lines
+- Backend
+  - Ensure SSE includes sufficient metadata to infer agent lifecycle and hierarchy
+  - Optional: light summarization endpoint for status lines (with strict token budget)
+
+### Acceptance Criteria
+- Sidebar stays at 60fps under simulated load (10+ agents)
+- Users can tell what’s happening at a glance; hierarchy expands/collapses smoothly
+- Summaries appear within 100ms perceived latency (or use template fallback)
+
+### Validation & QA
+- Perf sweeps on low-end hardware (frame timing via Instruments)
+- Accessibility: VoiceOver descriptions for agent activity and state changes
+
+### Risks & Mitigations
+- Overdraw/perf regressions → Prefer Canvas; limit layer effects; profile continuously
+- Token drift for summaries → Strict token caps and smart sampling cadence
+
+### Estimate & Rollout
+- Estimate: ~15–20 days (visual + perf work)
+- Rollout: start hidden behind a user preference; enable for beta users first
+
+---
+
+## Cross-Phase Checklists
+
+### Accessibility & Motion
+- VoiceOver traversal verified
+- Reduced Motion respected; animations use `.familiar` family
+- Color contrast meets thresholds (script: `./scripts/color-contrast-checker.sh`)
+
+### Language & Tone (The Language Test)
+- Conversational copy (“Is that ok?”, “Done!”, “Hmm, something went wrong”)
+- No robotic/corporate phrasing; avoid leaking low-level errors to users
+
+### Context Engineering
+- All new tools/endpoints return metadata-first
+- Enforce limits from `backend/src/palette_sidecar/config.py` (MAX_* constants)
+- For truncation, include explicit expansion affordances in messages
+
+### Design & Craft
+- Align to 8pt grid via FamiliarSpacing
+- Use Familiar tokens: spacing, radius, typography, colors
+- Animations use Familiar Spring; jitter avoided in streaming UI
+
+### Observability
+- Add lightweight logs/metrics for: login attempts/success, slash-command usage, memory saves, cost alerts
+- Ensure logs don’t include secrets or local paths
+
+### Rollout & PR Hygiene
+- Small, focused PRs per subsection
+- PR description follows the template and The Ive Test
+- Manual validation steps and screenshots for UI changes
+
+---
+
+## Current Status Snapshot (informative)
+
+- Phase 1: Backend endpoints + CLI coordination implemented; UI state machine/security indicators/copy URL/success animation/error UX pending
+- Phase 2–4: Planned; partial groundwork exists (design tokens, motion system, zero-state, usage summary, tool summary card)
+
+
 As we implement phases, refactor:
 
 1. **SettingsView.swift (539 lines)**
