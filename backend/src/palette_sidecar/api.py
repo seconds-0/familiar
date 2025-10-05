@@ -344,3 +344,110 @@ async def zero_state_resume_suggestion(payload: ResumeContextPayload) -> dict[st
     suggestion = await generate_resume_suggestion(summary)
     logger.info("[ZeroState] Resume suggestion generated")
     return {"suggestion": suggestion}
+
+
+@app.get("/commands")
+async def list_commands() -> dict[str, Any]:
+    """List available slash commands (metadata-first).
+
+    Scans the workspace `.claude/commands` directory if present and returns
+    a list of command names and optional one-line descriptions. If nothing
+    is found, returns a small default set.
+    """
+    commands: list[dict[str, str]] = []
+    try:
+        root = _workspace_path
+        if root is not None:
+            commands_dir = root / ".claude" / "commands"
+            if commands_dir.exists() and commands_dir.is_dir():
+                for path in sorted(commands_dir.iterdir()):
+                    if not path.is_file():
+                        continue
+                    name = path.stem
+                    desc = ""
+                    try:
+                        with open(path, "r", encoding="utf-8") as f:
+                            first = f.readline().strip()
+                            if first.startswith("# "):
+                                desc = first[2:].strip()
+                            elif first:
+                                desc = first[:120]
+                    except Exception:
+                        pass
+                    commands.append({"name": name, "description": desc})
+    except Exception as e:  # pragma: no cover - defensive
+        logger.debug("Failed to list commands: %s", e)
+
+    if not commands:
+        commands = [
+            {"name": "review", "description": "Code review current file"},
+            {"name": "test", "description": "Generate tests for selection"},
+            {"name": "explain", "description": "Explain complex code"},
+            {"name": "refactor", "description": "Suggest refactoring"},
+        ]
+
+    return {"summary": f"{len(commands)} commands", "commands": commands}
+
+
+@app.get("/mcp/registry")
+async def mcp_registry() -> dict[str, Any]:
+    """Return a curated list of MCP servers (read-only registry)."""
+    registry = [
+        {"name": "filesystem", "title": "Filesystem", "description": "Read and write files"},
+        {"name": "github", "title": "GitHub", "description": "Issues, PRs, and repos"},
+        {"name": "onepassword", "title": "1Password", "description": "Secure credential access"},
+    ]
+    return {"servers": registry}
+
+
+def _haiku_template(title: str, status: str) -> str:
+    base = {
+        "spawning": "Arriving… seeking patterns in the code",
+        "working": "Tracing quiet threads of change",
+        "completed": "Done — letting things fall into place",
+        "error": "Hmm, something went wrong",
+    }
+    return base.get(status, base["working"]) + (f" — {title}" if title else "")
+
+
+@app.post("/agent/haiku")
+async def agent_haiku(payload: dict[str, Any]) -> dict[str, Any]:
+    """Return a tiny haiku-style status line.
+
+    Uses LLM only when in Claude.ai auth mode with an active session. Otherwise returns a template.
+    """
+    title = str(payload.get("title", ""))
+    status = str(payload.get("status", "working"))
+    path = payload.get("path")
+
+    # Skip LLM if using API key or no Claude.ai session
+    if _current_settings.auth_mode != AUTH_MODE_CLAUDE or not _current_settings.claude_session_active:
+        return {"summary": _haiku_template(title, status), "usedLLM": False}
+
+    # Build tiny, strict prompt
+    parts: list[str] = [
+        "Write one haiku-style status line (max 10 words).",
+        f"Status: {status}.",
+    ]
+    if title:
+        parts.append(f"Task: {title}.")
+    if isinstance(path, str) and path:
+        parts.append(f"Path: {path}.")
+    parts.append("Rules: natural, helpful, not corporate. No punctuation at end.")
+    prompt = "\n".join(parts)
+
+    try:
+        chunks: list[str] = []
+        async for event in session.stream(prompt, session_id="haiku-status"):
+            if event.get("type") == "assistant_text":
+                chunks.append(event.get("text", ""))
+            elif event.get("type") == "error":
+                raise RuntimeError(event.get("message", "Query failed"))
+        text = "".join(chunks).strip()
+        # Post-process: condense to one line and trim
+        text = " ".join(text.split())[:80].rstrip(".,! ")
+        if not text:
+            raise ValueError("empty")
+        return {"summary": text, "usedLLM": True}
+    except Exception:
+        return {"summary": _haiku_template(title, status), "usedLLM": False}
