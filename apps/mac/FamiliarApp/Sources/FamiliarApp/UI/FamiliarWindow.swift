@@ -70,16 +70,19 @@ struct FamiliarView: View {
     @State private var bottomMaxY: CGFloat = 0
     @State private var showActivityDetails: Bool = false
     @State private var showDoneBanner: Bool = false
+    @State private var showSidebar: Bool = false
+    @State private var sidebarWidth: CGFloat = 260
 
     private let bottomThreshold: CGFloat = 20
 
     var body: some View {
-        VStack(spacing: FamiliarSpacing.sm) {
-            contentRegion()
+        HStack(spacing: FamiliarSpacing.sm) {
+            VStack(spacing: FamiliarSpacing.sm) {
+                contentRegion()
 
-            if let totals = viewModel.usageTotalsDisplay {
-                UsageSummaryView(totals: totals, last: viewModel.lastUsageDisplay)
-            }
+                if let totals = viewModel.usageTotalsDisplay {
+                    UsageSummaryView(totals: totals, last: viewModel.lastUsageDisplay)
+                }
 
             streamingStatusRegion()
 
@@ -87,7 +90,27 @@ struct FamiliarView: View {
 
             Divider()
 
-            promptRegion()
+                promptRegion()
+            }
+            if showSidebar {
+                Divider()
+                // Drag handle for resizing
+                Rectangle()
+                    .fill(Color.clear)
+                    .frame(width: 6)
+                    .gesture(
+                        DragGesture(minimumDistance: 0).onChanged { value in
+                            let newWidth = max(56, min(400, sidebarWidth - value.translation.width))
+                            sidebarWidth = newWidth
+                        }
+                    )
+                    .overlay(
+                        Rectangle().fill(Color.secondary.opacity(0.15)).frame(width: 2)
+                    )
+                    .onHover { hover in NSCursor.resizeLeftRight.set() }
+                RightSidebarView(compact: sidebarWidth <= 80)
+                    .frame(width: sidebarWidth)
+            }
         }
         // Gear button overlay (top-right)
         .overlay(alignment: .topTrailing) {
@@ -107,6 +130,24 @@ struct FamiliarView: View {
             .help("Open Settings")
             .padding(.trailing, FamiliarSpacing.sm)
             .padding(.top, FamiliarSpacing.sm)
+            HStack(spacing: FamiliarSpacing.xs) {
+                Button {
+                    withAnimation(.familiarInteractive) { showSidebar.toggle() }
+                } label: {
+                    Image(systemName: showSidebar ? "sidebar.trailing" : "sidebar.trailing")
+                        .imageScale(.medium)
+                        .foregroundStyle(.secondary)
+                        .padding(FamiliarSpacing.xs)
+                        .background(
+                            RoundedRectangle(cornerRadius: FamiliarRadius.control)
+                                .fill(Color.familiarSurfaceElevated.opacity(0.6))
+                        )
+                }
+                .buttonStyle(.borderless)
+                .help(showSidebar ? "Hide Sidebar" : "Show Sidebar")
+            }
+            .padding(.trailing, FamiliarSpacing.sm * 4)
+            .padding(.top, FamiliarSpacing.sm)
         }
         .padding(EdgeInsets(
             top: FamiliarSpacing.md,
@@ -115,9 +156,9 @@ struct FamiliarView: View {
             trailing: FamiliarSpacing.md
         ))
         .frame(
-            minWidth: 600,
-            idealWidth: 720,
-            maxWidth: 900,
+            minWidth: 700,
+            idealWidth: 900,
+            maxWidth: 1200,
             minHeight: 520,
             idealHeight: 620,
             maxHeight: .infinity,

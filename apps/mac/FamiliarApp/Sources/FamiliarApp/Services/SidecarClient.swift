@@ -113,6 +113,46 @@ actor SidecarClient {
         return resp.suggestion
     }
 
+    struct SlashCommand: Decodable, Identifiable {
+        let name: String
+        let description: String?
+        var id: String { name }
+    }
+
+    func fetchCommands() async throws -> [SlashCommand] {
+        struct Response: Decodable { let summary: String; let commands: [SlashCommand] }
+        let resp: Response = try await sendDecodable(path: "commands", method: "GET", payload: nil)
+        return resp.commands
+    }
+
+    struct MCPServer: Decodable, Identifiable {
+        let name: String
+        let title: String
+        let description: String
+        var id: String { name }
+    }
+
+    func fetchMCPRegistry() async throws -> [MCPServer] {
+        struct Response: Decodable { let servers: [MCPServer] }
+        let resp: Response = try await sendDecodable(path: "/mcp/registry", method: "GET", payload: nil)
+        return resp.servers
+    }
+
+    struct HaikuRequest: Encodable {
+        let seed: String
+        let title: String
+        let status: String
+        let path: String?
+    }
+    struct HaikuResponse: Decodable { let summary: String; let usedLLM: Bool }
+
+    func fetchAgentHaiku(seed: String, title: String, status: String, path: String?) async throws -> HaikuResponse {
+        let req = HaikuRequest(seed: seed, title: title, status: status, path: path)
+        let data = try JSONEncoder().encode(req)
+        let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        return try await sendDecodable(path: "agent/haiku", method: "POST", payload: json)
+    }
+
     // MARK: - Helpers
 
     private func sendJSON(path: String, method: String, payload: [String: Any]?) async throws -> [String: Any] {

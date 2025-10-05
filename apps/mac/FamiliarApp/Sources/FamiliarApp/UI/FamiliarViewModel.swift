@@ -127,6 +127,7 @@ final class FamiliarViewModel: ObservableObject {
         startLoadingMessages()
         currentPhase = .planning
         logActivity("Planning the best way to help…")
+        AgentsStore.shared.startSession(sessionId: "default", prompt: trimmed)
 
         // Reset typing effect state
         stopRevealLoop()
@@ -257,6 +258,17 @@ final class FamiliarViewModel: ObservableObject {
             handleResult(event)
         case .error:
             handleError(event)
+        case .toolUse:
+            if let id = event.toolUseId, let name = event.toolName {
+                let inputSummary: String
+                if let input = event.toolInput, let data = try? JSONSerialization.data(withJSONObject: input), let text = String(data: data, encoding: .utf8) {
+                    inputSummary = text
+                } else {
+                    inputSummary = ""
+                }
+                ToolExecutionHistory.shared.recordToolUse(id: id, name: name, input: inputSummary)
+                AgentsStore.shared.addToolUse(parentSessionId: "default", toolUseId: id, toolName: name, input: inputSummary, path: event.canonicalPath ?? event.path)
+            }
         default:
             break
         }
@@ -276,6 +288,7 @@ final class FamiliarViewModel: ObservableObject {
             if currentPhase != .replying {
                 currentPhase = .replying
                 logActivity("Writing the response…")
+                AgentsStore.shared.markSessionWorking(sessionId: "default")
             }
         }
         markActivity()
@@ -291,7 +304,12 @@ final class FamiliarViewModel: ObservableObject {
         } else {
             logActivity("Used a tool")
         }
+        if let id = event.toolUseId {
+            ToolExecutionHistory.shared.recordToolResult(id: id, output: event.content ?? (event.snippet ?? ""), isError: event.isError)
+            AgentsStore.shared.finishToolUse(toolUseId: id, success: !event.isError)
+        }
         markActivity()
+        AgentsStore.shared.completeSession(success: true)
     }
 
     private func handlePermissionRequest(_ event: SidecarEvent) {
@@ -302,6 +320,7 @@ final class FamiliarViewModel: ObservableObject {
             logActivity("Needs your approval to continue")
         }
         markActivity()
+        AgentsStore.shared.completeSession(success: false)
     }
 
     private func handlePermissionResolution(_ event: SidecarEvent) {
@@ -318,6 +337,7 @@ final class FamiliarViewModel: ObservableObject {
         if let totals = UsageTotals(usageDict: event.usage, costDict: event.cost) {
             usageTotals = usageTotals.adding(totals)
             lastUsage = totals
+            CostTracker.shared.record(amount: totals.cost)
         }
         // If typing effect is enabled, let the reveal loop drain remaining text
         if !typingEffectEnabled {

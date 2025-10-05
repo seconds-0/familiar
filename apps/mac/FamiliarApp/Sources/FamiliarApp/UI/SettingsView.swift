@@ -6,6 +6,8 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: SettingsViewModel
     private let autoDismissOnSave: Bool
+    @State private var showWorkspaceHelp: Bool = false
+    @State private var showOnboarding: Bool = false
 
     init(appState: AppState, autoDismissOnSave: Bool = false) {
         _viewModel = StateObject(wrappedValue: SettingsViewModel(appState: appState))
@@ -17,6 +19,10 @@ struct SettingsView: View {
             authenticationSection
             workspaceSection
             permissionsSection
+            memorySection
+            costSection
+            integrationsSection
+            toolHistorySection
 
             if let statusMessage = viewModel.statusMessage {
                 Text(statusMessage)
@@ -42,9 +48,15 @@ struct SettingsView: View {
             if autoDismissOnSave {
                 viewModel.onSaved = { dismiss() }
             }
+            if !UserDefaults.standard.bool(forKey: "hasCompletedOnboarding") {
+                showOnboarding = true
+            }
         }
         .onDisappear {
             viewModel.onSaved = nil
+        }
+        .onChange(of: viewModel.apiKey) { newValue in
+            viewModel.validateApiKey(newValue)
         }
         .onChange(of: viewModel.selectedAuthMode) { _ in
             guard !viewModel.isApplyingAuthMode else { return }
@@ -57,6 +69,61 @@ struct SettingsView: View {
             }
         } message: {
             Text("This will also sign you out of Claude Code in the terminal.")
+        }
+        .sheet(isPresented: $showOnboarding) {
+            OnboardingFlow(isPresented: $showOnboarding, settingsVM: viewModel)
+        }
+    }
+
+    @State private var isMemoryExpanded: Bool = false
+    private var memorySection: some View {
+        DisclosureGroup(isExpanded: $isMemoryExpanded) {
+            VStack(alignment: .leading, spacing: FamiliarSpacing.xs) {
+                HStack {
+                    Button("Refresh") { viewModel.loadMemory() }
+                    Button("Save") { viewModel.saveMemory() }
+                        .disabled(!viewModel.isMemoryDirty)
+                    Spacer()
+                }
+                TextEditor(text: Binding(
+                    get: { viewModel.memoryText },
+                    set: { new in viewModel.memoryText = new; viewModel.isMemoryDirty = true }
+                ))
+                .font(.system(.body, design: .monospaced))
+                .frame(minHeight: 160)
+                .overlay(RoundedRectangle(cornerRadius: FamiliarRadius.control).stroke(Color.gray.opacity(0.2)))
+            }
+            .padding(.top, FamiliarSpacing.xs)
+        } label: {
+            Text("Project Memory (CLAUDE.md)")
+                .font(.familiarHeading)
+        }
+        .onChange(of: isMemoryExpanded) { expanded in
+            if expanded { viewModel.loadMemory() }
+        }
+    }
+
+    private var costSection: some View {
+        VStack(alignment: .leading, spacing: FamiliarSpacing.xs) {
+            Text("Costs")
+                .font(.familiarHeading)
+            CostDashboardView(tracker: CostTracker.shared)
+        }
+    }
+
+    private var integrationsSection: some View {
+        VStack(alignment: .leading, spacing: FamiliarSpacing.xs) {
+            IntegrationsView()
+        }
+    }
+
+    @State private var isHistoryExpanded: Bool = false
+    private var toolHistorySection: some View {
+        DisclosureGroup(isExpanded: $isHistoryExpanded) {
+            ToolHistoryView(history: ToolExecutionHistory.shared)
+                .frame(minHeight: 140)
+        } label: {
+            Text("Tool Execution History").font(.familiarHeading)
         }
     }
 
@@ -84,12 +151,19 @@ struct SettingsView: View {
     }
 
     private var apiKeySection: some View {
-        APIKeySection(
-            apiKey: $viewModel.apiKey,
-            isVisible: $viewModel.isApiKeyVisible,
-            onPaste: viewModel.pasteFromClipboard,
-            onVisibilityToggle: viewModel.toggleApiKeyVisibility
-        )
+        VStack(alignment: .leading, spacing: FamiliarSpacing.xs) {
+            APIKeySection(
+                apiKey: $viewModel.apiKey,
+                isVisible: $viewModel.isApiKeyVisible,
+                onPaste: viewModel.pasteFromClipboard,
+                onVisibilityToggle: viewModel.toggleApiKeyVisibility
+            )
+            if case .invalid(let reason) = viewModel.apiKeyValidation {
+                Label(reason, systemImage: "exclamationmark.triangle")
+                    .foregroundStyle(.orange)
+                    .font(.caption)
+            }
+        }
     }
 
     private var claudeLoginSection: some View {
@@ -99,6 +173,7 @@ struct SettingsView: View {
             isLoading: .constant(
                 viewModel.isLoggingIn || viewModel.isLoggingOut || viewModel.isRefreshingAuth
             ),
+            loginState: $viewModel.loginState,
             onSignIn: viewModel.signInClaude,
             onSignOut: { viewModel.isLogoutConfirmationPresented = true },
             onRefresh: { Task { await viewModel.refreshClaudeStatus(manual: true) } }
@@ -107,8 +182,28 @@ struct SettingsView: View {
 
     private var workspaceSection: some View {
         VStack(alignment: .leading, spacing: FamiliarSpacing.xs) {
-            Text("Workspace")
-                .font(.familiarHeading)
+            HStack(spacing: FamiliarSpacing.xs) {
+                Text("Workspace")
+                    .font(.familiarHeading)
+                Button {
+                    showWorkspaceHelp = true
+                } label: {
+                    Image(systemName: "questionmark.circle")
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.borderless)
+                .popover(isPresented: $showWorkspaceHelp) {
+                    VStack(alignment: .leading, spacing: FamiliarSpacing.xs) {
+                        Text("What's a workspace?")
+                            .font(.headline)
+                        Text("The folder where Familiar can read and write files. For safety, Familiar only works within this directory.")
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding()
+                    .frame(width: 280)
+                }
+            }
             HStack(spacing: 8) {
                 TextField("/path/to/workspace", text: $viewModel.workspacePath)
                     .textFieldStyle(.roundedBorder)

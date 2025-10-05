@@ -11,6 +11,9 @@ struct PromptTextEditor: View {
 
     @State private var contentHeight: CGFloat = 0
     @State private var isEditing: Bool = false
+    @State private var allCommands: [SidecarClient.SlashCommand] = []
+    @State private var filteredCommands: [SidecarClient.SlashCommand] = []
+    @State private var showCommands: Bool = false
 
     private let maxVisibleLines: CGFloat = 6
     private let textInsets = NSSize(width: FamiliarSpacing.sm, height: FamiliarSpacing.xs)
@@ -38,44 +41,64 @@ struct PromptTextEditor: View {
     var body: some View {
         let backgroundShape = RoundedRectangle(cornerRadius: FamiliarRadius.field, style: .continuous)
 
-        return PromptTextViewRepresentable(
-            text: $text,
-            contentHeight: $contentHeight,
-            isEditing: $isEditing,
-            minimumHeight: minimumHeight,
-            font: font,
-            textInsets: textInsets,
-            onSubmit: onSubmit,
-            onPaste: onPaste,
-            onBeginEditing: onBeginEditing
-        )
-        .frame(minHeight: visibleHeight, maxHeight: visibleHeight, alignment: .top)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .fixedSize(horizontal: false, vertical: true)
-        .animation(.familiarInteractive, value: visibleHeight)
-        .background(
-            backgroundShape
-                .fill(Color(nsColor: .textBackgroundColor))
-        )
-        .overlay(alignment: .topLeading) {
-            if text.isEmpty && !isEditing {
-                Text(placeholder)
-                    .font(.familiarBody)
-                    .italic()
-                    .foregroundStyle(.tertiary)
-                    .padding(.top, textInsets.height)
-                    .padding(.leading, textInsets.width)
-                    .allowsHitTesting(false)
-                    .opacity(isEditing ? 0 : 1)
-                    .animation(.familiarInteractive, value: isEditing)
+    return VStack(spacing: FamiliarSpacing.xs) {
+            PromptTextViewRepresentable(
+                text: $text,
+                contentHeight: $contentHeight,
+                isEditing: $isEditing,
+                minimumHeight: minimumHeight,
+                font: font,
+                textInsets: textInsets,
+                onSubmit: onSubmit,
+                onPaste: onPaste,
+                onBeginEditing: onBeginEditing
+            )
+            .frame(minHeight: visibleHeight, maxHeight: visibleHeight, alignment: .top)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .fixedSize(horizontal: false, vertical: true)
+            .animation(.familiarInteractive, value: visibleHeight)
+            .background(
+                backgroundShape
+                    .fill(Color(nsColor: .textBackgroundColor))
+            )
+            .overlay(alignment: .topLeading) {
+                if text.isEmpty && !isEditing {
+                    Text(placeholder)
+                        .font(.familiarBody)
+                        .italic()
+                        .foregroundStyle(.tertiary)
+                        .padding(.top, textInsets.height)
+                        .padding(.leading, textInsets.width)
+                        .allowsHitTesting(false)
+                        .opacity(isEditing ? 0 : 1)
+                        .animation(.familiarInteractive, value: isEditing)
+                }
+            }
+            .clipShape(backgroundShape)
+            .overlay(
+                backgroundShape
+                    .stroke(Color.familiarAccent.opacity(isFocused ? 0.55 : 0.35), lineWidth: isFocused ? 1.2 : 1)
+            )
+            .shadow(color: Color.black.opacity(0.03), radius: 1, x: 0, y: 1)
+
+            if showCommands && !filteredCommands.isEmpty {
+                SlashCommandPicker(
+                    commands: filteredCommands,
+                    onSelect: { command in
+                        text = "/\(command.name) "
+                        showCommands = false
+                        onBeginEditing()
+                    }
+                )
             }
         }
-        .clipShape(backgroundShape)
-        .overlay(
-            backgroundShape
-                .stroke(Color.familiarAccent.opacity(isFocused ? 0.55 : 0.35), lineWidth: isFocused ? 1.2 : 1)
-        )
-        .shadow(color: Color.black.opacity(0.03), radius: 1, x: 0, y: 1)
+        .onChange(of: text) { newValue in
+            updateCommandFilter(for: newValue)
+        }
+        .onChange(of: isEditing) { editing in
+            if !editing { showCommands = false }
+        }
+        .onAppear { Task { await ensureCommandsLoaded() } }
     }
 }
 
@@ -231,5 +254,63 @@ extension PromptTextEditor {
     static func visibleHeight(forContentHeight contentHeight: CGFloat, minimumHeight: CGFloat, maximumHeight: CGFloat) -> CGFloat {
         let baseHeight = max(contentHeight, minimumHeight)
         return min(baseHeight, maximumHeight)
+    }
+}
+
+private extension PromptTextEditor {
+    func ensureCommandsLoaded() async {
+        if !allCommands.isEmpty { return }
+        do {
+            let cmds = try await SidecarClient.shared.fetchCommands()
+            await MainActor.run { allCommands = cmds }
+        } catch {
+            // Ignore; keep empty
+        }
+    }
+
+    func updateCommandFilter(for value: String) {
+        guard value.hasPrefix("/") else { showCommands = false; filteredCommands = []; return }
+        let query = String(value.dropFirst()).lowercased()
+        if allCommands.isEmpty {
+            Task { await ensureCommandsLoaded(); updateCommandFilter(for: value) }
+            return
+        }
+        if query.isEmpty {
+            filteredCommands = Array(allCommands.prefix(8))
+        } else {
+            filteredCommands = allCommands.filter { $0.name.lowercased().contains(query) || ($0.description?.lowercased().contains(query) ?? false) }
+        }
+        showCommands = true
+    }
+}
+
+private struct SlashCommandPicker: View {
+    let commands: [SidecarClient.SlashCommand]
+    let onSelect: (SidecarClient.SlashCommand) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ForEach(commands) { cmd in
+                Button {
+                    onSelect(cmd)
+                } label: {
+                    HStack(alignment: .firstTextBaseline, spacing: FamiliarSpacing.xs) {
+                        Text("/\(cmd.name)")
+                            .font(.system(.body, design: .monospaced))
+                        if let d = cmd.description, !d.isEmpty {
+                            Text(d).foregroundStyle(.secondary).font(.caption)
+                        }
+                        Spacer()
+                    }
+                    .padding(.horizontal, FamiliarSpacing.sm)
+                    .padding(.vertical, FamiliarSpacing.xs)
+                }
+                .buttonStyle(.plain)
+                Divider()
+            }
+        }
+        .background(Color.familiarSurfaceElevated)
+        .clipShape(RoundedRectangle(cornerRadius: FamiliarRadius.control))
+        .shadow(radius: 8)
     }
 }

@@ -26,6 +26,10 @@ final class SettingsViewModel: ObservableObject {
     @Published var isApplyingAuthMode = false
     @Published var isLogoutConfirmationPresented = false
     @Published var bypassPermissions: Bool = true
+    @Published var loginState: ClaudeLoginState = .notAuthenticated
+    @Published var apiKeyValidation: KeyValidation = .valid
+    @Published var memoryText: String = ""
+    @Published var isMemoryDirty: Bool = false
 
     // Called after a successful save when the view wants to react (e.g., dismiss)
     var onSaved: (() -> Void)?
@@ -46,6 +50,11 @@ final class SettingsViewModel: ObservableObject {
                 return "API Key"
             }
         }
+    }
+
+    enum KeyValidation: Equatable {
+        case valid
+        case invalid(String)
     }
 
     // MARK: - Private Properties
@@ -137,9 +146,11 @@ final class SettingsViewModel: ObservableObject {
                     if settings.hasApiKey {
                         statusMessage = "Settings saved. Claude Code is ready."
                         statusColor = .green
+                        loginState = .authenticated(account: nil)
                     } else {
                         statusMessage = "API key still missing."
                         statusColor = .orange
+                        loginState = .notAuthenticated
                     }
                 } else {
                     updateStatusForClaudeMode()
@@ -173,6 +184,7 @@ final class SettingsViewModel: ObservableObject {
         if let clipboard = NSPasteboard.general.string(forType: .string) {
             apiKey = clipboard.trimmingCharacters(in: .whitespacesAndNewlines)
             updateStatusForApiMode()
+            validateApiKey(apiKey)
         }
     }
 
@@ -183,6 +195,7 @@ final class SettingsViewModel: ObservableObject {
             if let storedKey = (try? Keychain.load(key: keychainKey)) ?? nil {
                 apiKey = storedKey
                 updateStatusForApiMode()
+                validateApiKey(apiKey)
             }
         }
     }
@@ -195,25 +208,45 @@ final class SettingsViewModel: ObservableObject {
         isLoggingIn = true
         statusMessage = "Opening browser to sign in…"
         statusColor = .secondary
+        loginState = .initiating
         Task { @MainActor in
             defer { isLoggingIn = false }
             do {
                 let auth = try await authCoordinator.startLogin()
                 updateAuthState(from: auth, overrideStatus: true)
+                // Update state for UI
+                if auth.isPending {
+                    if let url = auth.loginURL { loginState = .waitingForUser(url) } else { loginState = .verifying }
+                } else if auth.isAuthenticated {
+                    loginState = .authenticated(account: auth.account)
+                } else {
+                    loginState = .notAuthenticated
+                }
                 authCoordinator.openLoginURL(from: auth)
 
                 if auth.isPending {
                     let finalAuth = try await authCoordinator.pollForCompletion { [weak self] status in
-                        self?.updateAuthState(from: status, overrideStatus: true)
-                        self?.authCoordinator.openLoginURL(from: status)
+                        guard let self else { return }
+                        self.updateAuthState(from: status, overrideStatus: true)
+                        self.authCoordinator.openLoginURL(from: status)
+                        if status.isPending {
+                            if let url = status.loginURL { self.loginState = .waitingForUser(url) } else { self.loginState = .verifying }
+                        } else if status.isAuthenticated {
+                            self.loginState = .authenticated(account: status.account)
+                        } else {
+                            self.loginState = .notAuthenticated
+                        }
                     }
                     updateAuthState(from: finalAuth, overrideStatus: true)
+                    loginState = finalAuth.isAuthenticated ? .authenticated(account: finalAuth.account) : .notAuthenticated
                 }
 
                 await reloadSettingsFromSidecar(preserveStatus: false)
             } catch {
-                statusMessage = "Login failed: \(error.localizedDescription)"
+                let friendly = Self.friendlyLoginErrorMessage(error)
+                statusMessage = friendly
                 statusColor = .red
+                loginState = .error(message: friendly)
             }
         }
     }
@@ -223,15 +256,18 @@ final class SettingsViewModel: ObservableObject {
         isLoggingOut = true
         statusMessage = "Signing out…"
         statusColor = .secondary
+        loginState = .verifying
         Task { @MainActor in
             defer { isLoggingOut = false }
             do {
                 let auth = try await authCoordinator.signOut()
                 updateAuthState(from: auth, overrideStatus: true)
+                loginState = auth.isAuthenticated ? .authenticated(account: auth.account) : .notAuthenticated
                 await reloadSettingsFromSidecar(preserveStatus: false)
             } catch {
                 statusMessage = "Logout failed: \(error.localizedDescription)"
                 statusColor = .red
+                loginState = .error(message: "Logout failed. Please try again.")
             }
         }
     }
@@ -248,10 +284,21 @@ final class SettingsViewModel: ObservableObject {
             let auth = try await authCoordinator.refreshStatus()
             updateAuthState(from: auth, overrideStatus: manual)
             authCoordinator.openLoginURL(from: auth)
+            // Keep UI state in sync
+            if auth.isAuthenticated {
+                loginState = .authenticated(account: auth.account)
+            } else if auth.isPending {
+                if let url = auth.loginURL { loginState = .waitingForUser(url) } else { loginState = .verifying }
+            } else {
+                loginState = .notAuthenticated
+            }
             await reloadSettingsFromSidecar(preserveStatus: !manual)
         } catch {
             statusMessage = "Failed to refresh Claude status: \(error.localizedDescription)"
             statusColor = .red
+            if manual {
+                loginState = .error(message: "Couldn't check status. Try again.")
+            }
         }
     }
 
@@ -285,6 +332,7 @@ final class SettingsViewModel: ObservableObject {
 
         hasClaudeSession = settings.hasClaudeSession
         claudeAccount = settings.connectedAccountLabel
+        loginState = settings.hasClaudeSession ? .authenticated(account: settings.connectedAccountLabel) : .notAuthenticated
 
         if !preserveStatus {
             switch selectedAuthMode {
@@ -355,6 +403,7 @@ final class SettingsViewModel: ObservableObject {
             claudeAccount = response.account
         }
         updateStatusMessage(mode: .claudeAi, authenticated: hasClaudeSession, account: claudeAccount)
+        loginState = hasClaudeSession ? .authenticated(account: claudeAccount) : .notAuthenticated
     }
 
     private func updateStatusForApiMode() {
@@ -382,5 +431,58 @@ final class SettingsViewModel: ObservableObject {
             statusMessage = "Failed to refresh settings: \(error.localizedDescription)"
             statusColor = .red
         }
+    }
+
+    // MARK: - Validation
+    func validateApiKey(_ key: String) {
+        let trimmed = key.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.isEmpty {
+            apiKeyValidation = .valid
+            return
+        }
+        if !trimmed.hasPrefix("sk-ant-") {
+            apiKeyValidation = .invalid("API keys start with 'sk-ant-'")
+        } else if trimmed.count < 40 {
+            apiKeyValidation = .invalid("Key seems too short")
+        } else {
+            apiKeyValidation = .valid
+        }
+    }
+
+    // MARK: - Memory (CLAUDE.md)
+    func loadMemory() {
+        guard let path = appState.workspaceURL else { return }
+        let fileURL = path.appendingPathComponent("CLAUDE.md")
+        if let data = try? Data(contentsOf: fileURL), let str = String(data: data, encoding: .utf8) {
+            memoryText = str
+            isMemoryDirty = false
+        } else {
+            memoryText = "# Project Memory\n"
+            isMemoryDirty = true
+        }
+    }
+
+    func saveMemory() {
+        guard let path = appState.workspaceURL else { return }
+        let fileURL = path.appendingPathComponent("CLAUDE.md")
+        do {
+            try memoryText.data(using: .utf8)?.write(to: fileURL)
+            isMemoryDirty = false
+            statusMessage = "Memory saved."
+            statusColor = .green
+        } catch {
+            statusMessage = "Failed to save memory: \(error.localizedDescription)"
+            statusColor = .red
+        }
+    }
+
+    // MARK: - Friendly Error Mapping
+    private static func friendlyLoginErrorMessage(_ error: Error) -> String {
+        let msg = error.localizedDescription.lowercased()
+        if msg.contains("timeout") { return "Login took too long. Check your internet and try again." }
+        if msg.contains("network") || msg.contains("connect") { return "Couldn't reach Claude.ai. Verify your connection." }
+        if msg.contains("cli path") || msg.contains("cli executable not found") { return "Claude CLI missing. Please reinstall Familiar." }
+        if msg.contains("canceled") || msg.contains("cancelled") { return "Login canceled. Click Sign In to try again." }
+        return "Hmm, something went wrong. Want to try again?"
     }
 }

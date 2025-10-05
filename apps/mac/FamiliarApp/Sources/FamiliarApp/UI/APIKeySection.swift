@@ -11,12 +11,31 @@ struct APIKeySection: View {
     let onVisibilityToggle: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: FamiliarSpacing.xs) {
             Text("Provide an Anthropic API key if you prefer manual authentication.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
 
-            HStack(spacing: 8) {
+            if apiKey.isEmpty {
+                VStack(spacing: FamiliarSpacing.xs) {
+                    Image(systemName: "key.fill")
+                        .font(.system(size: 42))
+                        .foregroundStyle(.secondary)
+                    Text("No API key configured")
+                        .font(.headline)
+                    Text("Enter your Anthropic API key to get started")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                    Button("Get an API Key") {
+                        NSWorkspace.shared.open(URL(string: "https://console.anthropic.com")!)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, FamiliarSpacing.sm)
+            }
+
+            HStack(spacing: FamiliarSpacing.xs) {
                 keyTextField
                     .textFieldStyle(.roundedBorder)
 
